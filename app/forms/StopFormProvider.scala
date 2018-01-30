@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package forms
 
-<div class="section">
-    <button id="submit" class="button">@messages("site.continue")</button>
-</div>
+import javax.inject.Inject
+
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.Stop
+
+class StopFormProvider @Inject() extends FormErrorHelper with Mappings {
+
+  def apply(): Form[Stop] =
+    Form(
+      "value" -> enumerable[Stop]("stop.error.required")
+    )
+}
