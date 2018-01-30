@@ -17,20 +17,20 @@
 package utils
 
 import base.SpecBase
-import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
-import controllers.routes
-import identifiers._
-import models._
+import models.Stop
 
-class NavigatorSpec extends SpecBase with MockitoSugar {
-
-  val navigator = new Navigator
-
-  "Navigator" when {
-
-    "in Normal mode" must {
-
+class NextPageSpec extends SpecBase {
+  def nextPage[A, B](np: NextPage[A, B], userSelection: B, urlRedirect: String): Unit = {
+    s"$userSelection is selected" should {
+      s"redirect to $urlRedirect" in {
+        val result = np.get(userSelection)
+        result.url mustBe urlRedirect
+      }
     }
+  }
+
+  "Stop" when {
+    behave like nextPage(NextPage.stop, Stop.Dormant, "https://www.gov.uk/dormant-company/dormant-for-corporation-tax")
+    behave like nextPage(NextPage.stop, Stop.Close, "https://www.gov.uk/closing-a-limited-company")
   }
 }

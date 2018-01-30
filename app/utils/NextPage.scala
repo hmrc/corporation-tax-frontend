@@ -16,12 +16,24 @@
 
 package utils
 
+import identifiers.StopId
+import models.Stop
 import play.api.mvc.Call
 
 trait NextPage[A, B] {
-
   def get(b: B): Call
-
 }
 
-object NextPage {}
+object NextPage {
+
+  implicit val stop: NextPage[StopId.type, Stop] = {
+    new NextPage[StopId.type, Stop] {
+      override def get(b: Stop): Call = {
+        b match {
+          case Stop.Dormant => Call("GET", "https://www.gov.uk/dormant-company/dormant-for-corporation-tax")
+          case Stop.Close => Call("GET", "https://www.gov.uk/closing-a-limited-company")
+        }
+      }
+    }
+  }
+}

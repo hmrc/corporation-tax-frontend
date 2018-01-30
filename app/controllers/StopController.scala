@@ -53,8 +53,8 @@ class StopController @Inject()(
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(stop(appConfig, formWithErrors)(request.serviceInfoContent))),
-        (value) => ???
-//          Future.successful(Redirect(navigator.nextPage(StopId, value)))
+        (value) =>
+          Future.successful(Redirect(navigator.nextPage(StopId, value)))
       )
   }
 }
