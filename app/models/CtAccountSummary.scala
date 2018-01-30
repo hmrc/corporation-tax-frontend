@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package connectors.models
+package models
 
-import play.api.libs.json.{Json, OFormat}
+import connectors.models.CtAccountSummaryData
 
-case class CtAccountSummary(accountBalance: Option[CtAccountBalance])
+sealed trait CtAccountSummary
 
-object CtAccountSummary {
-  implicit val formats: OFormat[CtAccountSummary] = Json.format[CtAccountSummary]
-}
+case object CtGenericError extends CtAccountSummary
+
+case object CtNoData extends CtAccountSummary
+
+case object CtEmpty extends CtAccountSummary
+
+case class CtData(accountSummary: CtAccountSummaryData) extends CtAccountSummary

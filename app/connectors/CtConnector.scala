@@ -19,8 +19,9 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import config.FrontendAppConfig
-import connectors.models.{CtAccountSummary, CtDesignatoryDetailsCollection, MicroServiceException}
+import connectors.models.{CtAccountSummaryData, CtDesignatoryDetailsCollection, MicroServiceException}
 import play.api.http.Status._
+import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext.fromLoggingDetails
@@ -45,13 +46,13 @@ class CtConnector @Inject()(val http: HttpClient,
 
   }
 
-  def accountSummary(utr: String)(implicit hc: HeaderCarrier): Future[Option[CtAccountSummary]] = {
-    val uri = s"$ctUrl/ct/$utr/account-summary"
-    http.GET[Option[CtAccountSummary]](uri)(handleResponse[CtAccountSummary](uri), hc, fromLoggingDetails)
+  def accountSummary(ctUtr: CtUtr)(implicit hc: HeaderCarrier): Future[Option[CtAccountSummaryData]] = {
+    val uri = s"$ctUrl/ct/$ctUtr/account-summary"
+    http.GET[Option[CtAccountSummaryData]](uri)(handleResponse[CtAccountSummaryData](uri), hc, fromLoggingDetails)
   }
 
-  def designatoryDetails(utr: String)(implicit hc: HeaderCarrier): Future[Option[CtDesignatoryDetailsCollection]] = {
-    val uri = ctUrl + s"/ct/$utr/designatory-details"
+  def designatoryDetails(ctUtr: CtUtr)(implicit hc: HeaderCarrier): Future[Option[CtDesignatoryDetailsCollection]] = {
+    val uri = ctUrl + s"/ct/$ctUtr/designatory-details"
     http.GET[Option[CtDesignatoryDetailsCollection]](uri)(handleResponse[CtDesignatoryDetailsCollection](uri), hc, fromLoggingDetails)
   }
 

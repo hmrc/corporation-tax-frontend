@@ -22,14 +22,13 @@ import org.mockito.Matchers
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
+import play.api.http.Status._
 import play.api.libs.json.Json
+import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
-import scala.concurrent.Future
 
 class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with MockHttpClient {
-
+  
 
   def ctConnector[A](mockedResponse: HttpResponse, httpWrapper: HttpWrapper = mock[HttpWrapper]): CtConnector = {
     when(httpWrapper.getF[A](Matchers.any())).
@@ -39,16 +38,17 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
+  val ctUtr = CtUtr("utr")
 
   "CtConnector account summary" should {
 
     "call the micro service with the correct uri and return the contents" in {
 
-      val ctAccountSummary = CtAccountSummary(Some(CtAccountBalance(Some(4.0))))
+      val ctAccountSummary = CtAccountSummaryData(Some(CtAccountBalance(Some(4.0))))
 
       val response = ctConnector(
-        mockedResponse = HttpResponse(200, Some(Json.toJson(ctAccountSummary)
-        ))).accountSummary("utr")
+        mockedResponse = HttpResponse(OK, Some(Json.toJson(ctAccountSummary)
+        ))).accountSummary(ctUtr)
 
       whenReady(response) { r =>
         r mustBe Some(ctAccountSummary)
@@ -59,8 +59,8 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
     "call the micro service with the correct uri and return no contents if there are none" in {
 
       val response = ctConnector(
-        mockedResponse = HttpResponse(404, None)
-      ).accountSummary("utr")
+        mockedResponse = HttpResponse(NOT_FOUND, None)
+      ).accountSummary(ctUtr)
 
       whenReady(response) { r =>
         r mustBe None
@@ -72,13 +72,13 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
       val httpWrapper = mock[HttpWrapper]
 
       val response = ctConnector(
-        mockedResponse = HttpResponse(500, None),
+        mockedResponse = HttpResponse(INTERNAL_SERVER_ERROR, None),
         httpWrapper
-      ).accountSummary("utr")
+      ).accountSummary(ctUtr)
 
-      val mse = whenReady(response.failed) { mse =>
+      whenReady(response.failed) { mse =>
         mse mustBe a[MicroServiceException]
-        verify(httpWrapper).getF[CtAccountSummary](ctAccountSummaryUri)
+        verify(httpWrapper).getF[CtAccountSummaryData](ctAccountSummaryUri)
       }
 
     }
@@ -123,8 +123,8 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
     "Return the correct response for an example with designatory details information" in {
 
       val response = ctConnector(
-        mockedResponse = HttpResponse(200, Some(Json.parse(sampleDesignatoryDetails)))
-      ).designatoryDetails("utr")
+        mockedResponse = HttpResponse(OK, Some(Json.parse(sampleDesignatoryDetails)))
+      ).designatoryDetails(ctUtr)
 
       val expectedDetails = Some(DesignatoryDetails(
         DesignatoryDetailsName(Some("A B"), Some("xyz")),
@@ -149,8 +149,8 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
     "call the micro service and return 500" in {
 
       val response = ctConnector(
-        mockedResponse = HttpResponse(500, None)
-      ).designatoryDetails("utr")
+        mockedResponse = HttpResponse(INTERNAL_SERVER_ERROR, None)
+      ).designatoryDetails(ctUtr)
 
       whenReady(response.failed) { mse =>
         mse mustBe a[MicroServiceException]
