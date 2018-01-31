@@ -51,3 +51,9 @@ stop.heading = A ydych eisiau troi’r cwmni’n segur, neu ei gau?
 stop.dormant = Troi’r cwmni’n segur
 stop.close = Cau’r cwmni
 stop.error.required = Dewiswch un o’r opsiynau
+
+#######################################################
+##  Subpage
+#######################################################
+subpage.title = WELSH NEEDED HERE
+subpage.heading = WELSH NEEDED HERE
