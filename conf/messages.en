@@ -60,3 +60,6 @@ subpage.title = subpage
 subpage.heading = subpage
 
 subpage.utr = Unique Taxpayer Reference (UTR)
+subpage.sidebar.stoptrading = Stop trading
+subpage.sidebar.dormant=Make your company dormant
+subpage.sidebar.close=Close your company

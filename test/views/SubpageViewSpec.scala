@@ -44,5 +44,12 @@ class SubpageViewSpec extends ViewBehaviours {
       val utrBlock = asDocument(createView()).getElementById("ct-utr")
       utrBlock.text() mustBe "Unique Taxpayer Reference (UTR) this-is-a-utr"
     }
+
+    "contain the stop trading links" in {
+      val doc = asDocument(createView())
+      doc.getElementById("stop-trading").getElementsByTag("h3").text() mustBe "Stop trading"
+      assertLinkById(doc, "make-dormant", "Make your company dormant", "https://www.gov.uk/dormant-company/dormant-for-corporation-tax", expectedGAEvent = "CtSubpage:click:MakeDormant")
+      assertLinkById(doc, "close-company", "Close your company", "https://www.gov.uk/closing-a-limited-company", expectedGAEvent = "CtSubpage:click:Close")
+    }
   }
 }

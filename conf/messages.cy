@@ -60,3 +60,6 @@ subpage.title = WELSH NEEDED HERE
 subpage.heading = WELSH NEEDED HERE
 
 subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR)
+subpage.sidebar.stoptrading = Rhoi’r gorau i fasnachu
+subpage.sidebar.dormant=Troi eich cwmni''n segur
+subpage.sidebar.close=Cau eich cwmni

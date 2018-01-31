@@ -26,6 +26,21 @@
                 <h3>@Messages("subpage.utr")</h3>
                 <p class="font-xsmall">@ctEnrolment.map(_.ctUtr.value)</p>
             </div>
+
+            <div id="stop-trading" class="subsection">
+                <h3>@Messages("subpage.sidebar.stoptrading")</h3>
+                <ul class="sidebar__list">
+                    <li>
+                        <a id="make-dormant" class="font-xsmall" href="@appConfig.getGovUrl("makeCompanyDormant")"
+                        data-journey-click="CtSubpage:click:MakeDormant">@Messages("subpage.sidebar.dormant")</a>
+                    </li>
+                    <li>
+                        <a id="close-company" class="font-xsmall" href="@appConfig.getGovUrl("closeCompany")"
+                        data-journey-click="CtSubpage:click:Close">@Messages("subpage.sidebar.close")</a>
+                    </li>
+                </ul>
+            </div>
+
         </nav>
     </section>
 }
