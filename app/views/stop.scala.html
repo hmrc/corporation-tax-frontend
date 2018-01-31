@@ -40,7 +40,8 @@
             legendClass = Some("visually-hidden"),
             inputs = Stop.options.toSeq,
             trackGa = true,
-            gaEvent = "Stop"
+            gaEvent = "Stop",
+            hint = Some(Messages("stop.hint.text"))
         )
 
         @components.submit_button()

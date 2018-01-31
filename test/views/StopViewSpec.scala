@@ -36,7 +36,7 @@ class StopViewSpec extends ViewBehaviours {
   def createViewUsingForm = (form: Form[_]) => stop(frontendAppConfig, form)(serviceInfoContent)(fakeRequest, messages)
 
   "Stop view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView, messageKeyPrefix, "hint.text")
   }
 
   "Stop view" when {
