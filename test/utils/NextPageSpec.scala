@@ -16,14 +16,21 @@
 
 package utils
 
-import javax.inject.{Inject, Singleton}
+import base.SpecBase
+import models.Stop
 
-import play.api.mvc.Call
+class NextPageSpec extends SpecBase {
+  def nextPage[A, B](np: NextPage[A, B], userSelection: B, urlRedirect: String): Unit = {
+    s"$userSelection is selected" should {
+      s"redirect to $urlRedirect" in {
+        val result = np.get(userSelection)
+        result.url mustBe urlRedirect
+      }
+    }
+  }
 
-@Singleton
-class Navigator @Inject()() {
-
-  def nextPage[A, B](id: A, b: B)(implicit ev: NextPage[A, B]): Call =
-    ev.get(b)
-
+  "Stop" when {
+    behave like nextPage(NextPage.stop, Stop.Dormant, "https://www.gov.uk/dormant-company/dormant-for-corporation-tax")
+    behave like nextPage(NextPage.stop, Stop.Close, "https://www.gov.uk/closing-a-limited-company")
+  }
 }

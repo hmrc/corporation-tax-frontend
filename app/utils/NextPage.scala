@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package utils
 
-<div class="section">
-    <button id="submit" class="button">@messages("site.continue")</button>
-</div>
+import identifiers.StopId
+import models.Stop
+import play.api.mvc.Call
+
+trait NextPage[A, B] {
+  def get(b: B): Call
+}
+
+object NextPage {
+
+  implicit val stop: NextPage[StopId.type, Stop] = {
+    new NextPage[StopId.type, Stop] {
+      override def get(b: Stop): Call = {
+        b match {
+          case Stop.Dormant => Call("GET", "https://www.gov.uk/dormant-company/dormant-for-corporation-tax")
+          case Stop.Close => Call("GET", "https://www.gov.uk/closing-a-limited-company")
+        }
+      }
+    }
+  }
+}

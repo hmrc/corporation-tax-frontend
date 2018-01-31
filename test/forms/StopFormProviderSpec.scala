@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,30 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package forms
 
-<div class="section">
-    <button id="submit" class="button">@messages("site.continue")</button>
-</div>
+import forms.behaviours.FormBehaviours
+import models._
+
+class StopFormProviderSpec extends FormBehaviours {
+
+  val validData: Map[String, String] = Map(
+    "value" -> Stop.options.head.value
+  )
+
+  val form = new StopFormProvider()()
+
+  "Stop form" must {
+
+    behave like questionForm[Stop](Stop.values.head)
+
+    behave like formWithOptionField(
+      Field(
+        "value",
+        Required -> "stop.error.required",
+        Invalid -> "error.invalid"),
+      Stop.options.toSeq.map(_.value): _*)
+  }
+}

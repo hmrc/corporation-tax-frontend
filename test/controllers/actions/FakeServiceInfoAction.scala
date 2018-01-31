@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@()(implicit messages: Messages)
+package controllers.actions
 
-<div class="section">
-    <button id="submit" class="button">@messages("site.continue")</button>
-</div>
+import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import play.api.mvc._
+import play.twirl.api.HtmlFormat
+
+import scala.concurrent.Future
+
+
+object FakeServiceInfoAction extends ServiceInfoAction {
+  override protected def transform[A](request: AuthenticatedRequest[A]): Future[ServiceInfoRequest[A]] = {
+    implicit val r: Request[A] = request
+    Future.successful(ServiceInfoRequest(request, HtmlFormat.empty))
+  }
+}
