@@ -22,6 +22,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
+import models.CtEnrolment
+import models.requests.ServiceInfoRequest
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.domain.CtUtr
 import views.html.subpage
 
 import scala.concurrent.Future
@@ -31,8 +35,13 @@ class SubpageController @Inject()(appConfig: FrontendAppConfig,
                                           authenticate: AuthAction,
                                           serviceInfo: ServiceInfoAction ) extends FrontendController with I18nSupport {
 
+  private[controllers] def getEnrolment(implicit r: ServiceInfoRequest[AnyContent]): Option[CtEnrolment] = {
+    r.request.enrolments.getEnrolment("IR-CT")
+      .map(e => CtEnrolment(CtUtr(e.getIdentifier("UTR").map(_.value).getOrElse("")), e.isActivated))
+  }
+
   def onPageLoad = (authenticate andThen serviceInfo) {
     implicit request =>
-      Ok(subpage(appConfig)(request.serviceInfoContent))
+      Ok(subpage(appConfig, getEnrolment(request))(request.serviceInfoContent))
   }
 }

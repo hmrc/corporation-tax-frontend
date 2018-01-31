@@ -53,6 +53,10 @@ trait ViewSpecBase extends SpecBase {
     assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
   }
 
+  def assertRenderedByTag(doc: Document, tag: String) = {
+    assert(doc.getElementsByTag(tag).first() != null, "\n\nElement " + tag + " was not rendered on the page.\n")
+  }
+
   def assertNotRenderedById(doc: Document, id: String) = {
     assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
   }

@@ -58,3 +58,5 @@ stop.hint.text = If you make the company dormant, it will be able to trade again
 #######################################################
 subpage.title = subpage
 subpage.heading = subpage
+
+subpage.utr = Unique Taxpayer Reference (UTR)

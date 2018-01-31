@@ -51,9 +51,12 @@ stop.heading = A ydych eisiau troi’r cwmni’n segur, neu ei gau?
 stop.dormant = Troi’r cwmni’n segur
 stop.close = Cau’r cwmni
 stop.error.required = Dewiswch un o’r opsiynau
+stop.hint.text = If you make the company dormant, it will be able to trade again in the future. If you close the company, it will not be able to trade again.
 
 #######################################################
 ##  Subpage
 #######################################################
 subpage.title = WELSH NEEDED HERE
 subpage.heading = WELSH NEEDED HERE
+
+subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR)

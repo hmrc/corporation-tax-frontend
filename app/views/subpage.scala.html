@@ -15,13 +15,27 @@
  *@
 
 @import config.FrontendAppConfig
+@import models.CtEnrolment
 
-@(appConfig: FrontendAppConfig)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, ctEnrolment: Option[CtEnrolment])(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
+
+@sidebarLinks = {
+    <section class="section--blue-top">
+        <nav role="navigation">
+            <div id="ct-utr" class="subsection flush--top">
+                <h3>@Messages("subpage.utr")</h3>
+                <p class="font-xsmall">@ctEnrolment.map(_.ctUtr.value)</p>
+            </div>
+        </nav>
+    </section>
+}
+
 
 @main_template(
     title = messages("subpage.title"),
     appConfig = appConfig,
     bodyClasses = None,
+    sidebarLinks = Some(sidebarLinks),
     serviceInfoContent = serviceInfoContent) {
 
     @components.heading("subpage.heading")

@@ -16,7 +16,9 @@
 
 package views
 
+import models.CtEnrolment
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.domain.CtUtr
 import views.behaviours.ViewBehaviours
 import views.html.subpage
 
@@ -24,9 +26,23 @@ class SubpageViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "subpage"
 
-  def createView = () => subpage(frontendAppConfig)(HtmlFormat.empty)(fakeRequest, messages)
+  val ctEnrolment = Some(CtEnrolment(CtUtr("this-is-a-utr"), isActivated = true))
+
+  def createView = () => subpage(frontendAppConfig, ctEnrolment)(HtmlFormat.empty)(fakeRequest, messages)
 
   "Subpage view" must {
     behave like normalPage(createView, messageKeyPrefix)
+  }
+
+  "Subpage sidebar" must {
+
+    "exist" in {
+      assertRenderedByTag(asDocument(createView()), "aside")
+    }
+
+    "contain the users UTR" in {
+      val utrBlock = asDocument(createView()).getElementById("ct-utr")
+      utrBlock.text() mustBe "Unique Taxpayer Reference (UTR) this-is-a-utr"
+    }
   }
 }
