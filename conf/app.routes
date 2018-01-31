@@ -14,5 +14,5 @@ GET        /unauthorised                                controllers.Unauthorised
 
 
 
-GET        /stop               controllers.StopController.onPageLoad()
-POST       /stop               controllers.StopController.onSubmit()
+GET        /stop                                        controllers.StopController.onPageLoad()
+POST       /stop                                        controllers.StopController.onSubmit()
