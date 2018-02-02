@@ -53,6 +53,10 @@ trait ViewSpecBase extends SpecBase {
     assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
   }
 
+  def assertRenderedByTag(doc: Document, tag: String) = {
+    assert(doc.getElementsByTag(tag).first() != null, "\n\nElement " + tag + " was not rendered on the page.\n")
+  }
+
   def assertNotRenderedById(doc: Document, id: String) = {
     assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
   }
@@ -90,5 +94,15 @@ trait ViewSpecBase extends SpecBase {
       case true => assert(radio.attr("checked") == "checked", s"\n\nElement $id is not checked")
       case _ => assert(!radio.hasAttr("checked") && radio.attr("checked") != "checked", s"\n\nElement $id is checked")
     }
+  }
+
+  def assertLinkById(doc: Document, linkId: String, expectedText: String, expectedUrl: String, expectedGAEvent: String,
+                     expectedIsExternal: Boolean = false, expectedOpensInNewTab: Boolean = false) {
+    val link = doc.getElementById(linkId)
+    assert(link.text() == expectedText, s"\n\n Link $linkId does not have text $expectedText")
+    assert(link.attr("href") == expectedUrl, s"\n\n Link $linkId does not expectedUrl $expectedUrl")
+    assert(link.attr("rel").contains("external") == expectedIsExternal, s"\n\n Link $linkId does not meet expectedIsExternal $expectedIsExternal")
+    assert(link.attr("data-journey-click") == expectedGAEvent, s"\n\n Link $linkId does not have expectedGAEvent $expectedGAEvent")
+    assert(link.attr("target").contains("_blank") == expectedOpensInNewTab, s"\n\n Link $linkId does not meet expectedOpensInNewTab $expectedGAEvent")
   }
 }

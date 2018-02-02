@@ -1,6 +1,6 @@
 # microservice specific routes
 
-GET        /                                            controllers.IndexController.onPageLoad
+GET        /index                                       controllers.IndexController.onPageLoad
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -13,6 +13,9 @@ GET        /check-your-answers                          controllers.CheckYourAns
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 
+GET        /                                            controllers.SubpageController.onPageLoad()
 
 GET        /stop                                        controllers.StopController.onPageLoad()
 POST       /stop                                        controllers.StopController.onSubmit()
+
+

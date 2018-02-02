@@ -49,6 +49,8 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   private lazy val businessAccountHost = runModeConfiguration.getString("business-tax-account.host").getOrElse("")
   lazy val businessAccountHome = businessAccountHost + "/business-account"
 
+  def getGovUrl(key: String): String = loadConfig(s"urls.external.govuk.$key")
+
   lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
