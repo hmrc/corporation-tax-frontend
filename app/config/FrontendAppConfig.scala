@@ -20,10 +20,12 @@ import com.google.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment}
 import play.api.i18n.Lang
 import controllers.routes
+import models.CtEnrolment
 import uk.gov.hmrc.play.config.ServicesConfig
+import utils.PortalUrlBuilder
 
 @Singleton
-class FrontendAppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig {
+class FrontendAppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig with PortalUrlBuilder {
 
   override protected def mode = environment.mode
 
@@ -50,6 +52,9 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val businessAccountHome = businessAccountHost + "/business-account"
 
   def getGovUrl(key: String): String = loadConfig(s"urls.external.govuk.$key")
+  def getFormsUrl(key: String): String = loadConfig(s"urls.forms.$key")
+  def getBusinessAccountUrl(key: String): String = loadConfig(s"urls.business-account.$key")
+  def getPortalUrl(key: String)(ctEnrolment: Option[CtEnrolment] = None): String = buildPortalUrl(loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
 
   lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   def languageMap: Map[String, Lang] = Map(
