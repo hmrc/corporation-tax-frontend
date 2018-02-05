@@ -18,6 +18,7 @@ package utils
 
 import base.SpecBase
 import models.CtEnrolment
+import play.api.mvc.Cookie
 import uk.gov.hmrc.domain.CtUtr
 class PortalUrlBuilderSpec extends SpecBase {
 
@@ -25,15 +26,24 @@ class PortalUrlBuilderSpec extends SpecBase {
 
   val enrolment = Some(CtEnrolment(CtUtr("a-users-utr"), isActivated = true))
 
+  val fakeRequestWithWelsh = fakeRequest.withCookies(Cookie("PLAY_LANG", "cy"))
+
   "build portal url" when {
-    "there is nothing to replace" should {
-      "return the provided url with no replacements" in {
-        PortalUrlBuilder.buildPortalUrl("http://testurl")(enrolment) mustBe "http://testurl"
-      }
-    }
     "there is <utr>" should {
       "return the provided url with the current users UTR" in {
-        PortalUrlBuilder.buildPortalUrl("http://testurl/<utr>/")(enrolment) mustBe "http://testurl/a-users-utr/"
+        PortalUrlBuilder.buildPortalUrl("http://testurl/<utr>/")(enrolment)(fakeRequest) mustBe "http://testurl/a-users-utr/?lang=eng"
+      }
+    }
+
+    "the user is in english" should {
+      "append ?lang=eng to given url" in {
+        PortalUrlBuilder.buildPortalUrl("http://testurl")(enrolment)(fakeRequest) mustBe "http://testurl?lang=eng"
+      }
+    }
+
+    "the user is in welsh" should {
+      "append ?lang=cym to given url" in {
+        PortalUrlBuilder.buildPortalUrl("http://testurl")(enrolment)(fakeRequestWithWelsh) mustBe "http://testurl?lang=cym"
       }
     }
   }

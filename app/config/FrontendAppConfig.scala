@@ -21,6 +21,7 @@ import play.api.{Configuration, Environment}
 import play.api.i18n.Lang
 import controllers.routes
 import models.CtEnrolment
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.PortalUrlBuilder
 
@@ -54,7 +55,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   def getGovUrl(key: String): String = loadConfig(s"urls.external.govuk.$key")
   def getFormsUrl(key: String): String = loadConfig(s"urls.forms.$key")
   def getBusinessAccountUrl(key: String): String = loadConfig(s"urls.business-account.$key")
-  def getPortalUrl(key: String)(ctEnrolment: Option[CtEnrolment] = None): String = buildPortalUrl(loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
+  def getPortalUrl(key: String)(ctEnrolment: Option[CtEnrolment] = None)(implicit request: Request[_]): String = buildPortalUrl(loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
 
   lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   def languageMap: Map[String, Lang] = Map(
