@@ -56,17 +56,17 @@ stop.hint.text = If you make the company dormant, it will be able to trade again
 #######################################################
 ##  Subpage
 #######################################################
-subpage.title = subpage
-subpage.heading = subpage
+subpage.title = Corporation Tax details
+subpage.heading = Corporation Tax details
 
 subpage.utr = Unique Taxpayer Reference (UTR)
 subpage.sidebar.stoptrading = Stop trading
-subpage.sidebar.dormant=Make your company dormant
-subpage.sidebar.close=Close your company
+subpage.sidebar.dormant = Make your company dormant
+subpage.sidebar.close = Close your company
 
-subpage.sidebar.moreoptions=More options
+subpage.sidebar.moreoptions = More options
 
-subpage.sidebar.certofresidence=Get a certificate of residence
-subpage.sidebar.partnership=Set up a partnership or add a partner
-subpage.sidebar.help_and_contact=Help and contact
-subpage.sidebar.more=More
+subpage.sidebar.certofresidence = Get a certificate of residence
+subpage.sidebar.partnership = Set up a partnership or add a partner
+subpage.sidebar.help_and_contact = Help and contact
+subpage.sidebar.more = More

@@ -56,8 +56,8 @@ stop.hint.text = If you make the company dormant, it will be able to trade again
 #######################################################
 ##  Subpage
 #######################################################
-subpage.title = WELSH NEEDED HERE
-subpage.heading = WELSH NEEDED HERE
+subpage.title = Manylion Treth Gorfforaeth
+subpage.heading = Manylion Treth Gorfforaeth
 
 subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR)
 subpage.sidebar.stoptrading = Rhoi’r gorau i fasnachu

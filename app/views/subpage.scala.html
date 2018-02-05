@@ -69,6 +69,7 @@
 }
 
 
+
 @main_template(
     title = messages("subpage.title"),
     appConfig = appConfig,
@@ -76,5 +77,13 @@
     sidebarLinks = Some(sidebarLinks),
     serviceInfoContent = serviceInfoContent) {
 
-    @components.heading("subpage.heading")
+    @components.heading("subpage.heading", "heading-large no-margin-top")
+    <div class="notice">
+        <i class="icon icon-information">
+            <span class="visuallyhidden">Information</span>
+        </i>
+        <strong id="sa-subpage-information-notice">
+            Payments will take 4 to 7 working days to show on this page. Completed return amounts will take 1 to 2 days.
+        </strong>
+    </div>
 }
