@@ -51,7 +51,7 @@ stop.heading = A ydych eisiau troi’r cwmni’n segur, neu ei gau?
 stop.dormant = Troi’r cwmni’n segur
 stop.close = Cau’r cwmni
 stop.error.required = Dewiswch un o’r opsiynau
-stop.hint.text = If you make the company dormant, it will be able to trade again in the future. If you close the company, it will not be able to trade again.
+stop.hint.text = Os byddwch yn gwneud y cwmni’n segur, bydd yn gallu masnachu eto yn y dyfodol. Os byddwch yn cau’r cwmni, ni fydd yn gallu masnachu eto.
 
 #######################################################
 ##  Subpage
@@ -69,3 +69,5 @@ subpage.sidebar.certofresidence=Cael tystysgrif preswylio
 subpage.sidebar.partnership=Sefydlu partneriaeth neu ychwanegu partner
 subpage.sidebar.help_and_contact=Help a Chysylltu
 subpage.sidebar.more=Rhagor
+
+subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.

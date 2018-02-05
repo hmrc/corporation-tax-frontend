@@ -17,7 +17,7 @@
 @import config.FrontendAppConfig
 @import models.CtEnrolment
 
-@(appConfig: FrontendAppConfig, ctEnrolment: Option[CtEnrolment])(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, ctEnrolment: Option[CtEnrolment], partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = {
     <section class="section--blue-top">
@@ -78,12 +78,14 @@
     serviceInfoContent = serviceInfoContent) {
 
     @components.heading("subpage.heading", "heading-large no-margin-top")
-    <div class="notice">
+    <div class="notice" id="payments-notice">
         <i class="icon icon-information">
             <span class="visuallyhidden">Information</span>
         </i>
-        <strong id="sa-subpage-information-notice">
-            Payments will take 4 to 7 working days to show on this page. Completed return amounts will take 1 to 2 days.
+        <strong>
+            @Messages("subpage.paymentsnotice")
         </strong>
     </div>
+
+    @partialContent
 }

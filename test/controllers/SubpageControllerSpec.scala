@@ -41,7 +41,7 @@ class SubpageControllerSpec extends ControllerSpecBase {
 
   val fakeRequestWithEnrolments = requestWithEnrolments(Enrolments(Set(authEnrolment)))
 
-  def viewAsString() = subpage(frontendAppConfig, None)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
+  def viewAsString() = subpage(frontendAppConfig, None, HtmlFormat.empty)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
 
   "Subpage Controller" must {
     "return OK and the correct view for a GET" in {
