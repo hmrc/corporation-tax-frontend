@@ -15,7 +15,11 @@
  *@
 
 @import config.FrontendAppConfig
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(balanceInformation: String, appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+
+<p>
+    @balanceInformation
+</p>
 
 <ul>
     <li class="section__li">

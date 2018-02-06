@@ -78,3 +78,5 @@ subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddang
 
 account.summary.fileareturn=Llenwch eich Ffurflen
 account.summary.makeAPayment=Gwnewch daliad<span class="visuallyhidden"> Treth Gorfforaeth</span>
+
+account.summary.nobalance = Dim gwybodaeth am weddill i’w dangos
