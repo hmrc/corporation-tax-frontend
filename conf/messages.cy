@@ -80,3 +80,4 @@ account.summary.fileareturn=Llenwch eich Ffurflen
 account.summary.makeAPayment=Gwnewch daliad<span class="visuallyhidden"> Treth Gorfforaeth</span>
 
 account.summary.nobalance = Dim gwybodaeth am weddill i’w dangos
+account.summary.genericerror = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.

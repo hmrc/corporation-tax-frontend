@@ -22,13 +22,13 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
-import models.CtEnrolment
+import models.{CtEnrolment, CtGenericError, CtNoData}
 import models.requests.ServiceInfoRequest
 import play.api.mvc.{AnyContent, Request}
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import services.CtService
 import uk.gov.hmrc.domain.CtUtr
-import views.html.partials.account_summary
+import views.html.partials.{account_summary, generic_error}
 import views.html.subpage
 
 import scala.concurrent.Future
@@ -45,13 +45,16 @@ class SubpageController @Inject()(appConfig: FrontendAppConfig,
   }
 
   private[controllers] def getAccountSummaryView(implicit r: ServiceInfoRequest[_]) = {
-    ctService.fetchCtModel(getEnrolment) match {
-      case _ => account_summary(Messages("account.summary.nobalance"), appConfig)
+    ctService.fetchCtModel(getEnrolment) map {
+      case CtNoData => account_summary(Messages("account.summary.nobalance"), appConfig)
+      case _ =>  generic_error(appConfig.getPortalUrl("home")(getEnrolment))
     }
   }
 
-  def onPageLoad = (authenticate andThen serviceInfo) {
+  def onPageLoad = (authenticate andThen serviceInfo).async {
     implicit request =>
-      Ok(subpage(appConfig, getEnrolment(request), getAccountSummaryView)(request.serviceInfoContent))
+      getAccountSummaryView.map { accountSummaryView =>
+        Ok(subpage(appConfig, getEnrolment(request), accountSummaryView)(request.serviceInfoContent))
+      }
   }
 }

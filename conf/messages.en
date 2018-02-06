@@ -81,3 +81,5 @@ account.summary.fileareturn = Complete<span class="visuallyhidden"> your Corpora
 account.summary.makeAPayment=Make a<span class="visuallyhidden"> Corporation Tax</span> payment
 
 account.summary.nobalance = No balance information to display
+account.summary.genericerror = We can’t display your Corporation Tax information at the moment.
+account.summary.genericerror.portal = Try refreshing the page in a few minutes or use the {0}old HMRC website{1}.

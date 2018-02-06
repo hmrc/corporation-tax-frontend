@@ -17,10 +17,11 @@
 package controllers
 
 import controllers.actions._
-import models.{CtAccountSummary, CtEnrolment, CtNoData}
+import models._
 import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import org.mockito.Matchers
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
@@ -34,10 +35,11 @@ import views.html.subpage
 
 import scala.concurrent.Future
 
-class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar {
+class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures {
 
 
   val mockCtService: CtService = mock[CtService]
+  when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new SubpageController(frontendAppConfig, mockCtService, messagesApi, FakeAuthAction, FakeServiceInfoAction)
@@ -77,8 +79,30 @@ class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar {
   "Subpage Controller - getAccountSummaryView" when {
     "there is no account summary data" should {
       "return 'No Balance information to display'" in {
+        reset(mockCtService)
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
-        controller().getAccountSummaryView(fakeRequestWithEnrolments)
+        whenReady(controller().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
+          view.toString must include("No balance information to display")
+        }
+      }
+    }
+    "there is an error retriving the data" should {
+      "return the generic error message" in {
+        reset(mockCtService)
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtGenericError))
+        whenReady(controller().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
+          view.toString must include("We can’t display your Corporation Tax information at the moment.")
+        }
+      }
+    }
+
+    "the user has no CT information available" should {
+      "return the generic error message" in {
+        reset(mockCtService)
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtEmpty))
+        whenReady(controller().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
+          view.toString must include("We can’t display your Corporation Tax information at the moment.")
+        }
       }
     }
   }
