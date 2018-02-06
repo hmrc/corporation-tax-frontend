@@ -71,3 +71,10 @@ subpage.sidebar.help_and_contact=Help a Chysylltu
 subpage.sidebar.more=Rhagor
 
 subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.
+
+#######################################################
+##  Account Summary
+#######################################################
+
+account.summary.fileareturn=Llenwch eich Ffurflen
+account.summary.makeAPayment=Gwnewch daliad<span class="visuallyhidden"> Treth Gorfforaeth</span>

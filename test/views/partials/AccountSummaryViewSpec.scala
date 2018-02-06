@@ -20,11 +20,24 @@ import views.ViewSpecBase
 import views.html.partials.account_summary
 
 class AccountSummaryViewSpec extends ViewSpecBase {
-  def view = () => account_summary()
+  def view = () => account_summary(frontendAppConfig)(fakeRequest, messages)
 
   "Account summary" when {
-    "there is no" in {
+    "there is a user" should {
+      "display the link to file a return (cato)" in {
+          assertLinkById(asDocument(view()),
+            "ct-file-return-cato", "Complete your Corporation Tax return", "/cato",
+            "corporation-tax:Click:Send your corporation tax")
 
+
+      }
+      "display the link to make a payment" in {
+        assertLinkById(asDocument(view()),
+          "ct-make-payment-link", "Make a Corporation Tax payment", "http://localhost:9050/pay-online/corporation-tax/make-a-payment?mode=bta",
+          "corporation-tax:Click:Make a CT payment")
+
+
+      }
     }
   }
 }

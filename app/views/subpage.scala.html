@@ -73,7 +73,7 @@
 @main_template(
     title = messages("subpage.title"),
     appConfig = appConfig,
-    bodyClasses = None,
+    bodyClasses = Some("business-tax"),
     sidebarLinks = Some(sidebarLinks),
     serviceInfoContent = serviceInfoContent) {
 
@@ -86,6 +86,7 @@
             @Messages("subpage.paymentsnotice")
         </strong>
     </div>
-
+<section>
     @partialContent
+</section>
 }

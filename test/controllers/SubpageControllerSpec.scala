@@ -25,6 +25,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.domain.CtUtr
+import views.html.partials.account_summary
 import views.html.subpage
 
 class SubpageControllerSpec extends ControllerSpecBase {
@@ -41,7 +42,7 @@ class SubpageControllerSpec extends ControllerSpecBase {
 
   val fakeRequestWithEnrolments = requestWithEnrolments(Enrolments(Set(authEnrolment)))
 
-  def viewAsString() = subpage(frontendAppConfig, None, HtmlFormat.empty)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
+  def viewAsString() = subpage(frontendAppConfig, None, account_summary(frontendAppConfig)(fakeRequest, messages))(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
 
   "Subpage Controller" must {
     "return OK and the correct view for a GET" in {

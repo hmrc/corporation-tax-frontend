@@ -72,3 +72,10 @@ subpage.sidebar.help_and_contact = Help and contact
 subpage.sidebar.more = More
 
 subpage.paymentsnotice = Payments will take 4 to 7 working days to show on this page. Completed return amounts will take 1 to 2 days.
+
+#######################################################
+##  Account Summary
+#######################################################
+
+account.summary.fileareturn = Complete<span class="visuallyhidden"> your Corporation Tax</span> return
+account.summary.makeAPayment=Make a<span class="visuallyhidden"> Corporation Tax</span> payment

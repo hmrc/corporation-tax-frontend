@@ -27,6 +27,7 @@ import models.requests.ServiceInfoRequest
 import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.domain.CtUtr
+import views.html.partials.account_summary
 import views.html.subpage
 
 import scala.concurrent.Future
@@ -43,6 +44,6 @@ class SubpageController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad = (authenticate andThen serviceInfo) {
     implicit request =>
-      Ok(subpage(appConfig, getEnrolment(request), HtmlFormat.empty)(request.serviceInfoContent))
+      Ok(subpage(appConfig, getEnrolment(request), account_summary(appConfig))(request.serviceInfoContent))
   }
 }
