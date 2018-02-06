@@ -52,11 +52,14 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   private lazy val businessAccountHost = runModeConfiguration.getString("business-tax-account.host").getOrElse("")
   lazy val businessAccountHome = businessAccountHost + "/business-account"
 
+  private lazy val portalHost = loadConfig(s"urls.external.portal.host")
+
   def getUrl(key: String): String = loadConfig(s"urls.$key")
   def getGovUrl(key: String): String = loadConfig(s"urls.external.govuk.$key")
   def getFormsUrl(key: String): String = loadConfig(s"urls.forms.$key")
   def getBusinessAccountUrl(key: String): String = loadConfig(s"urls.business-account.$key")
-  def getPortalUrl(key: String)(ctEnrolment: Option[CtEnrolment] = None)(implicit request: Request[_]): String = buildPortalUrl(loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
+  def getPortalUrl(key: String)(ctEnrolment: Option[CtEnrolment] = None)(implicit request: Request[_]): String =
+    buildPortalUrl(portalHost + loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
 
   lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   def languageMap: Map[String, Lang] = Map(
