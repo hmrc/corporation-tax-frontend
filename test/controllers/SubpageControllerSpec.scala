@@ -86,7 +86,7 @@ class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with Sc
         }
       }
     }
-    "there is an error retriving the data" should {
+    "there is an error retrieving the data" should {
       "return the generic error message" in {
         reset(mockCtService)
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtGenericError))

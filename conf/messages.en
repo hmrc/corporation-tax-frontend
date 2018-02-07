@@ -78,7 +78,7 @@ subpage.paymentsnotice = Payments will take 4 to 7 working days to show on this 
 #######################################################
 
 account.summary.fileareturn = Complete<span class="visuallyhidden"> your Corporation Tax</span> return
-account.summary.makeAPayment=Make a<span class="visuallyhidden"> Corporation Tax</span> payment
+account.summary.makeAPayment = Make a<span class="visuallyhidden"> Corporation Tax</span> payment
 
 account.summary.nobalance = No balance information to display
 account.summary.genericerror = We can’t display your Corporation Tax information at the moment.
