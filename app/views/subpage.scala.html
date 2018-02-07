@@ -77,14 +77,16 @@
     sidebarLinks = Some(sidebarLinks),
     serviceInfoContent = serviceInfoContent) {
 
-    @components.heading("subpage.heading", "heading-large no-margin-top")
+    @components.heading("subpage.heading", "heading-large flush--top")
     <div class="notice" id="payments-notice">
         <i class="icon icon-information">
             <span class="visuallyhidden">Information</span>
         </i>
-        <strong>
-            @Messages("subpage.paymentsnotice")
-        </strong>
+        <p>
+            <strong>
+                @Messages("subpage.paymentsnotice")
+            </strong>
+        </p>
     </div>
     <section>
         @partialContent
