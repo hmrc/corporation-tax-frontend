@@ -18,30 +18,43 @@ package controllers
 
 import javax.inject.Inject
 
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import controllers.actions._
 import config.FrontendAppConfig
-import models.CtEnrolment
+import models.{CtEnrolment, CtGenericError, CtNoData}
 import models.requests.ServiceInfoRequest
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Request}
+import play.twirl.api.{Html, HtmlFormat}
+import services.CtService
 import uk.gov.hmrc.domain.CtUtr
+import views.html.partials.{account_summary, generic_error}
 import views.html.subpage
 
 import scala.concurrent.Future
 
 class SubpageController @Inject()(appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
-                                          authenticate: AuthAction,
-                                          serviceInfo: ServiceInfoAction ) extends FrontendController with I18nSupport {
+                                  ctService: CtService,
+                                  override val messagesApi: MessagesApi,
+                                  authenticate: AuthAction,
+                                  serviceInfo: ServiceInfoAction) extends FrontendController with I18nSupport {
 
-  private[controllers] def getEnrolment(implicit r: ServiceInfoRequest[AnyContent]): Option[CtEnrolment] = {
+  private[controllers] def getEnrolment(implicit r: ServiceInfoRequest[_]): Option[CtEnrolment] = {
     r.request.enrolments.getEnrolment("IR-CT")
       .map(e => CtEnrolment(CtUtr(e.getIdentifier("UTR").map(_.value).getOrElse("")), e.isActivated))
   }
 
-  def onPageLoad = (authenticate andThen serviceInfo) {
+  private[controllers] def getAccountSummaryView(implicit r: ServiceInfoRequest[_]) = {
+    ctService.fetchCtModel(getEnrolment) map {
+      case CtNoData => account_summary(Messages("account.summary.nobalance"), appConfig)
+      case _ =>  generic_error(appConfig.getPortalUrl("home")(getEnrolment))
+    }
+  }
+
+  def onPageLoad = (authenticate andThen serviceInfo).async {
     implicit request =>
-      Ok(subpage(appConfig, getEnrolment(request))(request.serviceInfoContent))
+      getAccountSummaryView.map { accountSummaryView =>
+        Ok(subpage(appConfig, getEnrolment(request), accountSummaryView)(request.serviceInfoContent))
+      }
   }
 }

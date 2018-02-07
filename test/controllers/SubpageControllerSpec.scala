@@ -17,20 +17,32 @@
 package controllers
 
 import controllers.actions._
-import models.CtEnrolment
+import models._
 import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import org.mockito.Matchers
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
+import services.CtService
+import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.domain.CtUtr
+import views.html.partials.account_summary
 import views.html.subpage
 
-class SubpageControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
+
+class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures {
+
+
+  val mockCtService: CtService = mock[CtService]
+  when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new SubpageController(frontendAppConfig, messagesApi, FakeAuthAction, FakeServiceInfoAction)
+    new SubpageController(frontendAppConfig, mockCtService, messagesApi, FakeAuthAction, FakeServiceInfoAction)
 
   def requestWithEnrolments(enrolments: Enrolments): ServiceInfoRequest[AnyContent] = {
     ServiceInfoRequest[AnyContent](AuthenticatedRequest(FakeRequest(), "", enrolments), HtmlFormat.empty)
@@ -41,14 +53,17 @@ class SubpageControllerSpec extends ControllerSpecBase {
 
   val fakeRequestWithEnrolments = requestWithEnrolments(Enrolments(Set(authEnrolment)))
 
-  def viewAsString() = subpage(frontendAppConfig, None)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
+  def accountSummary(balanceInformation: String) = account_summary(balanceInformation, frontendAppConfig)(fakeRequest, messages)
+
+  def viewAsString(balanceInformation: String = "") =
+    subpage(frontendAppConfig, None, accountSummary(balanceInformation))(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
 
   "Subpage Controller" must {
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeRequestWithEnrolments)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString(balanceInformation = "No balance information to display")
     }
   }
 
@@ -60,6 +75,38 @@ class SubpageControllerSpec extends ControllerSpecBase {
       controller().getEnrolment(requestNotActivated) mustBe Some(ctEnrolment.copy(isActivated = false))
     }
   }
+
+  "Subpage Controller - getAccountSummaryView" when {
+    "there is no account summary data" should {
+      "return 'No Balance information to display'" in {
+        reset(mockCtService)
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
+        whenReady(controller().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
+          view.toString must include("No balance information to display")
+        }
+      }
+    }
+    "there is an error retrieving the data" should {
+      "return the generic error message" in {
+        reset(mockCtService)
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtGenericError))
+        whenReady(controller().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
+          view.toString must include("We can’t display your Corporation Tax information at the moment.")
+        }
+      }
+    }
+
+    "the user has no CT information available" should {
+      "return the generic error message" in {
+        reset(mockCtService)
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtEmpty))
+        whenReady(controller().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
+          view.toString must include("We can’t display your Corporation Tax information at the moment.")
+        }
+      }
+    }
+  }
+
 }
 
 

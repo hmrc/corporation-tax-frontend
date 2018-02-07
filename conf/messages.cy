@@ -51,21 +51,33 @@ stop.heading = A ydych eisiau troi’r cwmni’n segur, neu ei gau?
 stop.dormant = Troi’r cwmni’n segur
 stop.close = Cau’r cwmni
 stop.error.required = Dewiswch un o’r opsiynau
-stop.hint.text = If you make the company dormant, it will be able to trade again in the future. If you close the company, it will not be able to trade again.
+stop.hint.text = Os byddwch yn gwneud y cwmni’n segur, bydd yn gallu masnachu eto yn y dyfodol. Os byddwch yn cau’r cwmni, ni fydd yn gallu masnachu eto.
 
 #######################################################
 ##  Subpage
 #######################################################
-subpage.title = WELSH NEEDED HERE
-subpage.heading = WELSH NEEDED HERE
+subpage.title = Manylion Treth Gorfforaeth
+subpage.heading = Manylion Treth Gorfforaeth
 
 subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR)
 subpage.sidebar.stoptrading = Rhoi’r gorau i fasnachu
-subpage.sidebar.dormant=Troi eich cwmni''n segur
-subpage.sidebar.close=Cau eich cwmni
+subpage.sidebar.dormant = Troi eich cwmni''n segur
+subpage.sidebar.close = Cau eich cwmni
 
 subpage.sidebar.moreoptions = Rhagor o opsiynau
-subpage.sidebar.certofresidence=Cael tystysgrif preswylio
-subpage.sidebar.partnership=Sefydlu partneriaeth neu ychwanegu partner
-subpage.sidebar.help_and_contact=Help a Chysylltu
-subpage.sidebar.more=Rhagor
+subpage.sidebar.certofresidence = Cael tystysgrif preswylio
+subpage.sidebar.partnership = Sefydlu partneriaeth neu ychwanegu partner
+subpage.sidebar.help_and_contact = Help a Chysylltu
+subpage.sidebar.more = Rhagor
+
+subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.
+
+#######################################################
+##  Account Summary
+#######################################################
+
+account.summary.fileareturn = Llenwch eich Ffurflen
+account.summary.makeAPayment = Gwnewch daliad<span class="visuallyhidden"> Treth Gorfforaeth</span>
+
+account.summary.nobalance = Dim gwybodaeth am weddill i’w dangos
+account.summary.genericerror = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.

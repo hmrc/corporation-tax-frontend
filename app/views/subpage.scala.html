@@ -17,7 +17,7 @@
 @import config.FrontendAppConfig
 @import models.CtEnrolment
 
-@(appConfig: FrontendAppConfig, ctEnrolment: Option[CtEnrolment])(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, ctEnrolment: Option[CtEnrolment], partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = {
     <section class="section--blue-top">
@@ -69,12 +69,24 @@
 }
 
 
+
 @main_template(
     title = messages("subpage.title"),
     appConfig = appConfig,
-    bodyClasses = None,
+    bodyClasses = Some("business-tax"),
     sidebarLinks = Some(sidebarLinks),
     serviceInfoContent = serviceInfoContent) {
 
-    @components.heading("subpage.heading")
+    @components.heading("subpage.heading", "heading-large no-margin-top")
+    <div class="notice" id="payments-notice">
+        <i class="icon icon-information">
+            <span class="visuallyhidden">Information</span>
+        </i>
+        <strong>
+            @Messages("subpage.paymentsnotice")
+        </strong>
+    </div>
+    <section>
+        @partialContent
+    </section>
 }
