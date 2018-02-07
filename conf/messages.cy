@@ -52,6 +52,7 @@ stop.dormant = Troi’r cwmni’n segur
 stop.close = Cau’r cwmni
 stop.error.required = Dewiswch un o’r opsiynau
 stop.hint.text = Os byddwch yn gwneud y cwmni’n segur, bydd yn gallu masnachu eto yn y dyfodol. Os byddwch yn cau’r cwmni, ni fydd yn gallu masnachu eto.
+stop.back = Nid wyf eisiau gwneud hyn ar hyn o bryd
 
 #######################################################
 ##  Subpage
@@ -86,4 +87,4 @@ account.summary.seebreakdown = gweler y dadansoddiad
 account.summary.viewstatement = gweld y datganiad
 account.summary.nobalance = Dim gwybodaeth am weddill i’w dangos
 account.summary.genericerror = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.
-account.summary.genericerror.portal = Try refreshing the page in a few minutes or use the {0}old HMRC website{1}.
+account.summary.genericerror.portal = Rhowch gynnig ar adnewyddu’r dudalen mewn ychydig o funudau neu defnyddiwch {0}hen wefan CThEM{1}.

@@ -52,6 +52,7 @@ stop.dormant = Make the company dormant
 stop.close = Close the company down
 stop.error.required = Select one of the options
 stop.hint.text = If you make the company dormant, it will be able to trade again in the future. If you close the company, it will not be able to trade again.
+stop.back = I don’t want to do this right now
 
 #######################################################
 ##  Subpage
