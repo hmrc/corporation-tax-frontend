@@ -40,8 +40,10 @@ site.continue = Continue
 site.service_name = Business tax account
 site.textarea.char_limit = (Limit is {0} characters)
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = You can’t see this page
+unauthorised.heading = You can’t see this page
+unauthorised.nocorptax = You haven’t added Corporation Tax to this account.
+unauthorised.correctid = Make sure you’re signed in with the correct user ID.
 
 #######################################################
 ##  Stop

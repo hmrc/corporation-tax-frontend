@@ -36,7 +36,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised().retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
+    authorised(Enrolment("IR-CT")).retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
       case externalId ~ enrolments =>
         externalId.map {
           externalId => block(AuthenticatedRequest(request, externalId, enrolments))
