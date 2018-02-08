@@ -26,5 +26,12 @@ class UnauthorisedViewSpec extends ViewBehaviours {
   "Unauthorised view" must {
 
     behave like normalPage(view, "unauthorised")
+    "have the correct content" in {
+      val doc = asDocument(view())
+      doc.text() must include ("You can’t see this page")
+      doc.text() must include ("You haven’t added Corporation Tax to this account.")
+      doc.text() must include ("Make sure you’re signed in with the correct user ID.")
+    }
+
   }
 }

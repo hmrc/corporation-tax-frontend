@@ -39,9 +39,12 @@ site.yes = Yes
 site.continue = Continue
 site.service_name = Business tax account
 site.textarea.char_limit = (Limit is {0} characters)
+site.signout = Sign out
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = You can’t see this page
+unauthorised.heading = You can’t see this page
+unauthorised.nocorptax = You haven’t added Corporation Tax to this account.
+unauthorised.correctid = Make sure you’re signed in with the correct user ID.
 
 #######################################################
 ##  Stop
@@ -78,8 +81,8 @@ subpage.paymentsnotice = Payments will take 4 to 7 working days to show on this 
 ##  Account Summary
 #######################################################
 
-account.summary.fileareturn = Complete<span class="visuallyhidden"> your Corporation Tax</span> return
-account.summary.makeAPayment = Make a<span class="visuallyhidden"> Corporation Tax</span> payment
+account.summary.fileareturn = Complete Corporation Tax return
+account.summary.makeAPayment = Make a Corporation Tax payment
 
 account.summary.indebit = You owe {0} -
 account.summary.incredit = You are {0} in credit -

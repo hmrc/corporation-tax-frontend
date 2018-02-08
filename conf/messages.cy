@@ -39,9 +39,12 @@ site.yes = Yes
 site.continue = Parhau
 site.service_name = Cyfrif treth busnes
 site.textarea.char_limit = (Limit is {0} characters)
+site.signout = Allgofnodi
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = Ni allwch weld y dudalen hon
+unauthorised.heading = Ni allwch weld y dudalen hon
+unauthorised.nocorptax = Nid ydych wedi ychwanegu Dreth Gorfforaeth i’r cyfrif hwn.
+unauthorised.correctid = Gwnewch yn siŵr eich bod wedi mewngofnodi gyda’r Dynodydd Defnyddiwr cywir.
 
 #######################################################
 ##  Stop
@@ -77,8 +80,8 @@ subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddang
 ##  Account Summary
 #######################################################
 
-account.summary.fileareturn = Llenwch eich Ffurflen
-account.summary.makeAPayment = Gwnewch daliad<span class="visuallyhidden"> Treth Gorfforaeth</span>
+account.summary.fileareturn = Llenwi Ffurflen Dreth Gorfforaeth
+account.summary.makeAPayment = Gwnewch daliad Treth Gorfforaeth
 
 account.summary.indebit = Mae arnoch {0} -
 account.summary.incredit = Rydych {0} mewn credyd -

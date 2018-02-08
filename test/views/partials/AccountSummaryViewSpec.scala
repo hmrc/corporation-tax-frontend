@@ -26,7 +26,7 @@ class AccountSummaryViewSpec extends ViewSpecBase {
     "there is a user" should {
       "display the link to file a return (cato)" in {
         assertLinkById(asDocument(view()),
-          "ct-file-return-cato", "Complete your Corporation Tax return", "/cato",
+          "ct-file-return-cato", "Complete Corporation Tax return", "/cato",
           "corporation-tax:Click:Send your corporation tax")
       }
 
