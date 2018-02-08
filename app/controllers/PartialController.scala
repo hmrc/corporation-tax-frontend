@@ -23,20 +23,19 @@ import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import services.CtService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.subpage
+import views.html.partial
 
-class SubpageController @Inject()(appConfig: FrontendAppConfig,
-                                  override val messagesApi: MessagesApi,
+class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   authenticate: AuthAction,
                                   serviceInfo: ServiceInfoAction,
-                                  accountSummaryHelper: AccountSummaryHelper) extends FrontendController with I18nSupport {
+                                  accountSummaryHelper: AccountSummaryHelper
+                                 ) extends FrontendController with I18nSupport {
 
 
-
-  def onPageLoad = (authenticate andThen serviceInfo).async {
+  def onPageLoad = authenticate.async  {
     implicit request =>
-      accountSummaryHelper.getAccountSummaryView(request.request).map { accountSummaryView =>
-        Ok(subpage(appConfig, request.request.ctEnrolment, accountSummaryView)(request.serviceInfoContent))
+      accountSummaryHelper.getAccountSummaryView.map { accountSummaryView =>
+        Ok(partial(request.ctEnrolment.ctUtr, accountSummaryView))
       }
   }
 }

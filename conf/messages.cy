@@ -92,3 +92,11 @@ account.summary.viewstatement = gweld y datganiad
 account.summary.nobalance = Dim gwybodaeth am weddill i’w dangos
 account.summary.genericerror = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.
 account.summary.genericerror.portal = Rhowch gynnig ar adnewyddu’r dudalen mewn ychydig o funudau neu defnyddiwch {0}hen wefan CThEM{1}.
+
+#######################################################
+##  Partial
+#######################################################
+
+partial.heading = Treth Gorfforaeth
+partial.utr = Eich Cyfeirnod Unigryw y Trethdalwr (UTR) yw {0}.
+partial.moredetails = Rhagor o fanylion Treth Gorfforaeth

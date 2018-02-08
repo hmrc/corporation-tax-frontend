@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models.requests
+@import uk.gov.hmrc.domain.CtUtr
+@(ctUtr: CtUtr, accountSummary: Html)(implicit request: Request[_], messages: Messages)
 
-import models.CtEnrolment
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.Enrolments
 
-case class AuthenticatedRequest[A](request: Request[A], externalId: String, ctEnrolment: CtEnrolment) extends WrappedRequest[A](request)
+<h2>@Messages("partial.heading")</h2>
+
+<p class="lede">@Messages("partial.utr", ctUtr)</p>
+
+@accountSummary
+
+<a id="ct-account-details-link" href="@controllers.routes.SubpageController.onPageLoad().url"
+ data-journey-click="corporation-tax:Click:Corporation Tax overview" class="enrolment-link">@Messages("partial.moredetails")</a>

@@ -20,10 +20,13 @@ import com.google.inject.{ImplementedBy, Inject}
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import play.api.mvc.Results._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{Retrievals, ~}
+import uk.gov.hmrc.auth.core.retrieve.{OptionalRetrieval, Retrieval, Retrievals, ~}
 import config.FrontendAppConfig
 import controllers.routes
+import models.CtEnrolment
 import models.requests.AuthenticatedRequest
+import play.api.libs.json.Reads
+import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.UnauthorizedException
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
@@ -33,13 +36,21 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
                               (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
+  val ctUtr: Retrieval[Option[String]] = OptionalRetrieval("ctUtr", Reads.StringReads)
+
+  private[controllers] def getEnrolment(enrolments: Enrolments): CtEnrolment = {
+    enrolments.getEnrolment("IR-CT")
+      .map(e => CtEnrolment(CtUtr(e.getIdentifier("UTR").map(_.value).getOrElse(throw new UnauthorizedException("Unable to retrieve ct utr"))), e.isActivated))
+      .getOrElse(throw new UnauthorizedException("unable to retrieve ct enrolment"))
+  }
+
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(Enrolment("IR-CT")).retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
+    authorised(Enrolment("IR-CT")).retrieve(Retrievals.externalId and Retrievals.authorisedEnrolments) {
       case externalId ~ enrolments =>
         externalId.map {
-          externalId => block(AuthenticatedRequest(request, externalId, enrolments))
+          externalId => block(AuthenticatedRequest(request, externalId, getEnrolment(enrolments)))
         }.getOrElse(throw new UnauthorizedException("Unable to retrieve external Id"))
     } recover {
       case ex: NoActiveSession =>
