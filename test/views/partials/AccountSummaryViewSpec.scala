@@ -30,7 +30,8 @@ class AccountSummaryViewSpec extends ViewSpecBase {
           "corporation-tax:Click:Send your corporation tax")
       }
 
-      "display the link to make a payment" in {
+      "display the heading and link to make a payment" in {
+        asDocument(view()).getElementsByTag("h2").first().text() mustBe "Your payments"
         assertLinkById(asDocument(view()),
           "ct-make-payment-link", "Make a Corporation Tax payment", "http://localhost:9050/pay-online/corporation-tax/make-a-payment?mode=bta",
           "corporation-tax:Click:Make a CT payment")

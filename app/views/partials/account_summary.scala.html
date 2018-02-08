@@ -18,19 +18,6 @@
 @(balanceInformation: String, appConfig: FrontendAppConfig, breakdownLink: Option[String] = None, breakdownText: String = "", panelIndent: Boolean = false)(implicit request: Request[_], messages: Messages)
 
 
-@if(panelIndent){
-    <div class="panel-indent">
-}
-        <p>
-            @Html(balanceInformation)
-            @breakdownLink.map { link =>
-            <a id="ct-see-breakdown" href="@link"
-               data-journey-click="corporation-tax:Click:SeeBreakdown">@breakdownText</a>
-            }
-        </p>
-@if(panelIndent){
-    </div>
-}
 
 <ul>
     <li class="section__li">
@@ -42,6 +29,23 @@
         </a>
     </li>
     <li class="section__li" >
+
+        <h2>@Messages("account.summary.yourpayments")</h2>
+
+        @if(panelIndent){
+            <div class="panel-indent">
+        }
+                <p>
+                    @Html(balanceInformation)
+                    @breakdownLink.map { link =>
+                        <a id="ct-see-breakdown" href="@link"
+                            data-journey-click="corporation-tax:Click:SeeBreakdown">@breakdownText</a>
+                    }
+                </p>
+        @if(panelIndent){
+            </div>
+        }
+
         <a id="ct-make-payment-link"
            href="@appConfig.getUrl("makeAPayment")"
            data-sso="false"
