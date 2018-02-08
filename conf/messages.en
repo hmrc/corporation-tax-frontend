@@ -82,7 +82,7 @@ subpage.paymentsnotice = Payments will take 4 to 7 working days to show on this 
 #######################################################
 
 account.summary.fileareturn = Complete Corporation Tax return
-account.summary.makeAPayment = Make a<span class="visuallyhidden"> Corporation Tax</span> payment
+account.summary.makeAPayment = Make a Corporation Tax payment
 
 account.summary.indebit = You owe {0} -
 account.summary.incredit = You are {0} in credit -

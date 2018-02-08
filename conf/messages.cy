@@ -81,7 +81,7 @@ subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddang
 #######################################################
 
 account.summary.fileareturn = Llenwi Ffurflen Dreth Gorfforaeth
-account.summary.makeAPayment = Gwnewch daliad<span class="visuallyhidden"> Treth Gorfforaeth</span>
+account.summary.makeAPayment = Gwnewch daliad Treth Gorfforaeth
 
 account.summary.indebit = Mae arnoch {0} -
 account.summary.incredit = Rydych {0} mewn credyd -
