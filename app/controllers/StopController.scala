@@ -21,13 +21,12 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
+import forms.StopFormProvider
+import identifiers.StopId
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator}
-
-import forms.StopFormProvider
-import identifiers.StopId
 import views.html.stop
 
 import scala.concurrent.Future
