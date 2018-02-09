@@ -19,3 +19,5 @@ GET        /stop                                        controllers.StopControll
 POST       /stop                                        controllers.StopController.onSubmit()
 
 
+
+GET        /partial                                     controllers.PartialController.onPageLoad()

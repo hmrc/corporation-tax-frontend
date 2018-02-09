@@ -18,16 +18,22 @@ package controllers
 
 import javax.inject.Inject
 
-import config.FrontendAppConfig
+import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.session_expired
+import views.html.partial
 
-class SessionExpiredController @Inject()(val appConfig: FrontendAppConfig,
-                                         val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+class PartialController @Inject()(override val messagesApi: MessagesApi,
+                                  authenticate: AuthAction,
+                                  serviceInfo: ServiceInfoAction,
+                                  accountSummaryHelper: AccountSummaryHelper
+                                 ) extends FrontendController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(session_expired(appConfig))
+
+  def onPageLoad = authenticate.async  {
+    implicit request =>
+      accountSummaryHelper.getAccountSummaryView.map { accountSummaryView =>
+        Ok(partial(request.ctEnrolment.ctUtr, accountSummaryView))
+      }
   }
 }

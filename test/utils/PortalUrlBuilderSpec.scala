@@ -24,7 +24,7 @@ class PortalUrlBuilderSpec extends SpecBase {
 
   object PortalUrlBuilder extends PortalUrlBuilder
 
-  val enrolment = Some(CtEnrolment(CtUtr("a-users-utr"), isActivated = true))
+  val enrolment = CtEnrolment(CtUtr("a-users-utr"), isActivated = true)
 
   val fakeRequestWithWelsh = fakeRequest.withCookies(Cookie("PLAY_LANG", "cy"))
 

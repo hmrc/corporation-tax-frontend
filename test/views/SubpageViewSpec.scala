@@ -27,7 +27,7 @@ class SubpageViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "subpage"
 
   val utr = CtUtr("this-is-a-utr")
-  val ctEnrolment = Some(CtEnrolment(utr, isActivated = true))
+  val ctEnrolment = CtEnrolment(utr, isActivated = true)
 
   def createView = () => subpage(frontendAppConfig, ctEnrolment, Html("<p id=\"partial-content\">hello world</p>"))(HtmlFormat.empty)(fakeRequest, messages)
 

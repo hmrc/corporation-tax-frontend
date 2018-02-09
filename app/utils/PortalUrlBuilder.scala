@@ -22,8 +22,8 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import uk.gov.hmrc.urls.UrlBuilder
 
 trait PortalUrlBuilder {
-  def buildPortalUrl(url: String)(enrolment: Option[CtEnrolment] = None)(implicit request: Request[_]): String = {
-    val replacedUrl = UrlBuilder.buildUrl(url, Seq(("<utr>", enrolment.map(_.ctUtr))))
+  def buildPortalUrl(url: String)(enrolment: CtEnrolment)(implicit request: Request[_]): String = {
+    val replacedUrl = UrlBuilder.buildUrl(url, Seq(("<utr>", Some(enrolment.ctUtr))))
     appendLanguage(replacedUrl)
   }
 
