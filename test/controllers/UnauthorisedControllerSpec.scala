@@ -22,9 +22,9 @@ import views.html.unauthorised
 class UnauthorisedControllerSpec extends ControllerSpecBase {
 
   "Unauthorised Controller" must {
-    "return 200 for a GET" in {
+    "return 401 for a GET" in {
       val result = new UnauthorisedController(frontendAppConfig, messagesApi).onPageLoad()(fakeRequest)
-      status(result) mustBe OK
+      status(result) mustBe UNAUTHORIZED
     }
 
     "return the correct view for a GET" in {
