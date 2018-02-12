@@ -38,7 +38,7 @@ class PartialViewSpec extends ViewBehaviours {
       asDocument(createView()).text() must include ("Your Unique Taxpayer Reference (UTR) is UTR.")
     }
 
-    "pass the actual partial" in {
+    "have a more details link" in {
       assertLinkById(asDocument(createView()), "ct-account-details-link", "More Corporation Tax details", "/business-account/corporation-tax",
       "corporation-tax:Click:Corporation Tax overview")
     }
