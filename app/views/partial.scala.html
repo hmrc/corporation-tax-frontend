@@ -20,9 +20,10 @@
 
 <h2>@Messages("partial.heading")</h2>
 
-<p class="lede">@Messages("partial.utr", ctUtr)</p>
+<p class="utr-heading">@Messages("partial.utr", ctUtr)</p>
 
 @accountSummary
-
-<a id="ct-account-details-link" href="@controllers.routes.SubpageController.onPageLoad().url"
- data-journey-click="corporation-tax:Click:Corporation Tax overview" class="enrolment-link">@Messages("partial.moredetails")</a>
+<div class="spacing--bottom">
+  <a id="ct-account-details-link" href="@controllers.routes.SubpageController.onPageLoad().url"
+    data-journey-click="corporation-tax:Click:Corporation Tax overview" class="enrolment-link">@Messages("partial.moredetails")</a>
+</div>
