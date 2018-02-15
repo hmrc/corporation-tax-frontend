@@ -21,14 +21,15 @@ import javax.inject.Inject
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models.requests.AuthenticatedRequest
-import models.{CtData, CtNoData}
+import models.{CtData, CtNoData, CtUnactivated}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
+import play.twirl.api.Html
 import services.CtService
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.views.formatting.Money.pounds
-import views.html.partials.{account_summary, generic_error}
+import views.html.partials.{account_summary, generic_error, not_activated}
 
 class AccountSummaryHelper @Inject()(
                                       appConfig: FrontendAppConfig,
@@ -72,6 +73,7 @@ class AccountSummaryHelper @Inject()(
         )
       }
       case CtNoData => account_summary(Messages("account.summary.nobalance"), appConfig)
+      case CtUnactivated => not_activated("", "")
       case _ => generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment))
     }
   }

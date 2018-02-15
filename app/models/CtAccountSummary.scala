@@ -26,4 +26,6 @@ case object CtNoData extends CtAccountSummary
 
 case object CtEmpty extends CtAccountSummary
 
+case object CtUnactivated extends CtAccountSummary
+
 case class CtData(accountSummary: CtAccountSummaryData) extends CtAccountSummary

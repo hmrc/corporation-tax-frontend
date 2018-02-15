@@ -25,6 +25,7 @@ import play.api.libs.json.Reads
 import play.api.mvc.Results._
 import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.AlternatePredicate
 import uk.gov.hmrc.auth.core.retrieve.{OptionalRetrieval, Retrieval, Retrievals, ~}
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
@@ -43,10 +44,13 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
       .getOrElse(throw new UnauthorizedException("unable to retrieve ct enrolment"))
   }
 
+  val activatedEnrolment = Enrolment("IR-CT")
+  val notYetActivatedEnrolment = Enrolment("IR-CT", Seq(), "NotYetActivated")
+
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(Enrolment("IR-CT")).retrieve(Retrievals.externalId and Retrievals.authorisedEnrolments) {
+    authorised(AlternatePredicate(activatedEnrolment, notYetActivatedEnrolment)).retrieve(Retrievals.externalId and Retrievals.authorisedEnrolments) {
       case externalId ~ enrolments =>
         externalId.map {
           externalId => block(AuthenticatedRequest(request, externalId, getEnrolment(enrolments)))
