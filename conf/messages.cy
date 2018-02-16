@@ -46,6 +46,8 @@ unauthorised.heading = Ni allwch weld y dudalen hon
 unauthorised.nocorptax = Nid ydych wedi ychwanegu Dreth Gorfforaeth i’r cyfrif hwn.
 unauthorised.correctid = Gwnewch yn siŵr eich bod wedi mewngofnodi gyda’r Dynodydd Defnyddiwr cywir.
 
+links.opensinportal = (yn agor CThEM ar-lein)
+
 #######################################################
 ##  Stop
 #######################################################
@@ -100,3 +102,11 @@ account.summary.genericerror.portal = Rhowch gynnig ar adnewyddu’r dudalen mew
 partial.heading = Treth Gorfforaeth
 partial.utr = Eich Cyfeirnod Unigryw y Trethdalwr (UTR) yw {0}.
 partial.moredetails = Rhagor o fanylion Treth Gorfforaeth
+
+#######################################################
+##  Not Activated
+#######################################################
+notactivated.activate = Cychwyn
+notactivated.needcode = Bydd angen y cod cychwyn a anfonwyd atoch drwy’r post.
+notactivated.lostcode = Rwyf wedi colli fy nghod cychwyn
+notactivated.72hours = Mae cychwyn yn cymryd hyd at 72 awr.

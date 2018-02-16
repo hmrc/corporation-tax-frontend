@@ -29,6 +29,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import services.CtService
 import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
+import views.html.partials.not_activated
 import views.html.subpage
 
 import scala.concurrent.Future
@@ -82,6 +83,21 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtEmpty))
         whenReady(accountSummaryHelper().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
           view.toString must include("We can’t display your Corporation Tax information at the moment.")
+        }
+      }
+    }
+
+    "the user has an unactivated enrolment" should {
+      "return the not activated view" in {
+        val notActivated = not_activated(
+          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=enteractivationpin&lang=eng",
+          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=requestactivationpin&lang=eng"
+        )(fakeRequest, messages)
+
+        reset(mockCtService)
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtUnactivated))
+        whenReady(accountSummaryHelper().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
+          view mustBe notActivated
         }
       }
     }

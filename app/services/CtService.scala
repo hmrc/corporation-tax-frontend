@@ -38,6 +38,7 @@ class CtService @Inject()(ctConnector: CtConnector) {
         }.recover {
           case _ => CtGenericError
         }
+      case Some(enrolment@CtEnrolment(utr, false)) => Future(CtUnactivated)
       case _ => Future(CtEmpty)
     }
   }

@@ -81,11 +81,11 @@ class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
       }
     }
     "the ct enrolment is not activated" should {
-      "return a CtEmpty" in {
+      "return a CtUnactivated" in {
         reset(mockCtConnector)
 
         whenReady(service.fetchCtModel(Some(CtEnrolment(CtUtr("utr"), isActivated = false)))) {
-          _ mustBe CtEmpty
+          _ mustBe CtUnactivated
         }
       }
     }
