@@ -89,7 +89,10 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
 
     "the user has an unactivated enrolment" should {
       "return the not activated view" in {
-        val notActivated = not_activated("", "")(fakeRequest, messages)
+        val notActivated = not_activated(
+          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=enteractivationpin&lang=eng",
+          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=requestactivationpin&lang=eng"
+        )(fakeRequest, messages)
 
         reset(mockCtService)
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtUnactivated))

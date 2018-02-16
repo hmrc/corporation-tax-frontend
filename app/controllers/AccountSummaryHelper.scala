@@ -73,7 +73,7 @@ class AccountSummaryHelper @Inject()(
         )
       }
       case CtNoData => account_summary(Messages("account.summary.nobalance"), appConfig)
-      case CtUnactivated => not_activated("", "")
+      case CtUnactivated => not_activated(appConfig.getPortalUrl("activate")(r.ctEnrolment), appConfig.getPortalUrl("reset")(r.ctEnrolment))
       case _ => generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment))
     }
   }
