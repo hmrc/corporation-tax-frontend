@@ -27,7 +27,7 @@ class PartialViewSpec extends ViewBehaviours {
 
   val fakeSummary = Html("<p>This is the account summary</p>")
 
-  def createView = () => partial(CtUtr("UTR"), fakeSummary)(fakeRequest, messages)
+  def createView = () => partial(CtUtr("UTR"), fakeSummary, frontendAppConfig)(fakeRequest, messages)
 
   "Partial view" must {
     "pass the title" in {
@@ -39,8 +39,8 @@ class PartialViewSpec extends ViewBehaviours {
     }
 
     "have a more details link" in {
-      assertLinkById(asDocument(createView()), "ct-account-details-link", "More Corporation Tax details", "/business-account/corporation-tax",
-      "corporation-tax:Click:Corporation Tax overview")
+      assertLinkById(asDocument(createView()), "ct-account-details-link", "More Corporation Tax details",
+        "http://localhost:9731/business-account/corporation-tax", "corporation-tax:Click:Corporation Tax overview")
     }
 
     "pass the account summary partial" in {

@@ -38,9 +38,9 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
   when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())).thenReturn(Future.successful(accountSummary))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper)
+    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig)
 
-  def viewAsString() = partial(CtUtr("utr"), accountSummary)(fakeRequest, messages).toString
+  def viewAsString() = partial(CtUtr("utr"), accountSummary, frontendAppConfig)(fakeRequest, messages).toString
 
   "Partial Controller" must {
 
