@@ -20,13 +20,14 @@ import views.ViewSpecBase
 import views.html.partials.account_summary
 
 class AccountSummaryViewSpec extends ViewSpecBase {
+
   def view = () => account_summary("hello world", frontendAppConfig)(fakeRequest, messages)
 
   "Account summary" when {
     "there is a user" should {
       "display the link to file a return (cato)" in {
         assertLinkById(asDocument(view()),
-          "ct-file-return-cato", "Complete Corporation Tax return", "/cato",
+          "ct-file-return-cato", "Complete Corporation Tax return", "http://localhost:9030/cato",
           "corporation-tax:Click:Send your corporation tax")
       }
 
