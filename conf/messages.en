@@ -53,8 +53,8 @@ links.opensinportal = (opens in HMRC online)
 #######################################################
 stop.title = Do you want to make the company dormant, or close it down?
 stop.heading = Do you want to make the company dormant, or close it down?
-stop.dormant = Make the company dormant
-stop.close = Close the company down
+dormant-button = Make the company dormant
+close-button = Close the company down
 stop.error.required = Select one of the options
 stop.hint.text = If you make the company dormant, it will be able to trade again in the future. If you close the company, it will not be able to trade again.
 stop.back = I don’t want to do this right now
