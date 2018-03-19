@@ -31,7 +31,7 @@ object Stop {
 
   val options: Set[RadioOption] = values.map {
     value =>
-      RadioOption("stop", value.toString)
+      RadioOption("button", value.toString)
   }
 
   implicit val enumerable: Enumerable[Stop] =

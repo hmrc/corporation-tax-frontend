@@ -21,11 +21,11 @@ import base.SpecBase
 class RadioOptionSpec extends SpecBase {
 
   "Radio Option" must {
-    "build correctly from a key prefix and option" in {
-      val radioOption = RadioOption("prefix", "option")
-      radioOption.id mustBe "prefix.option"
+    "build correctly from a key append and option" in {
+      val radioOption = RadioOption("append", "option")
+      radioOption.id mustBe "option-append"
       radioOption.value mustBe "option"
-      radioOption.messageKey mustBe "prefix.option"
+      radioOption.messageKey mustBe "option-append"
     }
   }
 }
