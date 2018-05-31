@@ -69,7 +69,7 @@ class SubpageViewSpec extends ViewBehaviours {
       doc.getElementById("more-options").getElementsByTag("h3").text() mustBe "More options"
       assertLinkById(doc, "cert-of-residence", "Get a certificate of residence", "https://www.gov.uk/guidance/get-a-certificate-of-residence", expectedGAEvent = "CtSubpage:click:CertificateOfResidence")
       assertLinkById(doc, "setup-partnership", "Set up a partnership or add a partner", "/forms/form/register-a-partner-or-a-partnership-for-self-assessment/new", expectedGAEvent = "CtSubpage:click:SetupPartnership")
-      assertLinkById(doc, "help-and-contact", "Help and contact", "http://localhost:9733/business-account/help/", expectedGAEvent = "CtSubpage:click:HelpAndContact")
+      assertLinkById(doc, "help-and-contact", "Help and contact", "http://localhost:9733/business-account/help", expectedGAEvent = "CtSubpage:click:HelpAndContact")
       assertLinkById(doc, "more", "More", s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng", expectedGAEvent = "CtSubpage:click:MoreOptions")
 
     }
