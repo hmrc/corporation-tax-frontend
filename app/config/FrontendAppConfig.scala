@@ -61,7 +61,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   def getBusinessAccountUrl(key: String): String = businessAccountHost + loadConfig(s"urls.business-account.$key")
   def getPortalUrl(key: String)(ctEnrolment: CtEnrolment)(implicit request: Request[_]): String =
     buildPortalUrl(portalHost + loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
-  def getHelpAndContactUrl(subpage: String): String = s"$helpAndContactHost" + runModeConfiguration.getString(s"urls.help-and-contact.$subpage").getOrElse("")
+  def getHelpAndContactUrl(key: String): String = helpAndContactHost + runModeConfiguration.getString(s"urls.help-and-contact.$key").getOrElse("")
 
   lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   def languageMap: Map[String, Lang] = Map(
