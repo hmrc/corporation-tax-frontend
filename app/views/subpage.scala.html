@@ -31,12 +31,8 @@
                 <h3>@Messages("subpage.sidebar.stoptrading")</h3>
                 <ul class="sidebar__list">
                     <li>
-                        <a id="make-dormant" class="font-xsmall" href="@appConfig.getGovUrl("makeCompanyDormant")"
-                        data-journey-click="CtSubpage:click:MakeDormant">@Messages("subpage.sidebar.dormant")</a>
-                    </li>
-                    <li>
-                        <a id="close-company" class="font-xsmall" href="@appConfig.getGovUrl("closeCompany")"
-                        data-journey-click="CtSubpage:click:Close">@Messages("subpage.sidebar.close")</a>
+                        <a id="dormant-close" class="font-xsmall" href="@appConfig.getHelpAndContactUrl("corporation-tax/register-or-tell-hmrc-you-are-no-longer-trading")"
+                        data-journey-click="CtSubpage:click:MakeDormantCloseCompany">@Messages("subpage.sidebar.dormant.close")</a>
                     </li>
                 </ul>
             </div>
@@ -53,7 +49,7 @@
                         data-journey-click="CtSubpage:click:SetupPartnership">@Messages("subpage.sidebar.partnership")</a>
                     </li>
                     <li>
-                        <a id="help-and-contact" class="font-xsmall" href="@appConfig.getBusinessAccountUrl("helpAndContact")"
+                        <a id="help-and-contact" class="font-xsmall" href="@appConfig.getHelpAndContactUrl()"
                         data-journey-click="CtSubpage:click:HelpAndContact">@Messages("subpage.sidebar.help_and_contact")</a>
                     </li>
                     <li>
