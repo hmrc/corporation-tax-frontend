@@ -67,9 +67,7 @@ subpage.heading = Corporation Tax details
 
 subpage.utr = Unique Taxpayer Reference (UTR)
 subpage.sidebar.stoptrading = Stop trading
-subpage.sidebar.dormant = Make your company dormant
-subpage.sidebar.close = Close your company
-subpage.sidebar.dormant.close = Close your company or make it dormant
+subpage.sidebar.dormant_close = Close your company or make it dormant
 
 subpage.sidebar.moreoptions = More options
 subpage.sidebar.certofresidence = Get a certificate of residence

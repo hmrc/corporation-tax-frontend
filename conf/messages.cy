@@ -67,9 +67,7 @@ subpage.heading = Manylion Treth Gorfforaeth
 
 subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR)
 subpage.sidebar.stoptrading = Rhoi’r gorau i fasnachu
-subpage.sidebar.dormant = Troi eich cwmni''n segur
-subpage.sidebar.close = Cau eich cwmni
-subpage.sidebar.dormant.close = Caewch eich cwmni neu gwnewch yn segur
+subpage.sidebar.dormant_close = Caewch eich cwmni neu gwnewch yn segur
 
 subpage.sidebar.moreoptions = Rhagor o opsiynau
 subpage.sidebar.certofresidence = Cael tystysgrif preswylio
