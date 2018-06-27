@@ -16,6 +16,7 @@
 
 @import config.FrontendAppConfig
 @import models.CtEnrolment
+@import views.html.includes.corporation_tax_links
 
 @(appConfig: FrontendAppConfig, ctEnrolment: CtEnrolment, partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
@@ -26,28 +27,9 @@
                 <h3>@Messages("subpage.utr")</h3>
                 <p class="font-xsmall">@{ctEnrolment.ctUtr}</p>
             </div>
-
-            <div id="stop-trading" class="subsection">
-                <h3>@Messages("subpage.sidebar.stoptrading")</h3>
-                <ul class="sidebar__list">
-                    <li>
-                        <a id="dormant-close" class="font-xsmall" href="@appConfig.getHelpAndContactUrl("closeCompanyOrMakeDormant")"
-                        data-journey-click="CtSubpage:click:MakeDormantCloseCompany">@Messages("subpage.sidebar.dormant_close")</a>
-                    </li>
-                </ul>
-            </div>
-
             <div id="more-options" class="subsection">
-                <h3>@Messages("subpage.sidebar.moreoptions")</h3>
+                <h3>@Messages("subpage.sidebar.helpwithtax")</h3>
                 <ul class="sidebar__list">
-                    <li>
-                        <a id="cert-of-residence" class="font-xsmall" href="@appConfig.getGovUrl("certOfResidence")"
-                        data-journey-click="CtSubpage:click:CertificateOfResidence">@Messages("subpage.sidebar.certofresidence")</a>
-                    </li>
-                    <li>
-                        <a id="setup-partnership" class="font-xsmall" href="@appConfig.getFormsUrl("setupPartnership")"
-                        data-journey-click="CtSubpage:click:SetupPartnership">@Messages("subpage.sidebar.partnership")</a>
-                    </li>
                     <li>
                         <a id="help-and-contact" class="font-xsmall" href="@appConfig.getHelpAndContactUrl("home")"
                         data-journey-click="CtSubpage:click:HelpAndContact">@Messages("subpage.sidebar.help_and_contact")</a>
@@ -58,8 +40,6 @@
                     </li>
                 </ul>
             </div>
-
-
         </nav>
     </section>
 }
@@ -73,7 +53,7 @@
     sidebarLinks = Some(sidebarLinks),
     serviceInfoContent = serviceInfoContent) {
 
-    @components.heading("subpage.heading", "heading-large flush--top")
+    @components.heading("subpage.heading", "heading-xlarge flush--top")
     <div class="notice" id="payments-notice">
         <i class="icon icon-information">
             <span class="visuallyhidden">Information</span>
@@ -86,5 +66,6 @@
     </div>
     <section>
         @partialContent
+        @includes.corporation_tax_links(appConfig)
     </section>
 }

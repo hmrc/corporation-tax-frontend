@@ -56,14 +56,6 @@ class SubpageViewSpec extends ViewBehaviours {
       utrBlock.text() mustBe "Unique Taxpayer Reference (UTR) this-is-a-utr"
     }
 
-    "contain the Close your company or make it dormant link" in {
-      val doc = asDocument(createView())
-      doc.getElementById("stop-trading").getElementsByTag("h3").text() mustBe "Stop trading"
-      assertLinkById(doc, "dormant-close",
-        "Close your company or make it dormant", "http://localhost:9733/business-account/help/corporation-tax/register-or-tell-hmrc-you-are-no-longer-trading",
-        expectedGAEvent = "CtSubpage:click:MakeDormantCloseCompany")
-    }
-
     "contain the more options links" in {
       val doc = asDocument(createView())
       doc.getElementById("more-options").getElementsByTag("h3").text() mustBe "More options"
