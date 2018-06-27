@@ -20,16 +20,16 @@
   <h3>@Messages("subpage.sidebar.moreoptions")</h3>
   <ul class="list">
     <li>
-      <a href="" target="_blank" data-journey-click="link - click:CTMoreOptions:@Messages("subpage.moreoptions.dormant")">@Messages("subpage.moreoptions.dormant")</a>
+      <a id="make-dormant" href="@appConfig.getGovUrl("makeCompanyDormant")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Make your company dormant">@Messages("subpage.moreoptions.dormant")</a>
     </li>
     <li>
-      <a href="" target="_blank" data-journey-click="link - click:CTMoreOptions:@Messages("subpage.moreoptions.close")">@Messages("subpage.moreoptions.close")</a>
+      <a id="close-company" href="@appConfig.getGovUrl("closeCompany")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Close your company">@Messages("subpage.moreoptions.close")</a>
     </li>
     <li>
-      <a id="cert-of-residence" href="@appConfig.getGovUrl("certOfResidence")" data-journey-click="CtSubpage:click:CertificateOfResidence">@Messages("subpage.sidebar.certofresidence")</a>
+      <a id="cert-of-residence" href="@appConfig.getGovUrl("certOfResidence")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Get a certificate of residence">@Messages("subpage.sidebar.certofresidence")</a>
     </li>
     <li>
-      <a id="setup-partnership" href="@appConfig.getFormsUrl("setupPartnership")" data-journey-click="CtSubpage:click:SetupPartnership">@Messages("subpage.sidebar.partnership")</a>
+      <a id="setup-partnership" href="@appConfig.getFormsUrl("setupPartnership")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Set up a partnership or add a partner">@Messages("subpage.sidebar.partnership")</a>
     </li>
   </ul>
 </div>

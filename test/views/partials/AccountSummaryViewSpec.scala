@@ -28,14 +28,13 @@ class AccountSummaryViewSpec extends ViewSpecBase {
       "display the link to file a return (cato)" in {
         assertLinkById(asDocument(view()),
           "ct-file-return-cato", "Complete Corporation Tax return", "http://localhost:9030/cato",
-          "corporation-tax:Click:Send your corporation tax")
+          "link - click:CTSubpage:Complete Corporation Tax return")
       }
 
       "display the heading and link to make a payment" in {
-        asDocument(view()).getElementsByTag("h2").first().text() mustBe "Your payments"
         assertLinkById(asDocument(view()),
           "ct-make-payment-link", "Make a Corporation Tax payment", "http://localhost:9050/pay-online/corporation-tax/make-a-payment?mode=bta",
-          "corporation-tax:Click:Make a CT payment")
+          "link - click:CTSubpage:Make a Corporation Tax payment")
       }
 
       "render the provided balance information" in {

@@ -15,33 +15,31 @@
  *@
 
 @import config.FrontendAppConfig
-@(balanceInformation: String, appConfig: FrontendAppConfig, breakdownLink: Option[String] = None, breakdownText: String = "", panelIndent: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(balanceInformation: String, appConfig: FrontendAppConfig, breakdownLink: Option[String] = None, breakdownText: String = "")(implicit request: Request[_], messages: Messages)
 
-<a id="ct-file-return-cato"
-    href='@appConfig.getUrl("fileAReturn")'
-    class="button"
-    data-journey-click="corporation-tax:Click:Send your corporation tax">
-    @Html(Messages("account.summary.fileareturn"))
-</a>
-<h3>@Messages("account.summary.yourpayments")</h3>
-@if(panelIndent){
-    <div class="panel-indent">
-}
-        <p>
-            @Html(balanceInformation)
-            @breakdownLink.map { link =>
-                <a id="ct-see-breakdown" href="@link"
-                    data-journey-click="corporation-tax:Click:SeeBreakdown">@breakdownText</a>
-            }
-        </p>
-@if(panelIndent){
-    </div>
-}
+<section>
+    <h2 style="margin-top: 1.875em !important">@Messages("account.summary.yourreturns")</h2>
+    <a id="ct-file-return-cato"
+        href='@appConfig.getUrl("fileAReturn")'
+        class="button"
+        data-journey-click="link - click:CTSubpage:Complete Corporation Tax return">
+        @Html(Messages("account.summary.fileareturn"))
+    </a>
+</section>
+<section>
+    <h2 style="margin-top: 1.875em !important">@Messages("account.summary.yourpayments")</h2>
+    <p>@Html(balanceInformation)</p>
+    <p>@breakdownLink.map { link =>
+        <a id="ct-see-breakdown" href="@link" target="_blank" rel="external noopener"
+            data-journey-click="link - click:CTSubpage:How we worked this out">@breakdownText</a>
+    }
+    </p>
 
-<a id="ct-make-payment-link"
-    href="@appConfig.getUrl("makeAPayment")"
-    data-sso="false"
-    class="button button--payment"
-    data-journey-click="corporation-tax:Click:Make a CT payment">
-    @Html(Messages("account.summary.makeAPayment"))
-</a>
+    <a id="ct-make-payment-link"
+        href="@appConfig.getUrl("makeAPayment")"
+        data-sso="false"
+        class="button button--payment"
+        data-journey-click="link - click:CTSubpage:Make a Corporation Tax payment">
+        @Html(Messages("account.summary.makeAPayment"))
+    </a>
+</section>

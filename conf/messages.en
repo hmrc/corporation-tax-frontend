@@ -73,7 +73,7 @@ subpage.sidebar.moreoptions = More options
 subpage.sidebar.certofresidence = Get a certificate of residence (opens in a new window or tab)
 subpage.sidebar.partnership = Set up a partnership or add a partner (opens in a new window or tab)
 subpage.sidebar.help_and_contact = Help and contact
-subpage.sidebar.more = More
+subpage.sidebar.more = More (opens in a new window or tab)
 subpage.sidebar.helpwithtax = Help with tax
 
 subpage.moreoptions.dormant = Make your company dormant (opens in a new window or tab)
@@ -88,11 +88,12 @@ subpage.paymentsnotice = Payments will take 4 to 7 working days to show on this 
 account.summary.fileareturn = Complete Corporation Tax return
 account.summary.makeAPayment = Make a Corporation Tax payment
 
+account.summary.yourreturns = Your returns
 account.summary.yourpayments = Your payments
-account.summary.indebit = You owe {0} -
-account.summary.incredit = You are {0} in credit -
-account.summary.nothingtopay = You have nothing to pay -
-account.summary.seebreakdown = see breakdown
+account.summary.indebit = You owe {0}
+account.summary.incredit = You are {0} in credit
+account.summary.nothingtopay = You have nothing to pay
+account.summary.workedout = How we worked this out (opens in a new window or tab)
 account.summary.viewstatement = view statement
 account.summary.nobalance = No balance information to display
 account.summary.genericerror = We can’t display your Corporation Tax information at the moment.

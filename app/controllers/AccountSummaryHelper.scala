@@ -50,7 +50,7 @@ class AccountSummaryHelper @Inject()(
             account_summary(
               Messages("account.summary.incredit", pounds(amount.abs, 2)),
               appConfig,
-              breakdownLink, Messages("account.summary.seebreakdown")
+              breakdownLink, Messages("account.summary.workedout")
             )
           } else if (amount == 0) {
             account_summary(
@@ -62,8 +62,7 @@ class AccountSummaryHelper @Inject()(
             account_summary(
               Messages("account.summary.indebit", pounds(amount.abs, 2)),
               appConfig,
-              breakdownLink, Messages("account.summary.seebreakdown"),
-              panelIndent = true
+              breakdownLink, Messages("account.summary.workedout")
             )
           }
         case _ => account_summary(

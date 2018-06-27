@@ -108,7 +108,7 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(None))))))
         whenReady(accountSummaryHelper().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
-          asDocument(view).text() must include("You have nothing to pay - view statement")
+          asDocument(view).text() must include("You have nothing to pay view statement")
         }
       }
     }
@@ -119,7 +119,7 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))))
         whenReady(accountSummaryHelper().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
-          asDocument(view).text() must include("You have nothing to pay - view statement")
+          asDocument(view).text() must include("You have nothing to pay view statement")
         }
       }
     }
@@ -130,7 +130,7 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(-123.45)))))))
         whenReady(accountSummaryHelper().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
-          asDocument(view).text() must include("You are £123.45 in credit - see breakdown")
+          asDocument(view).text() must include("You are £123.45 in credit How we worked this out")
         }
       }
     }
@@ -141,7 +141,7 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))
         whenReady(accountSummaryHelper().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
-          asDocument(view).text() must include("You owe £999.99 - see breakdown")
+          asDocument(view).text() must include("You owe £999.99 How we worked this out")
         }
       }
     }
@@ -152,9 +152,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))
         whenReady(accountSummaryHelper().getAccountSummaryView(fakeRequestWithEnrolments)) { view =>
-          assertLinkById(asDocument(view), "ct-see-breakdown", "see breakdown",
+          assertLinkById(asDocument(view), "ct-see-breakdown", "How we worked this out (opens in a new window or tab)",
             "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
-            "corporation-tax:Click:SeeBreakdown")
+            "link - click:CTSubpage:How we worked this out", expectedIsExternal = true, expectedOpensInNewTab = true)
         }
       }
     }
