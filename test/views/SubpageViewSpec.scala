@@ -53,24 +53,16 @@ class SubpageViewSpec extends ViewBehaviours {
 
     "contain the users UTR" in {
       val utrBlock = asDocument(createView()).getElementById("ct-utr")
-      utrBlock.text() mustBe "Unique Taxpayer Reference (UTR) this-is-a-utr"
-    }
-
-    "contain the Close your company or make it dormant link" in {
-      val doc = asDocument(createView())
-      doc.getElementById("stop-trading").getElementsByTag("h3").text() mustBe "Stop trading"
-      assertLinkById(doc, "dormant-close",
-        "Close your company or make it dormant", "http://localhost:9733/business-account/help/corporation-tax/register-or-tell-hmrc-you-are-no-longer-trading",
-        expectedGAEvent = "CtSubpage:click:MakeDormantCloseCompany")
+      utrBlock.text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR): this-is-a-utr"
     }
 
     "contain the more options links" in {
       val doc = asDocument(createView())
       doc.getElementById("more-options").getElementsByTag("h3").text() mustBe "More options"
-      assertLinkById(doc, "cert-of-residence", "Get a certificate of residence", "https://www.gov.uk/guidance/get-a-certificate-of-residence", expectedGAEvent = "CtSubpage:click:CertificateOfResidence")
-      assertLinkById(doc, "setup-partnership", "Set up a partnership or add a partner", "/forms/form/register-a-partner-or-a-partnership-for-self-assessment/new", expectedGAEvent = "CtSubpage:click:SetupPartnership")
-      assertLinkById(doc, "help-and-contact", "Help and contact", "http://localhost:9733/business-account/help", expectedGAEvent = "CtSubpage:click:HelpAndContact")
-      assertLinkById(doc, "more", "More", s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng", expectedGAEvent = "CtSubpage:click:MoreOptions")
+      assertLinkById(doc, "cert-of-residence", "Get a certificate of residence (opens in a new window or tab)", "https://www.gov.uk/guidance/get-a-certificate-of-residence", expectedGAEvent = "link - click:CTMoreOptions:Get a certificate of residence", expectedIsExternal = true, expectedOpensInNewTab = true )
+      assertLinkById(doc, "setup-partnership", "Set up a partnership or add a partner (opens in a new window or tab)", "/forms/form/register-a-partner-or-a-partnership-for-self-assessment/new", expectedGAEvent = "link - click:CTMoreOptions:Set up a partnership or add a partner", expectedIsExternal = true, expectedOpensInNewTab = true )
+      assertLinkById(doc, "help-and-contact", "Help and contact", "http://localhost:9733/business-account/help", expectedGAEvent = "link - click:CTSidebar:Help and contact")
+      assertLinkById(doc, "more", "More (opens in a new window or tab)", s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng", expectedGAEvent = "link - click:CTSidebar:More", expectedIsExternal = true, expectedOpensInNewTab = true)
 
     }
   }

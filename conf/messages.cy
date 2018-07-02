@@ -65,15 +65,19 @@ stop.back = Nid wyf eisiau gwneud hyn ar hyn o bryd
 subpage.title = Manylion Treth Gorfforaeth
 subpage.heading = Manylion Treth Gorfforaeth
 
-subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR)
+subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR) Treth Gorfforaeth
 subpage.sidebar.stoptrading = Rhoi’r gorau i fasnachu
 subpage.sidebar.dormant_close = Caewch eich cwmni neu gwnewch yn segur
 
 subpage.sidebar.moreoptions = Rhagor o opsiynau
-subpage.sidebar.certofresidence = Cael tystysgrif preswylio
-subpage.sidebar.partnership = Sefydlu partneriaeth neu ychwanegu partner
+subpage.sidebar.certofresidence = Cael tystysgrif preswylio (yn agor mewn ffenestr neu dab newydd)
+subpage.sidebar.partnership = Sefydlu partneriaeth neu ychwanegu partner (yn agor mewn ffenestr neu dab newydd)
 subpage.sidebar.help_and_contact = Help a Chysylltu
-subpage.sidebar.more = Rhagor
+subpage.sidebar.more = Rhagor (yn agor mewn ffenestr neu dab newydd)
+subpage.sidebar.helpwithtax= Cymorth gyda threth
+
+subpage.moreoptions.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
+subpage.moreoptions.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
 
 subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.
 
@@ -84,11 +88,13 @@ subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddang
 account.summary.fileareturn = Llenwi Ffurflen Dreth Gorfforaeth
 account.summary.makeAPayment = Gwnewch taliad Treth Gorfforaeth
 
+account.summary.yourreturns = Eich Ffurflenni Treth
 account.summary.yourpayments = Eich taliadau
 account.summary.indebit = Mae arnoch {0} -
 account.summary.incredit = Rydych {0} mewn credyd -
 account.summary.nothingtopay = Does dim byd gennych i’w dalu -
 account.summary.seebreakdown = gweler y dadansoddiad
+account.summary.workedout = Sut y gwnaethom gyfrifo hyn (yn agor mewn ffenestr neu dab newydd)
 account.summary.viewstatement = gweld y datganiad
 account.summary.nobalance = Dim gwybodaeth am weddill i’w dangos
 account.summary.genericerror = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.
