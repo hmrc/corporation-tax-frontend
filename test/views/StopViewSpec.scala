@@ -47,7 +47,8 @@ class StopViewSpec extends ViewBehaviours {
         val notNowLink = doc.getElementById("not-now")
         notNowLink.text mustBe "I don’t want to do this right now"
         notNowLink.attr("href") mustBe "http://localhost:9020/business-account"
-        notNowLink.attr("data-journey-click") mustBe "CtStop:Click:NotNow"
+        notNowLink.attr("data-journey-click") mustBe "link - click:CT Do you want to make the company dormant, " +
+          "or close it down:I don’t want to do this right now"
       }
 
       "contain radio buttons for the value" in {

@@ -34,7 +34,7 @@ class NotActivatedViewSpec extends ViewSpecBase {
         "ir-ct",
         "Activate",
         activateUrl,
-        "corporation-tax:Click:Activate your CT account"
+        "link - click:Not Activated:Activate your CT account"
       )
       doc.text() must include("(opens in HMRC online)")
     }
@@ -49,7 +49,7 @@ class NotActivatedViewSpec extends ViewSpecBase {
         "ir-ct-reset",
         "I’ve lost my activation code",
         resetCodeUrl,
-        "business-tax-home:Click:Lost activation code for CT"
+        "link - click:Not Activated:I’ve lost my activation code"
       )
     }
 

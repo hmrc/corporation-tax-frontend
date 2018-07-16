@@ -40,7 +40,7 @@ class PartialViewSpec extends ViewBehaviours {
 
     "have a more details link" in {
       assertLinkById(asDocument(createView()), "ct-account-details-link", "More Corporation Tax details",
-        "http://localhost:9731/business-account/corporation-tax", "corporation-tax:Click:Corporation Tax overview")
+        "http://localhost:9731/business-account/corporation-tax", "link - click:Corporation Tax:More Corporation Tax details")
     }
 
     "pass the account summary partial" in {
