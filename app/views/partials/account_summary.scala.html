@@ -15,7 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
-@(balanceInformation: String, appConfig: FrontendAppConfig, breakdownLink: Option[String] = None, breakdownText: String = "")(implicit request: Request[_], messages: Messages)
+@(balanceInformation: String, appConfig: FrontendAppConfig, breakdownLink: Option[String] = None, breakdownText: String = "", shouldShowCreditCardMessage: Boolean)(implicit request: Request[_], messages: Messages)
 
 <section>
     <h2 style="margin-top: 1.875em !important">@Messages("account.summary.yourreturns")</h2>
@@ -28,6 +28,9 @@
 </section>
 <section>
     <h2 style="margin-top: 1.875em !important">@Messages("account.summary.yourpayments")</h2>
+    @if(shouldShowCreditCardMessage) {
+      <p>@Messages("subpage.no_longer_use_personal_credit_card")</p>
+    }
     <p>@Html(balanceInformation)</p>
     <p>@breakdownLink.map { link =>
         <a id="ct-see-breakdown" href="@link" target="_blank" rel="external noopener"

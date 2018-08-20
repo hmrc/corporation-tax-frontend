@@ -21,7 +21,7 @@ import views.html.partials.account_summary
 
 class AccountSummaryViewSpec extends ViewSpecBase {
 
-  def view = () => account_summary("hello world", frontendAppConfig)(fakeRequest, messages)
+  def view = () => account_summary("hello world", frontendAppConfig, shouldShowCreditCardMessage = true)(fakeRequest, messages)
 
   "Account summary" when {
     "there is a user" should {
@@ -38,7 +38,7 @@ class AccountSummaryViewSpec extends ViewSpecBase {
       }
 
       "render the provided balance information" in {
-        asDocument(view()).getElementsByTag("p").first().text() must include("hello world")
+        asDocument(view()).getElementsByTag("p").text() must include("hello world")
       }
     }
   }

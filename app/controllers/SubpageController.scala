@@ -34,7 +34,7 @@ class SubpageController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad = (authenticate andThen serviceInfo).async {
     implicit request =>
-      accountSummaryHelper.getAccountSummaryView(request.request).map { accountSummaryView =>
+      accountSummaryHelper.getAccountSummaryView()(request.request).map { accountSummaryView =>
         Ok(subpage(appConfig, request.request.ctEnrolment, accountSummaryView)(request.serviceInfoContent))
       }
   }
