@@ -81,6 +81,8 @@ subpage.moreoptions.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd
 
 subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.
 
+subpage.no_longer_use_personal_credit_card=Ni allwch ddefnyddio cerdyn credyd personol mwyach. Os talwch â cherdyn credyd, rhaid iddo fod wedi’i gysylltu â chyfrif banc busnes.
+
 #######################################################
 ##  Account Summary
 #######################################################
