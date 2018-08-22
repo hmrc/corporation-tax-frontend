@@ -40,6 +40,11 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig)
 
+  val brokenAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
+  when (brokenAccountSummaryHelper.getAccountSummaryView(Matchers.any())).thenReturn(Future.failed(new Throwable()))
+  def brokenController(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, brokenAccountSummaryHelper, frontendAppConfig)
+
   def viewAsString() = partial(CtUtr("utr"), accountSummary, frontendAppConfig)(fakeRequest, messages).toString
 
   "Partial Controller" must {
@@ -49,6 +54,18 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+    }
+
+    "return 200 when asked to get a card and the call to the backend succeeds" in {
+      val result = controller().getCard(fakeRequest)
+
+      status(result) mustBe OK
+    }
+
+    "return an error status when asked to get a card and the call to the backend fails" in {
+      val result = brokenController().getCard(fakeRequest)
+
+      status(result) mustBe INTERNAL_SERVER_ERROR
     }
   }
 }

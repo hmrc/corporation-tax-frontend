@@ -20,9 +20,11 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import controllers.actions._
+import models.Card
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partial
+import play.api.libs.json.Json.toJson
 
 class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   authenticate: AuthAction,
@@ -36,6 +38,16 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
     implicit request =>
       accountSummaryHelper.getAccountSummaryView(showCreditCardMessage = false).map { accountSummaryView =>
         Ok(partial(request.ctEnrolment.ctUtr, accountSummaryView, appConfig))
+      }
+  }
+
+  def getCard = authenticate.async {
+    implicit request =>
+      accountSummaryHelper.getAccountSummaryView.map { _ =>
+        Ok(toJson(Card(title = messagesApi.preferred(request)("partial.heading"),
+          body = messagesApi.preferred(request)("partial.moredetails"))))
+      } recover{
+        case _ => InternalServerError("Failed to get data from backend")
       }
   }
 }
