@@ -20,13 +20,13 @@
     data-sso="false"
     data-journey-click="link - click:Not Activated:Activate your CT account"
     class="activate-enrolment-link button--secondary">
-    @Html(Messages("notactivated.activate","<span class=\"visuallyhidden\">", "CT" ,"</span>")) @*partials.open_in_portal_window()-->*@
-</a><span class="visuallyhidden"> @Messages("links.opensinportal")</span>
-<p>@Messages("notactivated.needcode")
+    @Html(Messages("not_activated.activate","<span class=\"visuallyhidden\">", "CT" ,"</span>")) @*partials.open_in_portal_window()-->*@
+</a><span class="visuallyhidden"> @Messages("links.opens_in_portal")</span>
+<p>@Messages("not_activated.need_code")
     <a id="ir-ct-reset"
     href="@resetCodeUrl"
     data-sso="false"
     data-journey-click="link - click:Not Activated:I’ve lost my activation code">
-    @Messages("notactivated.lostcode")</a>
+    @Messages("not_activated.lost_code")</a>
 </p>
-<p class="ct-not-activated-msg">@Messages("notactivated.72hours")</p>
+<p class="ct-not-activated-msg">@Messages("not_activated.72_hours")</p>

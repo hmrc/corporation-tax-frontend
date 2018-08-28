@@ -38,15 +38,15 @@ site.no = No
 site.yes = Yes
 site.continue = Parhau
 site.service_name = Cyfrif treth busnes
-site.textarea.char_limit = (Limit is {0} characters)
-site.signout = Allgofnodi
+site.text_area.char_limit = (Limit is {0} characters)
+site.sign_out = Allgofnodi
 
 unauthorised.title = Ni allwch weld y dudalen hon
 unauthorised.heading = Ni allwch weld y dudalen hon
-unauthorised.nocorptax = Nid ydych wedi ychwanegu Dreth Gorfforaeth i’r cyfrif hwn.
-unauthorised.correctid = Gwnewch yn siŵr eich bod wedi mewngofnodi gyda’r Dynodydd Defnyddiwr cywir.
+unauthorised.no_corp_tax = Nid ydych wedi ychwanegu Dreth Gorfforaeth i’r cyfrif hwn.
+unauthorised.correct_id = Gwnewch yn siŵr eich bod wedi mewngofnodi gyda’r Dynodydd Defnyddiwr cywir.
 
-links.opensinportal = (yn agor CThEM ar-lein)
+links.opens_in_portal = (yn agor CThEM ar-lein)
 
 #######################################################
 ##  Stop
@@ -66,20 +66,19 @@ subpage.title = Manylion Treth Gorfforaeth
 subpage.heading = Manylion Treth Gorfforaeth
 
 subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR) Treth Gorfforaeth
-subpage.sidebar.stoptrading = Rhoi’r gorau i fasnachu
 subpage.sidebar.dormant_close = Caewch eich cwmni neu gwnewch yn segur
 
-subpage.sidebar.moreoptions = Rhagor o opsiynau
-subpage.sidebar.certofresidence = Cael tystysgrif preswylio (yn agor mewn ffenestr neu dab newydd)
+subpage.sidebar.more_options = Rhagor o opsiynau
+subpage.sidebar.cert_of_residence = Cael tystysgrif preswylio (yn agor mewn ffenestr neu dab newydd)
 subpage.sidebar.partnership = Sefydlu partneriaeth neu ychwanegu partner (yn agor mewn ffenestr neu dab newydd)
 subpage.sidebar.help_and_contact = Help a Chysylltu
 subpage.sidebar.more = Rhagor (yn agor mewn ffenestr neu dab newydd)
-subpage.sidebar.helpwithtax= Cymorth gyda threth
+subpage.sidebar.help_with_tax= Cymorth gyda threth
 
-subpage.moreoptions.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
-subpage.moreoptions.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
+subpage.more_options.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
+subpage.more_options.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
 
-subpage.paymentsnotice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.
+subpage.payments_notice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.
 
 subpage.no_longer_use_personal_credit_card=Ni allwch ddefnyddio cerdyn credyd personol mwyach. Os talwch â cherdyn credyd, rhaid iddo fod wedi’i gysylltu â chyfrif banc busnes.
 
@@ -87,20 +86,19 @@ subpage.no_longer_use_personal_credit_card=Ni allwch ddefnyddio cerdyn credyd pe
 ##  Account Summary
 #######################################################
 
-account.summary.fileareturn = Llenwi Ffurflen Dreth Gorfforaeth
-account.summary.makeAPayment = Gwnewch taliad Treth Gorfforaeth
+account.summary.file_a_return = Llenwi Ffurflen Dreth Gorfforaeth
+account.summary.make_a_payment = Gwnewch taliad Treth Gorfforaeth
 
-account.summary.yourreturns = Eich Ffurflenni Treth
-account.summary.yourpayments = Eich taliadau
-account.summary.indebit = Mae arnoch {0} -
-account.summary.incredit = Rydych {0} mewn credyd -
-account.summary.nothingtopay = Does dim byd gennych i’w dalu -
-account.summary.seebreakdown = gweler y dadansoddiad
-account.summary.workedout = Sut y gwnaethom gyfrifo hyn (yn agor mewn ffenestr neu dab newydd)
-account.summary.viewstatement = gweld y datganiad
-account.summary.nobalance = Dim gwybodaeth am weddill i’w dangos
-account.summary.genericerror = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.
-account.summary.genericerror.portal = Rhowch gynnig ar adnewyddu’r dudalen mewn ychydig o funudau neu defnyddiwch {0}hen wefan CThEM{1}.
+account.summary.your_returns = Eich Ffurflenni Treth
+account.summary.your_payments = Eich taliadau
+account.summary.in_debit = Mae arnoch {0} -
+account.summary.in_credit = Rydych {0} mewn credyd -
+account.summary.nothing_to_pay = Does dim byd gennych i’w dalu -
+account.summary.worked_out = Sut y gwnaethom gyfrifo hyn (yn agor mewn ffenestr neu dab newydd)
+account.summary.view_statement = gweld y datganiad
+account.summary.no_balance = Dim gwybodaeth am weddill i’w dangos
+account.summary.generic_error = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.
+account.summary.generic_error.portal = Rhowch gynnig ar adnewyddu’r dudalen mewn ychydig o funudau neu defnyddiwch {0}hen wefan CThEM{1}.
 
 #######################################################
 ##  Partial
@@ -108,12 +106,12 @@ account.summary.genericerror.portal = Rhowch gynnig ar adnewyddu’r dudalen mew
 
 partial.heading = Treth Gorfforaeth
 partial.utr = Eich Cyfeirnod Unigryw y Trethdalwr (UTR) yw {0}.
-partial.moredetails = Rhagor o fanylion Treth Gorfforaeth
+partial.more_details = Rhagor o fanylion Treth Gorfforaeth
 
 #######################################################
 ##  Not Activated
 #######################################################
-notactivated.activate = Cychwyn
-notactivated.needcode = Bydd angen y cod cychwyn a anfonwyd atoch drwy’r post.
-notactivated.lostcode = Rwyf wedi colli fy nghod cychwyn
-notactivated.72hours = Mae cychwyn yn cymryd hyd at 72 awr.
+not_activated.activate = Cychwyn
+not_activated.need_code = Bydd angen y cod cychwyn a anfonwyd atoch drwy’r post.
+not_activated.lost_code = Rwyf wedi colli fy nghod cychwyn
+not_activated.72_hours = Mae cychwyn yn cymryd hyd at 72 awr.

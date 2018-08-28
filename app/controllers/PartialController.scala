@@ -43,9 +43,9 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
 
   def getCard = authenticate.async {
     implicit request =>
-      accountSummaryHelper.getAccountSummaryView.map { _ =>
+      accountSummaryHelper.getAccountSummaryView(true).map { _ =>
         Ok(toJson(Card(title = messagesApi.preferred(request)("partial.heading"),
-          body = messagesApi.preferred(request)("partial.moredetails"))))
+          body = messagesApi.preferred(request)("partial.more_details"))))
       } recover{
         case _ => InternalServerError("Failed to get data from backend")
       }
