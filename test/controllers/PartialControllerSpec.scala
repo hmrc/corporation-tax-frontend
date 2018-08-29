@@ -16,8 +16,9 @@
 
 package controllers
 
+import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import controllers.actions._
-import models.CtNoData
+import models.{CtData, CtNoData}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -36,14 +37,17 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
   when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any())).thenReturn(Future.successful(accountSummary))
-
+  val mockCtService:CtService = mock[CtService]
+  when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(
+    Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0.0))))))
+  )
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig)
+    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig, mockCtService)
 
-  val brokenAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
-  when (brokenAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any())).thenReturn(Future.failed(new Throwable()))
+  val brokenCtService: CtService = mock[CtService]
+  when(brokenCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.failed(new Throwable()))
   def brokenController(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, brokenAccountSummaryHelper, frontendAppConfig)
+    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig, brokenCtService)
 
   def viewAsString() = partial(CtUtr("utr"), accountSummary, frontendAppConfig)(fakeRequest, messages).toString
 
