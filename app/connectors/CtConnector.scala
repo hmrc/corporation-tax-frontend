@@ -43,7 +43,6 @@ class CtConnector @Inject()(val http: HttpClient,
         response
       )
     }
-
   }
 
   def accountSummary(ctUtr: CtUtr)(implicit hc: HeaderCarrier): Future[Option[CtAccountSummaryData]] = {

@@ -38,15 +38,15 @@ site.no = No
 site.yes = Yes
 site.continue = Continue
 site.service_name = Business tax account
-site.textarea.char_limit = (Limit is {0} characters)
-site.signout = Sign out
+site.text_area.char_limit = (Limit is {0} characters)
+site.sign_out = Sign out
 
 unauthorised.title = You can’t see this page
 unauthorised.heading = You can’t see this page
-unauthorised.nocorptax = You haven’t added Corporation Tax to this account.
-unauthorised.correctid = Make sure you’re signed in with the correct user ID.
+unauthorised.no_corp_tax = You haven’t added Corporation Tax to this account.
+unauthorised.correct_id = Make sure you’re signed in with the correct user ID.
 
-links.opensinportal = (opens in HMRC online)
+links.opens_in_portal = (opens in HMRC online)
 
 #######################################################
 ##  Stop
@@ -66,20 +66,19 @@ subpage.title = Corporation Tax details
 subpage.heading = Corporation Tax details
 
 subpage.utr = Corporation Tax Unique Taxpayer Reference (UTR):
-subpage.sidebar.stoptrading = Stop trading
 subpage.sidebar.dormant_close = Close your company or make it dormant
 
-subpage.sidebar.moreoptions = More options
-subpage.sidebar.certofresidence = Get a certificate of residence (opens in a new window or tab)
+subpage.sidebar.more_options = More options
+subpage.sidebar.cert_of_residence = Get a certificate of residence (opens in a new window or tab)
 subpage.sidebar.partnership = Set up a partnership or add a partner (opens in a new window or tab)
 subpage.sidebar.help_and_contact = Help and contact
 subpage.sidebar.more = More (opens in a new window or tab)
-subpage.sidebar.helpwithtax = Help with tax
+subpage.sidebar.help_with_tax = Help with tax
 
-subpage.moreoptions.dormant = Make your company dormant (opens in a new window or tab)
-subpage.moreoptions.close = Close your company (opens in a new window or tab)
+subpage.more_options.dormant = Make your company dormant (opens in a new window or tab)
+subpage.more_options.close = Close your company (opens in a new window or tab)
 
-subpage.paymentsnotice = Payments will take 4 to 7 working days to show on this page. Completed return amounts will take 1 to 2 days.
+subpage.payments_notice = Payments will take 4 to 7 working days to show on this page. Completed return amounts will take 1 to 2 days.
 
 subpage.no_longer_use_personal_credit_card=You can no longer use a personal credit card. If you pay with a credit card, it must be linked to a business bank account.
 
@@ -87,19 +86,19 @@ subpage.no_longer_use_personal_credit_card=You can no longer use a personal cred
 ##  Account Summary
 #######################################################
 
-account.summary.fileareturn = Complete Corporation Tax return
-account.summary.makeAPayment = Make a Corporation Tax payment
+account.summary.file_a_return = Complete Corporation Tax return
+account.summary.make_a_payment = Make a Corporation Tax payment
 
-account.summary.yourreturns = Your returns
-account.summary.yourpayments = Your payments
-account.summary.indebit = You owe {0}
-account.summary.incredit = You are {0} in credit
-account.summary.nothingtopay = You have nothing to pay
-account.summary.workedout = How we worked this out (opens in a new window or tab)
-account.summary.viewstatement = view statement
-account.summary.nobalance = No balance information to display
-account.summary.genericerror = We can’t display your Corporation Tax information at the moment.
-account.summary.genericerror.portal = Try refreshing the page in a few minutes or use the {0}old HMRC website{1}.
+account.summary.your_returns = Your returns
+account.summary.your_payments = Your payments
+account.summary.in_debit = You owe {0}
+account.summary.in_credit = You are {0} in credit
+account.summary.nothing_to_pay = You have nothing to pay
+account.summary.worked_out = How we worked this out (opens in a new window or tab)
+account.summary.view_statement = view statement
+account.summary.no_balance = No balance information to display
+account.summary.generic_error = We can’t display your Corporation Tax information at the moment.
+account.summary.generic_error.portal = Try refreshing the page in a few minutes or use the {0}old HMRC website{1}.
 
 #######################################################
 ##  Partial
@@ -107,12 +106,12 @@ account.summary.genericerror.portal = Try refreshing the page in a few minutes o
 
 partial.heading = Corporation Tax
 partial.utr = Your Unique Taxpayer Reference (UTR) is {0}.
-partial.moredetails = More Corporation Tax details
+partial.more_details = More Corporation Tax details
 
 #######################################################
 ##  Not Activated
 #######################################################
-notactivated.activate = Activate
-notactivated.needcode = You’ll need the activation code we sent you in the post.
-notactivated.lostcode = I’ve lost my activation code
-notactivated.72hours = Activation takes up to 72 hours.
+not_activated.activate = Activate
+not_activated.need_code = You’ll need the activation code we sent you in the post.
+not_activated.lost_code = I’ve lost my activation code
+not_activated.72_hours = Activation takes up to 72 hours.

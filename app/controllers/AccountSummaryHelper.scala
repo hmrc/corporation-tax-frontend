@@ -48,34 +48,34 @@ class AccountSummaryHelper @Inject()(
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
           if (amount < 0) {
             account_summary(
-              Messages("account.summary.incredit", pounds(amount.abs, 2)),
+              Messages("account.summary.in_credit", pounds(amount.abs, 2)),
               appConfig,
-              breakdownLink, Messages("account.summary.workedout"),
+              breakdownLink, Messages("account.summary.worked_out"),
               shouldShowCreditCardMessage = showCreditCardMessage
             )
           } else if (amount == 0) {
             account_summary(
-              Messages("account.summary.nothingtopay"),
+              Messages("account.summary.nothing_to_pay"),
               appConfig,
-              breakdownLink, Messages("account.summary.viewstatement"),
+              breakdownLink, Messages("account.summary.view_statement"),
               shouldShowCreditCardMessage = showCreditCardMessage
             )
           } else {
             account_summary(
-              Messages("account.summary.indebit", pounds(amount.abs, 2)),
+              Messages("account.summary.in_debit", pounds(amount.abs, 2)),
               appConfig,
-              breakdownLink, Messages("account.summary.workedout"),
+              breakdownLink, Messages("account.summary.worked_out"),
               shouldShowCreditCardMessage = showCreditCardMessage
             )
           }
         case _ => account_summary(
-          Messages("account.summary.nothingtopay"),
+          Messages("account.summary.nothing_to_pay"),
           appConfig,
-          breakdownLink, Messages("account.summary.viewstatement"),
+          breakdownLink, Messages("account.summary.view_statement"),
           shouldShowCreditCardMessage = showCreditCardMessage
         )
       }
-      case CtNoData => account_summary(Messages("account.summary.nobalance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage)
+      case CtNoData => account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage)
       case CtUnactivated => not_activated(appConfig.getPortalUrl("activate")(r.ctEnrolment), appConfig.getPortalUrl("reset")(r.ctEnrolment))
       case _ => generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment))
     }

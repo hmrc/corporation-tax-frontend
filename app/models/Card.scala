@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.domain.CtUtr
-@import config.FrontendAppConfig
-@(ctUtr: CtUtr, accountSummary: Html, appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+package models
 
+import play.api.libs.json.{Json, OFormat}
 
-<h2>@Messages("partial.heading")</h2>
+case class Card(title: String, body: String) {
 
-<p class="utr-heading">@Messages("partial.utr", ctUtr)</p>
+}
 
-@accountSummary
-<div class="subsection">
-  <a id="ct-account-details-link" href='@appConfig.getUrl("mainPage")'
-    data-journey-click="link - click:Corporation Tax:More Corporation Tax details" class="enrolment-link">@Messages("partial.more_details")</a>
-</div>
+object Card{
+  implicit val cardFormat:OFormat[Card] = Json.format[Card]
+}
