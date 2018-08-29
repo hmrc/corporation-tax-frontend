@@ -35,7 +35,7 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
-  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())).thenReturn(Future.successful(accountSummary))
+  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any())).thenReturn(Future.successful(accountSummary))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig)

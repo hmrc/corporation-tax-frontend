@@ -37,7 +37,7 @@ class AccountSummaryHelper @Inject()(
                                       override val messagesApi: MessagesApi
                                     ) extends I18nSupport {
 
-  private[controllers] def getAccountSummaryView(implicit r: AuthenticatedRequest[_]) = {
+  private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit r: AuthenticatedRequest[_]) = {
 
     implicit def hc(implicit rh: RequestHeader) = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
 
@@ -50,28 +50,32 @@ class AccountSummaryHelper @Inject()(
             account_summary(
               Messages("account.summary.incredit", pounds(amount.abs, 2)),
               appConfig,
-              breakdownLink, Messages("account.summary.workedout")
+              breakdownLink, Messages("account.summary.workedout"),
+              shouldShowCreditCardMessage = showCreditCardMessage
             )
           } else if (amount == 0) {
             account_summary(
               Messages("account.summary.nothingtopay"),
               appConfig,
-              breakdownLink, Messages("account.summary.viewstatement")
+              breakdownLink, Messages("account.summary.viewstatement"),
+              shouldShowCreditCardMessage = showCreditCardMessage
             )
           } else {
             account_summary(
               Messages("account.summary.indebit", pounds(amount.abs, 2)),
               appConfig,
-              breakdownLink, Messages("account.summary.workedout")
+              breakdownLink, Messages("account.summary.workedout"),
+              shouldShowCreditCardMessage = showCreditCardMessage
             )
           }
         case _ => account_summary(
           Messages("account.summary.nothingtopay"),
           appConfig,
-          breakdownLink, Messages("account.summary.viewstatement")
+          breakdownLink, Messages("account.summary.viewstatement"),
+          shouldShowCreditCardMessage = showCreditCardMessage
         )
       }
-      case CtNoData => account_summary(Messages("account.summary.nobalance"), appConfig)
+      case CtNoData => account_summary(Messages("account.summary.nobalance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage)
       case CtUnactivated => not_activated(appConfig.getPortalUrl("activate")(r.ctEnrolment), appConfig.getPortalUrl("reset")(r.ctEnrolment))
       case _ => generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment))
     }

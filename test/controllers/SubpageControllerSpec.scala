@@ -40,7 +40,7 @@ class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with Sc
 
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper = mock[AccountSummaryHelper]
-  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())).thenReturn(Future.successful(accountSummary))
+  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any())).thenReturn(Future.successful(accountSummary))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new SubpageController(frontendAppConfig, messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper)

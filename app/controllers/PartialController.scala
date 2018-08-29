@@ -34,7 +34,7 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad = authenticate.async  {
     implicit request =>
-      accountSummaryHelper.getAccountSummaryView.map { accountSummaryView =>
+      accountSummaryHelper.getAccountSummaryView(showCreditCardMessage = false).map { accountSummaryView =>
         Ok(partial(request.ctEnrolment.ctUtr, accountSummaryView, appConfig))
       }
   }
