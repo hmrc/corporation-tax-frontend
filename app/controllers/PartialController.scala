@@ -48,7 +48,7 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
       ctService.fetchCtModel(Some(request.ctEnrolment)).map {
           case _:CtData => {
             Ok(toJson(Card(title = messagesApi.preferred(request)("partial.heading"),
-              body = messagesApi.preferred(request)("partial.more_details"))))
+              description = messagesApi.preferred(request)("partial.more_details"))))
           }
           case _ =>InternalServerError("Failed to get data from backend")
       } recover{
