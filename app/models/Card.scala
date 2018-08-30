@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Card(title: String, body: String) {
+case class Card(title: String, description: String, link: String = "") {
 
 }
 

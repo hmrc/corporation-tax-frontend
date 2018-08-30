@@ -20,17 +20,19 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import controllers.actions._
-import models.Card
+import models.{Card, CtData}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partial
 import play.api.libs.json.Json.toJson
+import services.CtService
 
 class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   authenticate: AuthAction,
                                   serviceInfo: ServiceInfoAction,
                                   accountSummaryHelper: AccountSummaryHelper,
-                                 appConfig: FrontendAppConfig
+                                  appConfig: FrontendAppConfig,
+                                  ctService: CtService
                                  ) extends FrontendController with I18nSupport {
 
 
@@ -43,11 +45,16 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
 
   def getCard = authenticate.async {
     implicit request =>
-      accountSummaryHelper.getAccountSummaryView(true).map { _ =>
-        Ok(toJson(Card(title = messagesApi.preferred(request)("partial.heading"),
-          body = messagesApi.preferred(request)("partial.more_details"))))
+      ctService.fetchCtModel(Some(request.ctEnrolment)).map {
+          case _:CtData => {
+            Ok(toJson(Card(title = messagesApi.preferred(request)("partial.heading"),
+              description = messagesApi.preferred(request)("partial.more_details"))))
+          }
+          case _ =>InternalServerError("Failed to get data from backend")
       } recover{
-        case _ => InternalServerError("Failed to get data from backend")
+        case _ => {
+          InternalServerError("Failed to get data from backend")
+        }
       }
   }
 }
