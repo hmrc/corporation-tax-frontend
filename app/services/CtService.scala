@@ -16,18 +16,19 @@
 
 package services
 
+import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Singleton}
-
 import connectors.CtConnector
 import connectors.models.CtAccountSummaryData
 import models._
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 import scala.concurrent.Future
 
 @Singleton
-class CtService @Inject()(ctConnector: CtConnector) {
+class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
 
   def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier): Future[CtAccountSummary] = {
     ctEnrolmentOpt match {
@@ -51,4 +52,9 @@ class CtService @Inject()(ctConnector: CtConnector) {
     }
   }
 
+}
+
+@ImplementedBy(classOf[CtService])
+trait CtServiceInterface {
+  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier): Future[CtAccountSummary]
 }
