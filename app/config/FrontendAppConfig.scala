@@ -68,4 +68,5 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
   def routeToSwitchLanguage = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
+  lazy val googleTagManagerId = loadConfig(s"google-tag-manager.id")
 }
