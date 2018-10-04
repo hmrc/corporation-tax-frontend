@@ -16,15 +16,13 @@
 
 package controllers
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
+import javax.inject.Inject
 import models.requests.AuthenticatedRequest
 import models.{CtData, CtNoData, CtUnactivated}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
-import play.twirl.api.Html
 import services.CtService
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
