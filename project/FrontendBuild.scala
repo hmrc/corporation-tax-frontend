@@ -2,6 +2,8 @@ import sbt._
 import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
+import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+
 
 object FrontendBuild extends Build with MicroService {
 
@@ -26,7 +28,7 @@ private object AppDependencies {
   private val playReactivemongoVersion = "6.2.0"
   private val playConditionalFormMappingVersion = "0.2.0"
   private val playLanguageVersion = "3.4.0"
-  private val bootstrapVersion = "3.7.0"
+  private val bootstrapVersion = "3.9.0"
   private val scalacheckVersion = "1.13.4"
   private val playPartialsVersion = "6.1.0"
   private val domainVersion = "5.2.0"
