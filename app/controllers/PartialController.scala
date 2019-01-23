@@ -16,13 +16,13 @@
 
 package controllers
 
+import javax.inject.Inject
+
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import controllers.actions._
-import javax.inject.Inject
 import models.requests.AuthenticatedRequest
 import models.{Card, CtData, Link}
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json.toJson
 import play.api.mvc.AnyContent
@@ -30,13 +30,15 @@ import services.CtServiceInterface
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partial
 
+import scala.concurrent.ExecutionContext
+
 class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   authenticate: AuthAction,
                                   serviceInfo: ServiceInfoAction,
                                   accountSummaryHelper: AccountSummaryHelper,
                                   appConfig: FrontendAppConfig,
                                   ctService: CtServiceInterface
-                                 ) extends FrontendController with I18nSupport {
+                                 )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
 
   def onPageLoad = authenticate.async {

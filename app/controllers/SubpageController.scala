@@ -20,22 +20,32 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig
 import controllers.actions._
+import models.requests.ServiceInfoRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.subpage
+
+import scala.concurrent.ExecutionContext
 
 class SubpageController @Inject()(appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   authenticate: AuthAction,
                                   serviceInfo: ServiceInfoAction,
-                                  accountSummaryHelper: AccountSummaryHelper) extends FrontendController with I18nSupport {
+                                  accountSummaryHelper: AccountSummaryHelper)
+                                 (implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
 
 
   def onPageLoad = (authenticate andThen serviceInfo).async {
-    implicit request =>
-      accountSummaryHelper.getAccountSummaryView()(request.request).map { accountSummaryView =>
-        Ok(subpage(appConfig, request.request.ctEnrolment, accountSummaryView)(request.serviceInfoContent))
-      }
+    implicit request => getAccountSummaryView(request)
+
+  }
+
+  private def getAccountSummaryView(request: ServiceInfoRequest[AnyContent])= {
+    implicit val requestToUse = request.request
+    accountSummaryHelper.getAccountSummaryView().map { accountSummaryView =>
+      Ok(subpage(appConfig, request.request.ctEnrolment, accountSummaryView)(request.serviceInfoContent))
+    }
   }
 }

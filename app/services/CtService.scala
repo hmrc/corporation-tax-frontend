@@ -18,19 +18,19 @@ package services
 
 import com.google.inject.ImplementedBy
 import javax.inject.{Inject, Singleton}
+
 import connectors.CtConnector
 import connectors.models.CtAccountSummaryData
 import models._
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
 
-  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier): Future[CtAccountSummary] = {
+  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary] = {
     ctEnrolmentOpt match {
       case Some(enrolment@CtEnrolment(utr, true)) =>
         ctConnector.accountSummary(utr).map {
@@ -44,7 +44,7 @@ class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
     }
   }
 
-  def designatoryDetails(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier) = {
+  def designatoryDetails(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext) = {
     ctConnector.designatoryDetails(ctEnrolment.ctUtr).recover {
       case e  =>
         Logger.warn(s"Failed to fetch ct designatory details with message - ${e.getMessage}")
@@ -56,5 +56,5 @@ class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
 
 @ImplementedBy(classOf[CtService])
 trait CtServiceInterface {
-  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier): Future[CtAccountSummary]
+  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary]
 }

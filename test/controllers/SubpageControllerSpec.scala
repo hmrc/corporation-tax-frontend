@@ -32,6 +32,7 @@ import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
 import views.html.partials.account_summary
 import views.html.subpage
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -40,7 +41,7 @@ class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with Sc
 
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper = mock[AccountSummaryHelper]
-  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any())).thenReturn(Future.successful(accountSummary))
+  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(accountSummary))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new SubpageController(frontendAppConfig, messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper)

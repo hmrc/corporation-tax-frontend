@@ -19,15 +19,17 @@ package controllers
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.Inject
+
 import models.requests.AuthenticatedRequest
 import models.{CtData, CtNoData, CtUnactivated}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
 import services.CtService
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.views.formatting.Money.pounds
 import views.html.partials.{account_summary, generic_error, not_activated}
+
+import scala.concurrent.ExecutionContext
 
 class AccountSummaryHelper @Inject()(
                                       appConfig: FrontendAppConfig,
@@ -35,7 +37,7 @@ class AccountSummaryHelper @Inject()(
                                       override val messagesApi: MessagesApi
                                     ) extends I18nSupport {
 
-  private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit r: AuthenticatedRequest[_]) = {
+  private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit r: AuthenticatedRequest[_], ec:ExecutionContext) = {
 
     implicit def hc(implicit rh: RequestHeader) = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
 
