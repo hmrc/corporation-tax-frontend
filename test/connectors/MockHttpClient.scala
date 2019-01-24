@@ -16,6 +16,7 @@
 
 package connectors
 
+import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Writes
@@ -23,13 +24,15 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.hooks.HttpHook
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 trait MockHttpClient extends MockitoSugar {
 
 
   def http(httpWrapper: HttpWrapper) = new HttpClient {
+
+    override def actorSystem: ActorSystem = ActorSystem("test")
 
     override def doGet(url: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = Future.successful(httpWrapper.getF(url))
 

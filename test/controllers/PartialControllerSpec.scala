@@ -18,7 +18,7 @@ package controllers
 
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import controllers.actions._
-import models.{CtAccountSummary, CtData, CtEnrolment}
+import models.{CtAccountSummary, CtData, CtEnrolment, CtNoData}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -31,23 +31,23 @@ import uk.gov.hmrc.http.HeaderCarrier
 import views.html.partial
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
-  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any())).thenReturn(Future.successful(accountSummary))
+  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(accountSummary))
 
   class ZeroBalance extends CtServiceInterface {
-    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier): Future[CtAccountSummary] = {
+    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary] = {
       Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0.0))))))
     }
   }
 
   class TestCtService(testModel: CtAccountSummary) extends CtServiceInterface {
-    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier): Future[CtAccountSummary] = {
+    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary] = {
       Future(testModel)
     }
   }
@@ -61,7 +61,7 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
   }
 
   val brokenCtService: CtService = mock[CtService]
-  when(brokenCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.failed(new Throwable()))
+  when(brokenCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.failed(new Throwable()))
   def brokenController(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig, brokenCtService)
 
@@ -104,6 +104,11 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
         ),
         "additionalLinks" -> Json.arr()
       )
+    }
+
+    "return an error status when the return from the backend does not contain usable data" in {
+      val result =customController(CtNoData).getCard(fakeRequest)
+      status(result) mustBe INTERNAL_SERVER_ERROR
     }
 
     "return a card with the text 'You owe £x.yz' when the balance is £x.yz" in {

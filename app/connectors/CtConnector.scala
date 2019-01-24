@@ -24,9 +24,8 @@ import play.api.http.Status._
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext.fromLoggingDetails
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CtConnector @Inject()(val http: HttpClient,
@@ -45,14 +44,14 @@ class CtConnector @Inject()(val http: HttpClient,
     }
   }
 
-  def accountSummary(ctUtr: CtUtr)(implicit hc: HeaderCarrier): Future[Option[CtAccountSummaryData]] = {
+  def accountSummary(ctUtr: CtUtr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[CtAccountSummaryData]] = {
     val uri = s"$ctUrl/ct/$ctUtr/account-summary"
-    http.GET[Option[CtAccountSummaryData]](uri)(handleResponse[CtAccountSummaryData](uri), hc, fromLoggingDetails)
+    http.GET[Option[CtAccountSummaryData]](uri)(handleResponse[CtAccountSummaryData](uri), hc, ec)
   }
 
-  def designatoryDetails(ctUtr: CtUtr)(implicit hc: HeaderCarrier): Future[Option[CtDesignatoryDetailsCollection]] = {
+  def designatoryDetails(ctUtr: CtUtr)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[CtDesignatoryDetailsCollection]] = {
     val uri = ctUrl + s"/ct/$ctUtr/designatory-details"
-    http.GET[Option[CtDesignatoryDetailsCollection]](uri)(handleResponse[CtDesignatoryDetailsCollection](uri), hc, fromLoggingDetails)
+    http.GET[Option[CtDesignatoryDetailsCollection]](uri)(handleResponse[CtDesignatoryDetailsCollection](uri), hc, ec)
   }
 
 }

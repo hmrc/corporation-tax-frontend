@@ -26,6 +26,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with MockHttpClient {
   

@@ -39,10 +39,10 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
 
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
-  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any())).thenReturn(Future.successful(accountSummary))
+  when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(accountSummary))
 
   val mockCtService: CtService = mock[CtService]
-  when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
+  when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
 
   def accountSummaryHelper() = new AccountSummaryHelper(frontendAppConfig, mockCtService, messagesApi)
 
@@ -61,16 +61,16 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "rendered" should  {
       "show personal credit card message" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           view.toString must include("You can no longer use a personal credit card. If you pay with a credit card, it must be linked to a business bank account.")
         }
       }
 
       "not show personal credit card message when boolean is false" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
-        whenReady(accountSummaryHelper().getAccountSummaryView(showCreditCardMessage = false)(fakeRequestWithEnrolments)) { view =>
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
+        whenReady(accountSummaryHelper().getAccountSummaryView(showCreditCardMessage = false)(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
         view.toString must not include "You can no longer use a personal credit card. If you pay with a credit card, it must be linked to a business bank account."
         }
       }
@@ -78,8 +78,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "there is no account summary data" should {
       "return 'No Balance information to display'" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtNoData))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           view.toString must include("No balance information to display")
         }
       }
@@ -87,8 +87,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "there is an error retrieving the data" should {
       "return the generic error message" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtGenericError))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtGenericError))
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           view.toString must include("We can’t display your Corporation Tax information at the moment.")
         }
       }
@@ -97,8 +97,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user has no CT information available" should {
       "return the generic error message" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtEmpty))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtEmpty))
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           view.toString must include("We can’t display your Corporation Tax information at the moment.")
         }
       }
@@ -112,8 +112,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         )(fakeRequest, messages)
 
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any())).thenReturn(Future.successful(CtUnactivated))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtUnactivated))
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           view mustBe notActivated
         }
       }
@@ -122,9 +122,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user has a null balance" should {
       "return Nothing to pay" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(None))))))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           asDocument(view).text() must include("You have nothing to pay view statement")
         }
       }
@@ -133,9 +133,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user has a balance of 0" should {
       "return Nothing to pay" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           asDocument(view).text() must include("You have nothing to pay view statement")
         }
       }
@@ -144,9 +144,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user is in credit" should {
       "return You are in credit" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(-123.45)))))))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           asDocument(view).text() must include("You are £123.45 in credit How we worked this out")
         }
       }
@@ -155,9 +155,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user owes money" should {
       "return You owe money" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           asDocument(view).text() must include("You owe £999.99 How we worked this out")
         }
       }
@@ -166,9 +166,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the breakdown link" should {
       "direct the user to the breakdown page" in {
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any()))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
           .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))
-        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments)) { view =>
+        whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           assertLinkById(asDocument(view), "ct-see-breakdown", "How we worked this out (opens in a new window or tab)",
             "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
             "link - click:CTSubpage:How we worked this out", expectedIsExternal = true, expectedOpensInNewTab = true)

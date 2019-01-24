@@ -27,6 +27,7 @@ import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
