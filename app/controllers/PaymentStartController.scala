@@ -51,8 +51,8 @@ class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
         case CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))))) =>
           val spjRequestBtaVat = SpjRequestBtaCt(
             toAmountInPence(amount),
-            appConfig.businessAccountHome,
-            appConfig.businessAccountHome,
+            appConfig.businessAccountHomeAbsoluteUrl,
+            appConfig.businessAccountHomeAbsoluteUrl,
             request.ctEnrolment.ctUtr.utr)
           payConnector.ctPayLink(spjRequestBtaVat).map(response => Redirect(response.nextUrl))
 

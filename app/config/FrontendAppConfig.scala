@@ -53,6 +53,8 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   private lazy val helpAndContactHost = runModeConfiguration.getString("urls.help-and-contact.host").getOrElse("")
   lazy val businessAccountHome = businessAccountHost + "/business-account"
 
+  lazy val businessAccountHomeAbsoluteUrl: String = getUrl("businessAccountAuthority") + "/business-account"
+
   private lazy val portalHost = loadConfig(s"urls.external.portal.host")
 
   def getUrl(key: String): String = loadConfig(s"urls.$key")
