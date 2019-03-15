@@ -54,9 +54,3 @@ final case class NextUrl(nextUrl: String)
 object NextUrl {
   implicit val nextUrlFormat: Format[NextUrl] = Json.format[NextUrl]
 }
-
-final case class VatPeriod(month: Int, year: Int)
-
-object VatPeriod {
-  implicit val vatPeriodFormat: OFormat[VatPeriod] = Json.format[VatPeriod]
-}
