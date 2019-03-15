@@ -30,7 +30,7 @@ class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
   private def paymentsFrontendBaseUrl: String = config.getUrl("paymentsFrontendBase")
 
    def ctPayLink(spjRequest: SpjRequestBtaCt)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[NextUrl] = {
-    http.POST[SpjRequestBtaCt, NextUrl](s"$payApiBaseUrl/bta/vat/journey/start", spjRequest)
+    http.POST[SpjRequestBtaCt, NextUrl](s"$payApiBaseUrl/bta/ct/journey/start", spjRequest)
       .recover({
         case _: Exception =>
           NextUrl(s"$paymentsFrontendBaseUrl/service-unavailable")
