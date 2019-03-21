@@ -18,13 +18,17 @@ package controllers.actions
 
 import models.CtEnrolment
 import models.requests.AuthenticatedRequest
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import uk.gov.hmrc.domain.CtUtr
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object FakeAuthAction extends AuthAction {
+case class FakeAuthAction(bodyParserIn: BodyParser[AnyContent]) extends AuthAction {
   override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
     block(AuthenticatedRequest(request, "id", CtEnrolment(CtUtr("utr"), isActivated = true)))
+
+  override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+  override val parser: BodyParser[AnyContent] = bodyParserIn
 }
 

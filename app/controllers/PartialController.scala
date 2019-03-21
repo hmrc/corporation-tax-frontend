@@ -25,7 +25,7 @@ import models.requests.AuthenticatedRequest
 import models.{Card, CtData, Link}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json.toJson
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, ControllerComponents, MessagesControllerComponents}
 import services.CtServiceInterface
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partial
@@ -37,8 +37,9 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   serviceInfo: ServiceInfoAction,
                                   accountSummaryHelper: AccountSummaryHelper,
                                   appConfig: FrontendAppConfig,
-                                  ctService: CtServiceInterface
-                                 )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                  ctService: CtServiceInterface,
+                                  cc: MessagesControllerComponents
+                                 )(implicit ec: ExecutionContext) extends FrontendController(cc) with I18nSupport {
 
 
   def onPageLoad = authenticate.async {

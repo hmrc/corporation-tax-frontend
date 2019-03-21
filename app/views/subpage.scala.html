@@ -18,6 +18,7 @@
 @import models.CtEnrolment
 @import views.html.includes.corporation_tax_links
 
+@this(main_template: views.html.main_template)
 @(appConfig: FrontendAppConfig, ctEnrolment: CtEnrolment, partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = {

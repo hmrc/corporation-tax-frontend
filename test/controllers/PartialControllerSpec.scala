@@ -23,6 +23,7 @@ import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.{CtService, CtServiceInterface}
@@ -52,18 +53,23 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
     }
   }
 
+  val cc = app.injector.instanceOf[MessagesControllerComponents]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig, new ZeroBalance)
+    new PartialController(messagesApi, FakeAuthAction(cc.parsers.defaultBodyParser), FakeServiceInfoAction,
+      mockAccountSummaryHelper, frontendAppConfig, new ZeroBalance, cc)
 
   def customController(testModel: CtAccountSummary) = {
-    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig,
-      new TestCtService(testModel))
+    new PartialController(messagesApi, FakeAuthAction(cc.parsers.defaultBodyParser), FakeServiceInfoAction,
+      mockAccountSummaryHelper, frontendAppConfig,
+      new TestCtService(testModel), cc)
   }
 
   val brokenCtService: CtService = mock[CtService]
   when(brokenCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.failed(new Throwable()))
   def brokenController(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper, frontendAppConfig, brokenCtService)
+    new PartialController(messagesApi, FakeAuthAction(cc.parsers.defaultBodyParser), FakeServiceInfoAction,
+      mockAccountSummaryHelper, frontendAppConfig, brokenCtService, cc)
 
   def viewAsString() = partial(CtUtr("utr"), accountSummary, frontendAppConfig)(fakeRequest, messages).toString
 

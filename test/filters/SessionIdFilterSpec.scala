@@ -21,12 +21,14 @@ import java.util.UUID
 import akka.stream.Materializer
 import com.google.inject.Inject
 import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.components.WithApplicationComponents
 import org.scalatestplus.play.OneAppPerSuite
-import play.api.Application
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.{Application, BuiltInComponents, BuiltInComponentsFromContext, NoHttpFiltersComponents}
 import play.api.http.{DefaultHttpFilters, HttpFilters}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Results}
+import play.api.mvc.{Action, Results, SessionCookieBaker}
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,33 +44,35 @@ object SessionIdFilterSpec {
 
   class TestSessionIdFilter @Inject() (
                                         override val mat: Materializer,
+                                        sessionCookieBaker: SessionCookieBaker,
                                         ec: ExecutionContext
-                                      ) extends SessionIdFilter(mat, UUID.fromString(sessionId), ec)
+                                      ) extends SessionIdFilter(mat, UUID.fromString(sessionId), sessionCookieBaker,ec)
 }
 
-class SessionIdFilterSpec extends WordSpec with MustMatchers with OneAppPerSuite {
+class SessionIdFilterSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite with WithApplicationComponents{
 
   import SessionIdFilterSpec._
+  override def components: BuiltInComponents = new BuiltInComponentsFromContext(context) with NoHttpFiltersComponents {
+    val router: Router = {
 
-  val router: Router = {
+      import play.api.routing.sird._
 
-    import play.api.routing.sird._
-
-    Router.from {
-      case GET(p"/test") => Action {
-        request =>
-          val fromHeader = request.headers.get(HeaderNames.xSessionId).getOrElse("")
-          val fromSession = request.session.get(SessionKeys.sessionId).getOrElse("")
-          Results.Ok(
-            Json.obj(
-              "fromHeader" -> fromHeader,
-              "fromSession" -> fromSession
+      Router.from {
+        case GET(p"/test") => defaultActionBuilder.apply {
+          request =>
+            val fromHeader = request.headers.get(HeaderNames.xSessionId).getOrElse("")
+            val fromSession = request.session.get(SessionKeys.sessionId).getOrElse("")
+            Results.Ok(
+              Json.obj(
+                "fromHeader" -> fromHeader,
+                "fromSession" -> fromSession
+              )
             )
-          )
-      }
-      case GET(p"/test2") => Action {
-        implicit request =>
-          Results.Ok.addingToSession("foo" -> "bar")
+        }
+        case GET(p"/test2") => defaultActionBuilder.apply {
+          implicit request =>
+            Results.Ok.addingToSession("foo" -> "bar")
+        }
       }
     }
   }
@@ -82,7 +86,7 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers with OneAppPerSuite
         bind[HttpFilters].to[Filters],
         bind[SessionIdFilter].to[TestSessionIdFilter]
       )
-      .router(router)
+      .router(components.router)
       .build()
   }
 

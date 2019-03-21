@@ -19,7 +19,8 @@
 @import controllers.routes._
 @import models.Stop
 
-
+@this(main_template: views.html.main_template,
+  helper_form: uk.gov.hmrc.play.views.html.helpers.FormWithCSRF)
 @(appConfig: FrontendAppConfig, form: Form[_])(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -28,7 +29,7 @@
     bodyClasses = None,
     serviceInfoContent = serviceInfoContent) {
 
-    @helpers.form(action = StopController.onSubmit(), 'autoComplete -> "off") {
+    @helper_form(action = StopController.onSubmit(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
 

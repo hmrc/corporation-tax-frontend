@@ -22,7 +22,10 @@ import play.api.mvc.Cookie
 import uk.gov.hmrc.domain.CtUtr
 class PortalUrlBuilderSpec extends SpecBase {
 
-  object PortalUrlBuilder extends PortalUrlBuilder
+  class TestUrlBuilder(override val languageHelper: LanguageHelper) extends PortalUrlBuilder
+
+  val languageHelper = app.injector.instanceOf[LanguageHelper]
+  val portalUrlBuilder = new TestUrlBuilder(languageHelper)
 
   val enrolment = CtEnrolment(CtUtr("a-users-utr"), isActivated = true)
 
@@ -31,19 +34,19 @@ class PortalUrlBuilderSpec extends SpecBase {
   "build portal url" when {
     "there is <utr>" should {
       "return the provided url with the current users UTR" in {
-        PortalUrlBuilder.buildPortalUrl("http://testurl/<utr>/")(enrolment)(fakeRequest) mustBe "http://testurl/a-users-utr/?lang=eng"
+        portalUrlBuilder.buildPortalUrl("http://testurl/<utr>/")(enrolment)(fakeRequest) mustBe "http://testurl/a-users-utr/?lang=eng"
       }
     }
 
     "the user is in english" should {
       "append ?lang=eng to given url" in {
-        PortalUrlBuilder.buildPortalUrl("http://testurl")(enrolment)(fakeRequest) mustBe "http://testurl?lang=eng"
+        portalUrlBuilder.buildPortalUrl("http://testurl")(enrolment)(fakeRequest) mustBe "http://testurl?lang=eng"
       }
     }
 
     "the user is in welsh" should {
       "append ?lang=cym to given url" in {
-        PortalUrlBuilder.buildPortalUrl("http://testurl")(enrolment)(fakeRequestWithWelsh) mustBe "http://testurl?lang=cym"
+        portalUrlBuilder.buildPortalUrl("http://testurl")(enrolment)(fakeRequestWithWelsh) mustBe "http://testurl?lang=cym"
       }
     }
   }

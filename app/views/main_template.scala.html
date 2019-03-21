@@ -15,7 +15,11 @@
  *@
 
 @import config.FrontendAppConfig
+@import play.twirl.api.HtmlFormat
 
+@this(govuk_wrapper: views.html.govuk_wrapper,
+  layout_sidebar: uk.gov.hmrc.play.views.html.layouts.Sidebar,
+  layout_article: uk.gov.hmrc.play.views.html.layouts.Article)
 @(title: String,
   appConfig: FrontendAppConfig,
   sidebarLinks: Option[Html] = None,
@@ -25,11 +29,9 @@
   scriptElem: Option[Html] = None,
   serviceInfoContent: Html = HtmlFormat.empty)(mainContent: Html)(implicit request : Request[_], messages: Messages)
 
-@import uk.gov.hmrc.play.views.html.layouts
-
 @sidebar = {
     @if(sidebarLinks.isDefined) {
-        @layouts.sidebar(sidebarLinks.get, Some("sidebar"))
+        @layout_sidebar(sidebarLinks.get, Some("sidebar"))
     }
 }
 
@@ -39,7 +41,7 @@
                bodyClasses = bodyClasses,
                sidebar = sidebar,
                contentHeader = contentHeader,
-               mainContent = layouts.article(mainContent),
+               mainContent = layout_article(mainContent),
                serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem
 )

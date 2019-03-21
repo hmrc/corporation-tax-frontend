@@ -31,7 +31,9 @@ trait MicroService {
 
   lazy val appDependencies : Seq[ModuleID] = ???
   lazy val plugins : Seq[Plugins] = Seq.empty
-  lazy val playSettings : Seq[Setting[_]] = Seq.empty
+  lazy val playSettings : Seq[Setting[_]] = Seq(
+
+  )
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(Seq(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory) ++ plugins : _*)
@@ -75,7 +77,7 @@ trait MicroService {
         "javascripts/corporationtaxfrontend-app.js" -> group(Seq("javascripts/show-hide-content.js", "javascripts/corporationtaxfrontend.js"))
       ),
       // prevent removal of unused code which generates warning errors due to use of third-party libs
-      UglifyKeys.compressOptions := Seq("unused=false", "dead_code=false"),
+      uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
       pipelineStages := Seq(digest),
       // below line required to force asset pipeline to operate in dev rather than only prod
       pipelineStages in Assets := Seq(concat,uglify),

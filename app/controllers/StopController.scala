@@ -25,6 +25,7 @@ import forms.StopFormProvider
 import identifiers.StopId
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Enumerable, Navigator}
 import views.html.stop
@@ -38,7 +39,10 @@ class StopController @Inject()(
                                         navigator: Navigator,
                                         authenticate: AuthAction,
                                         serviceInfoData: ServiceInfoAction,
-                                        formProvider: StopFormProvider) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                        formProvider: StopFormProvider,
+                                        cc: MessagesControllerComponents,
+                                        stop: views.html.stop
+                              ) extends FrontendController(cc) with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider()
 

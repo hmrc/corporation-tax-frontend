@@ -20,8 +20,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import utils.UserAnswers
 
-import scala.concurrent.Future
-
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap]) extends DataRetrievalAction {
@@ -29,4 +28,6 @@ class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap]) extends DataRe
     case None => Future(OptionalDataRequest(request.request, request.externalId, None))
     case Some(cacheMap)=> Future(OptionalDataRequest(request.request, request.externalId, Some(new UserAnswers(cacheMap))))
   }
+
+  override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 }

@@ -22,7 +22,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import models.requests.ServiceInfoRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.subpage
 
@@ -32,8 +32,10 @@ class SubpageController @Inject()(appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   authenticate: AuthAction,
                                   serviceInfo: ServiceInfoAction,
-                                  accountSummaryHelper: AccountSummaryHelper)
-                                 (implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                  accountSummaryHelper: AccountSummaryHelper,
+                                  cc: MessagesControllerComponents,
+                                  subpage: views.html.subpage
+                                 )(implicit ec: ExecutionContext) extends FrontendController(cc) with I18nSupport {
 
 
 

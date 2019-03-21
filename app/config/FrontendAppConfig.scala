@@ -17,22 +17,22 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import play.api.{Configuration, Environment}
+import play.api.Configuration
 import play.api.i18n.Lang
 import controllers.routes
 import models.CtEnrolment
-import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.play.config.ServicesConfig
-import utils.PortalUrlBuilder
+import play.api.mvc.Request
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import utils.{LanguageHelper, PortalUrlBuilder}
 
 @Singleton
-class FrontendAppConfig @Inject() (override val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig with PortalUrlBuilder {
+class FrontendAppConfig @Inject()(val configuration: Configuration, runMode: RunMode, override val languageHelper: LanguageHelper) extends
+  ServicesConfig(configuration, runMode) with PortalUrlBuilder {
 
-  override protected def mode = environment.mode
 
-  private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+  private def loadConfig(key: String) = configuration.get[String](key)
 
-  private lazy val contactHost = runModeConfiguration.getString("contact-frontend.host").getOrElse("")
+  private lazy val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "corporationtaxfrontend"
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
@@ -49,8 +49,8 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  private lazy val businessAccountHost = runModeConfiguration.getString("urls.business-account.host").getOrElse("")
-  private lazy val helpAndContactHost = runModeConfiguration.getString("urls.help-and-contact.host").getOrElse("")
+  private lazy val businessAccountHost = configuration.get[String]("urls.business-account.host")
+  private lazy val helpAndContactHost = configuration.get[String]("urls.help-and-contact.host")
   lazy val businessAccountHome = businessAccountHost + "/business-account"
 
   private lazy val portalHost = loadConfig(s"urls.external.portal.host")
@@ -61,9 +61,9 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   def getBusinessAccountUrl(key: String): String = businessAccountHost + loadConfig(s"urls.business-account.$key")
   def getPortalUrl(key: String)(ctEnrolment: CtEnrolment)(implicit request: Request[_]): String =
     buildPortalUrl(portalHost + loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
-  def getHelpAndContactUrl(key: String): String = helpAndContactHost + runModeConfiguration.getString(s"urls.help-and-contact.$key").getOrElse("")
+  def getHelpAndContactUrl(key: String): String = helpAndContactHost + configuration.get[String](s"urls.help-and-contact.$key")
 
-  lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
+  lazy val languageTranslationEnabled = configuration.get[Boolean]("microservice.services.features.welsh-translation")
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))

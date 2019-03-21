@@ -26,6 +26,7 @@ import play.api.test.Helpers._
 import forms.StopFormProvider
 import identifiers.StopId
 import models.Stop
+import play.api.mvc.MessagesControllerComponents
 import play.twirl.api.HtmlFormat
 import views.html.stop
 
@@ -36,11 +37,15 @@ class StopControllerSpec extends ControllerSpecBase {
   val formProvider = new StopFormProvider()
   val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new StopController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      FakeServiceInfoAction, formProvider)
+  val cc = app.injector.instanceOf[MessagesControllerComponents]
+  val stop = app.injector.instanceOf[stop]
 
-  def viewAsString(form: Form[_] = form) = stop(frontendAppConfig, form)(HtmlFormat.empty)(fakeRequest, messages).toString
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+    new StopController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction(cc.parsers.defaultBodyParser), FakeServiceInfoAction, formProvider, cc,stop)
+
+  val stop_template = app.injector.instanceOf[stop]
+  def viewAsString(form: Form[_] = form) = stop_template(frontendAppConfig, form)(HtmlFormat.empty)(fakeRequest, messages).toString
 
   "Stop Controller" must {
 

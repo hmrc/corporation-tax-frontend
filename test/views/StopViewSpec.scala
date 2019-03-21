@@ -30,6 +30,7 @@ class StopViewSpec extends ViewBehaviours {
   val form = new StopFormProvider()()
 
   val serviceInfoContent = HtmlFormat.empty
+  val stop = app.injector.instanceOf[stop]
 
   def createView = () => stop(frontendAppConfig, form)(serviceInfoContent)(fakeRequest, messages)
 

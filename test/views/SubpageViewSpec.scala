@@ -29,6 +29,8 @@ class SubpageViewSpec extends ViewBehaviours {
   val utr = CtUtr("this-is-a-utr")
   val ctEnrolment = CtEnrolment(utr, isActivated = true)
 
+  val subpage = app.injector.instanceOf[subpage]
+
   def createView = () => subpage(frontendAppConfig, ctEnrolment, Html("<p id=\"partial-content\">hello world</p>"))(HtmlFormat.empty)(fakeRequest, messages)
 
   "Subpage view" must {

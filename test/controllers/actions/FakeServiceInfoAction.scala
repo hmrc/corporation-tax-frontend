@@ -20,7 +20,7 @@ import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import play.api.mvc._
 import play.twirl.api.HtmlFormat
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 object FakeServiceInfoAction extends ServiceInfoAction {
@@ -28,4 +28,6 @@ object FakeServiceInfoAction extends ServiceInfoAction {
     implicit val r: Request[A] = request
     Future.successful(ServiceInfoRequest(request, HtmlFormat.empty))
   }
+
+  override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 }

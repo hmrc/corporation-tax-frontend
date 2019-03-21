@@ -19,6 +19,7 @@ package views
 import views.html.error_template
 
 class ErrorViewSpec extends ViewSpecBase {
+  val error_template = app.injector.instanceOf[error_template]
 
   def view = () => error_template("pageTitle","heading","message",frontendAppConfig)(fakeRequest, messages)
 

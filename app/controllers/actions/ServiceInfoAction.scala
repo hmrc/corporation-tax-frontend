@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ServiceInfoActionImpl @Inject()(
                                        serviceInfoPartialConnector: ServiceInfoPartialConnector,
                                        corporationTaxHeaderCarrierForPartialsConverter: CorporationTaxHeaderCarrierForPartialsConverter
-                                     )(implicit ec: ExecutionContext) extends ServiceInfoAction {
+                                     )(implicit override val executionContext: ExecutionContext) extends ServiceInfoAction {
 
   import corporationTaxHeaderCarrierForPartialsConverter._
 

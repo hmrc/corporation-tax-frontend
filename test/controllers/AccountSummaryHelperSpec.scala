@@ -30,7 +30,7 @@ import services.CtService
 import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
 import views.html.partials.not_activated
-import views.html.subpage
+import views.html.{main_template, subpage}
 
 import scala.concurrent.Future
 
@@ -54,8 +54,10 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
 
   val fakeRequestWithEnrolments: AuthenticatedRequest[AnyContent] = requestWithEnrolment(activated = true)
 
+  val subpage_template = app.injector.instanceOf[subpage]
+
   def viewAsString(balanceInformation: String = ""): String =
-    subpage(frontendAppConfig, ctEnrolment(), accountSummary)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
+   subpage_template(frontendAppConfig, ctEnrolment(), accountSummary)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
 
   "getAccountSummaryView" when {
     "rendered" should  {

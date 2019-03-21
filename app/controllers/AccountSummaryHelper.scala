@@ -24,6 +24,7 @@ import models.requests.AuthenticatedRequest
 import models.{CtData, CtNoData, CtUnactivated}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
+import play.twirl.api.HtmlFormat
 import services.CtService
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.views.formatting.Money.pounds

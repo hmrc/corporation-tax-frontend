@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.urls.Link
+@import utils.LinkHelper
 
 @(langMap: Map[String, Lang], langToCall: (String => Call), customClass: Option[String] = None)(implicit messages: Messages)
 
 <li class="@if(customClass.isDefined) {@customClass.get}">
 
     @langMap.filter(l => messages.lang.code != l._2.code).map {  case (key: String, value: Lang) =>
-        @Link.toInternalPage(
+        @LinkHelper.toInternalPage(
             id = Some(s"$key-switch"),
             url = s"${langToCall(key)}",
             value = Some(key.capitalize),
