@@ -17,10 +17,9 @@
 package services
 
 import com.google.inject.ImplementedBy
-import javax.inject.{Inject, Singleton}
-
 import connectors.CtConnector
-import connectors.models.CtAccountSummaryData
+import connectors.models.{CtAccountSummaryData, CtDesignatoryDetailsCollection}
+import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +43,8 @@ class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
     }
   }
 
-  def designatoryDetails(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext) = {
+  def designatoryDetails(ctEnrolment: CtEnrolment)
+                        (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[CtDesignatoryDetailsCollection]] = {
     ctConnector.designatoryDetails(ctEnrolment.ctUtr).recover {
       case e  =>
         Logger.warn(s"Failed to fetch ct designatory details with message - ${e.getMessage}")

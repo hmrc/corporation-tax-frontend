@@ -33,7 +33,7 @@ class AccountSummaryViewSpec extends ViewSpecBase {
 
       "display the heading and link to make a payment" in {
         assertLinkById(asDocument(view()),
-          "ct-make-payment-link", "Make a Corporation Tax payment", "http://localhost:9050/pay-online/corporation-tax/make-a-payment?mode=bta",
+          "ct-make-payment-link", "Make a Corporation Tax payment", "http://localhost:9731/business-account/corporation-tax/make-a-payment",
           "link - click:CTSubpage:Make a Corporation Tax payment")
       }
 
