@@ -17,7 +17,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import controllers.actions._
@@ -26,7 +25,7 @@ import models.{Card, CtData, Link}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json.toJson
 import play.api.mvc.AnyContent
-import services.CtServiceInterface
+import services.CtCardBuilderService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partial
 
@@ -37,7 +36,7 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   serviceInfo: ServiceInfoAction,
                                   accountSummaryHelper: AccountSummaryHelper,
                                   appConfig: FrontendAppConfig,
-                                  ctService: CtServiceInterface
+                                  ctCardBuilderService: CtCardBuilderService
                                  )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
 
@@ -48,31 +47,12 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
       }
   }
 
-  def getCard = authenticate.async {
-    implicit request =>
-      ctService.fetchCtModel(Some(request.ctEnrolment)).map {
-        case data: CtData => {
-          Ok(toJson(
-            Card(
-              title = messagesApi.preferred(request)("partial.heading"),
-              description = getBalanceMessage(data),
-              referenceNumber = request.ctEnrolment.ctUtr.value,
-              primaryLink = Some(
-                Link(
-                  href = appConfig.getUrl("mainPage"),
-                  ga = "link - click:Your business taxes cards:More Corporation Tax details",
-                  id = "ct-account-details-card-link",
-                  title = messagesApi.preferred(request)("partial.heading")
-                )
-              )
-            )
-          )
-          )
-        }
-        case _ => InternalServerError("Failed to get data from backend")
-      } recover {
-        case _ => InternalServerError("Failed to get data from backend")
-      }
+  def getCard = authenticate.async { implicit request =>
+    ctCardBuilderService.buildCtCard().map( card => {
+      Ok(toJson(card))
+    }).recover {
+      case _: Exception => InternalServerError("Failed to get data from backend")
+    }
   }
 
   private def getBalanceMessage(data: CtData)(implicit request: AuthenticatedRequest[AnyContent]): String = {

@@ -115,3 +115,10 @@ not_activated.activate = Activate
 not_activated.need_code = You’ll need the activation code we sent you in the post.
 not_activated.lost_code = I’ve lost my activation code
 not_activated.72_hours = Activation takes up to 72 hours.
+
+
+#######################################################
+##  Cards
+#######################################################
+card.you_may_have_returns_to_complete = You may have returns to complete.
+card.complete_corporation_tax_return = Complete Corporation Tax return
