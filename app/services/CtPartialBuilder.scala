@@ -22,6 +22,9 @@ import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.{Inject, Singleton}
 import models.requests.AuthenticatedRequest
 import models.{CtAccountSummary, CtData}
+import javax.inject.{Inject, Singleton}
+import models.{CtData, CtEnrolment}
+import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
 import play.twirl.api.Html
 

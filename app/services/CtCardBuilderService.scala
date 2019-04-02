@@ -43,7 +43,6 @@ class CtCardBuilderServiceImpl @Inject() (val messagesApi: MessagesApi,
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(Some(data)).toString()),
           returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString())
         )
-        // TODO: a case for CtUnactivated exists in the AccountSummaryHelper
         case _ => throw new Exception
       }
     }

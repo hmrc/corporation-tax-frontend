@@ -27,6 +27,13 @@ import play.twirl.api.Html
 import services.CtCardBuilderService
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.Upstream5xxResponse
+import play.api.libs.json.Json
+import play.api.mvc.Result
+import play.api.test.Helpers._
+import play.twirl.api.Html
+import services.{CtCardBuilderService, CtServiceInterface}
+import uk.gov.hmrc.domain.CtUtr
+import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
 import views.html.partial
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -67,6 +74,7 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
 
 
   "Calling PartialController.onPageLoad" must {
+
     "return OK and render the subpage for a GET" in new LocalSetup {
       val result: Future[Result] = c.onPageLoad(fakeRequest)
 
@@ -93,6 +101,7 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       status(result) mustBe INTERNAL_SERVER_ERROR
     }
+
   }
 
 }
