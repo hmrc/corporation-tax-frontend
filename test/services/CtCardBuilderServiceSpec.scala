@@ -20,7 +20,7 @@ import base.SpecBase
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models.requests.AuthenticatedRequest
-import models.{Card, CtData, CtEnrolment, CtNoData, Link}
+import models._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -104,6 +104,31 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
       result.futureValue mustBe testCard
     }
+
+    "throw an exception when getting CtGenericError" in new LocalSetup {
+      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(CtGenericError))
+
+      val result: Future[Card] = service.buildCtCard()(authenticatedRequest, hc, messages)
+
+      result.failed.futureValue mustBe a[Exception]
+    }
+
+    "throw an exception when getting CtEmpty" in new LocalSetup {
+      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(CtEmpty))
+
+      val result: Future[Card] = service.buildCtCard()(authenticatedRequest, hc, messages)
+
+      result.failed.futureValue mustBe a[Exception]
+    }
+
+    "throw an exception when getting CtUnactivated" in new LocalSetup {
+      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(CtUnactivated))
+
+      val result: Future[Card] = service.buildCtCard()(authenticatedRequest, hc, messages)
+
+      result.failed.futureValue mustBe a[Exception]
+    }
+
   }
 
 }
