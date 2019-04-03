@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.domain.CtUtr
 import models.requests.AuthenticatedRequest
-import models.{Card, CtData, CtEnrolment, CtNoData, Link}
+import models._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
