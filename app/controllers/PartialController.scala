@@ -16,15 +16,12 @@
 
 package controllers
 
-import javax.inject.Inject
 import config.FrontendAppConfig
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import controllers.actions._
-import models.requests.AuthenticatedRequest
-import models.{Card, CtData, Link}
+import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json.toJson
-import play.api.mvc.AnyContent
+import play.api.mvc.{Action, AnyContent}
 import services.CtCardBuilderService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partial
@@ -39,15 +36,13 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   ctCardBuilderService: CtCardBuilderService
                                  )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-
-  def onPageLoad = authenticate.async {
-    implicit request =>
-      accountSummaryHelper.getAccountSummaryView(showCreditCardMessage = false).map { accountSummaryView =>
-        Ok(partial(request.ctEnrolment.ctUtr, accountSummaryView, appConfig))
-      }
+  def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
+    accountSummaryHelper.getAccountSummaryView(showCreditCardMessage = false).map { accountSummaryView =>
+      Ok(partial(request.ctEnrolment.ctUtr, accountSummaryView, appConfig))
+    }
   }
 
-  def getCard = authenticate.async { implicit request =>
+  def getCard: Action[AnyContent] = authenticate.async { implicit request =>
     ctCardBuilderService.buildCtCard().map( card => {
       Ok(toJson(card))
     }).recover {
@@ -55,17 +50,4 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
     }
   }
 
-  private def getBalanceMessage(data: CtData)(implicit request: AuthenticatedRequest[AnyContent]): String = {
-    data.accountSummary match {
-      case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) => {
-        if (amount < 0) {
-          messagesApi.preferred(request)("account.summary.in_credit", f"£${amount.abs}%.2f")
-        } else if (amount > 0) {
-          messagesApi.preferred(request)("account.summary.in_debit", f"£${amount.abs}%.2f")
-        } else {
-          messagesApi.preferred(request)("account.summary.nothing_to_pay")
-        }
-      }
-    }
-  }
 }

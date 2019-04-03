@@ -36,7 +36,6 @@ import scala.concurrent.Future
 
 class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with ScalaFutures {
 
-
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
   when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(accountSummary))
@@ -45,8 +44,6 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
   when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
 
   def accountSummaryHelper() = new AccountSummaryHelper(frontendAppConfig, mockCtService, messagesApi)
-
-
   def ctEnrolment(activated: Boolean = true) =  CtEnrolment(CtUtr("utr"), isActivated = true)
   def requestWithEnrolment(activated: Boolean): AuthenticatedRequest[AnyContent] = {
     AuthenticatedRequest[AnyContent](FakeRequest(), "", ctEnrolment(activated))

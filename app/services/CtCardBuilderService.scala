@@ -28,31 +28,29 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CtCardBuilderServiceImpl @Inject() (val messagesApi: MessagesApi,
                                           appConfig: FrontendAppConfig,
-                                          ctService: CtServiceInterface
+                                          ctService: CtServiceInterface,
+                                          ctPartialBuilder: CtPartialBuilder
                                          )(implicit ec: ExecutionContext) extends CtCardBuilderService {
 
   def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] = {
     ctService.fetchCtModel(Some(request.ctEnrolment)).map { ctAccountSummary =>
       ctAccountSummary match {
-        case CtGenericError => ???
         case CtNoData => buildCtCardData(
-          paymentsContent = Some("Work in Progress"),
-          returnsContent = Some(views.html.partials.card.returns.potential_returns(appConfig, request.ctEnrolment).toString())
+          paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(None).toString()),
+          returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString())
         )
-        case CtEmpty => ???
-        case CtUnactivated => ???
         case data: CtData => buildCtCardData(
-          paymentsContent = Some("Work in Progress"),
-          returnsContent = Some(views.html.partials.card.returns.potential_returns(appConfig, request.ctEnrolment).toString())
+          paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(Some(data)).toString()),
+          returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString())
         )
+        case _ => throw new Exception
       }
     }
   }
 
-  private def buildCtCardData(paymentsContent: Option[String] = None,
-                              returnsContent: Option[String] = None
-                             )(implicit request: AuthenticatedRequest[_], messages: Messages, hc: HeaderCarrier): Card = {
-    val cardData = Card(
+  private def buildCtCardData(paymentsContent: Option[String] = None, returnsContent: Option[String] = None)
+                           (implicit request: AuthenticatedRequest[_], messages: Messages, hc: HeaderCarrier): Card = {
+    Card(
       title = messagesApi.preferred(request)("partial.heading"),
       description = "",
       referenceNumber = request.ctEnrolment.ctUtr.utr,
@@ -68,7 +66,6 @@ class CtCardBuilderServiceImpl @Inject() (val messagesApi: MessagesApi,
       paymentsPartial = paymentsContent,
       returnsPartial = returnsContent
     )
-    cardData
   }
 }
 

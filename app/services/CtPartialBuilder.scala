@@ -19,7 +19,7 @@ package services
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import models.{CtData, CtEnrolment}
+import models.CtData
 import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -29,13 +29,16 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends CtPartialBuilder {
 
-  override def buildReturnsPartial(ctData: CtData, ctEnrolment: CtEnrolment)(implicit request: AuthenticatedRequest[_], messages: Messages): Html = ???
+  override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
+                      views.html.partials.card.returns.potential_returns(appConfig, request.ctEnrolment)
 
-  override def buildPaymentsPartial(ctData: CtData)(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("")
+  override def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
+                      Html("Work in Progress")
+
 }
 
 @ImplementedBy(classOf[CtPartialBuilderImpl])
 trait CtPartialBuilder {
-  def buildReturnsPartial(ctData: CtData, ctEnrolment: CtEnrolment)(implicit request: AuthenticatedRequest[_], messages: Messages): Html
-  def buildPaymentsPartial(ctData: CtData)(implicit request: AuthenticatedRequest[_], messages: Messages): Html
+  def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html
+  def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
 }
