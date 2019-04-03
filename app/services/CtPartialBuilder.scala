@@ -56,7 +56,6 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
   }
 }
 
-
 @ImplementedBy(classOf[CtPartialBuilderImpl])
 trait CtPartialBuilder {
   def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html
