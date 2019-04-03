@@ -16,7 +16,6 @@
 
 package controllers
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject

@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import models.requests.AuthenticatedRequest
 import models.{CtAccountSummary, CtData}
 import javax.inject.{Inject, Singleton}
-import models.{CtData, CtEnrolment}
+import models.CtData
 import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -54,7 +54,6 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
       case None => views.html.partials.card.payments.no_data(appConfig)
     }
   }
-
 }
 
 

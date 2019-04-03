@@ -23,6 +23,9 @@ import models.{Card, CtData, CtEnrolment, CtNoData, Link}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Matchers
+import models.{Card, CtData, CtEnrolment, Link}
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import org.scalatest.MustMatchers
 import org.scalatest.concurrent.ScalaFutures
@@ -163,7 +166,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
           expectedOpensInNewTab = true
         )
       }
-
 
     }
 
