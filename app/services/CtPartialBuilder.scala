@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext
 class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends CtPartialBuilder {
 
   override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
-                      views.html.partials.card.returns.potential_returns(appConfig, request.ctEnrolment)
+                      views.html.partials.card.returns.potential_returns(appConfig)
 
   override def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
                       Html("Work in Progress")

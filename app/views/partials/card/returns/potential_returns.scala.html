@@ -14,11 +14,10 @@
  * limitations under the License.
  *@
 
-@import models.requests.AuthenticatedRequest
-@import models.CtEnrolment
 @import config.FrontendAppConfig
+@import models.requests.AuthenticatedRequest
 
-@(appConfig: FrontendAppConfig, ctEnrolment: CtEnrolment)(implicit request: AuthenticatedRequest[_], messages: Messages)
+@(appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 <p>@messages("card.you_may_have_returns_to_complete")</p>
 <a id="ct-complete-return" href="@appConfig.getUrl("fileAReturn")"
