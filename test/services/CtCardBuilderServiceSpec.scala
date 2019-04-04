@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 object TestCtPartialBuilder extends CtPartialBuilder {
   override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Returns partial")
-  override def buildPaymentsPartial(vatData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Payments partial")
+  override def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Payments partial")
 }
 
 class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSugar {
