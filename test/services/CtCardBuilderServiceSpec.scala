@@ -31,6 +31,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.domain.CtUtr
 import models.requests.AuthenticatedRequest
 import models._
+import models.requests.AuthenticatedRequest
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
@@ -133,6 +134,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
     "return a card with No Payments information when getting CtNoData" in new LocalSetup {
       override lazy val testCtPartialBuilder: CtPartialBuilder = TestCtPartialBuilderNoData
+
       when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(CtNoData))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)

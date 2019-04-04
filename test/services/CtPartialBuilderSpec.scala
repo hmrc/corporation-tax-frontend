@@ -129,6 +129,7 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
           expectedIsExternal = false,
           expectedOpensInNewTab = false
         )
+
       }
 
       "the user has no tax to pay" in new LocalSetup {
@@ -150,6 +151,7 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
       }
 
       "there is no balance information to display" in new LocalSetup {
+
         val ctPartialBuilder: CtPartialBuilderImpl = new CtPartialBuilderImpl(config)
         override lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))
         val view: String =  ctPartialBuilder.buildPaymentsPartial(None)(fakeRequestWithEnrolments, messages).body
