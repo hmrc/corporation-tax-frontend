@@ -122,3 +122,5 @@ not_activated.72_hours = Mae cychwyn yn cymryd hyd at 72 awr.
 #######################################################
 card.you_may_have_returns_to_complete = Efallai bod gennych Ffurflenni Treth i’w llenwi.
 card.complete_corporation_tax_return = Llenwi Ffurflen Treth Gorfforaeth
+card.you_are = Rydych
+card.in_credit = mewn credyd.

@@ -18,9 +18,10 @@ package services
 
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
+import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.{Inject, Singleton}
-import models.CtData
 import models.requests.AuthenticatedRequest
+import models.{CtAccountSummary, CtData}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
@@ -30,15 +31,33 @@ import scala.concurrent.ExecutionContext
 class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends CtPartialBuilder {
 
   override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
-                      views.html.partials.card.returns.potential_returns(appConfig)
+    views.html.partials.card.returns.potential_returns(appConfig)
 
-  override def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
-                      Html("Work in Progress")
+  override def buildPaymentsPartial(ctData: Option[CtAccountSummary])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = {
+
+    ctData match {
+      case Some(CtData(accountSummaryData)) => accountSummaryData match {
+        case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
+          if (amount > 0) {
+            Html("greater than zero")
+          }
+          else if (amount == 0) {
+            Html("amount equal to zero")
+          }
+          else {
+            views.html.partials.card.payments.in_credit(amount.abs, appConfig)
+          }
+        case _ => Html("WORK IN PROGRESS")
+      }
+      case None => Html("aaaaa")
+      case _ => Html("vvvvv")
+    }
+  }
 
 }
 
 @ImplementedBy(classOf[CtPartialBuilderImpl])
 trait CtPartialBuilder {
   def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html
-  def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
+  def buildPaymentsPartial(ctData: Option[CtAccountSummary])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
 }

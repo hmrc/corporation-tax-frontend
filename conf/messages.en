@@ -122,3 +122,5 @@ not_activated.72_hours = Activation takes up to 72 hours.
 #######################################################
 card.you_may_have_returns_to_complete = You may have returns to complete.
 card.complete_corporation_tax_return = Complete Corporation Tax return
+card.you_are = You are
+card.in_credit = in credit.
