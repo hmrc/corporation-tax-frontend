@@ -37,10 +37,12 @@ import scala.concurrent.Future
 
 object TestCtPartialBuilder extends CtPartialBuilder {
   override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Returns partial")
-  override def buildPaymentsPartial(accSummaryData: Option[CtAccountSummary])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = accSummaryData match {
-    case Some(ctData) => Html("Payments partial")
-    case None => Html("No payments data")
-  }
+  override def buildPaymentsPartial(accSummaryData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Payments partial")
+}
+
+object TestCtPartialBuilderNoData extends CtPartialBuilder {
+  override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Returns partial")
+  override def buildPaymentsPartial(accSummaryData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("There is no balance information to display.")
 }
 
 class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSugar {
@@ -95,8 +97,8 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
           external = false
         )
       ),
-      messageReferenceKey = Some(""),
-      paymentsPartial = Some("No payments data"),
+      messageReferenceKey = Some("card.ct.utr"),
+      paymentsPartial = Some("There is no balance information to display."),
       returnsPartial = Some("Returns partial")
     )
 
@@ -105,7 +107,6 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
     when(testAppConfig.getUrl("mainPage")).thenReturn("http://someTestUrl")
     when(testAppConfig.getUrl("fileAReturn")).thenReturn("http://testReturnsUrl")
-
   }
 
 
@@ -120,6 +121,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with No Payments information when getting CtNoData" in new LocalSetup {
+      override lazy val testCtPartialBuilder: CtPartialBuilder = TestCtPartialBuilderNoData
       when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(CtNoData))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
@@ -136,6 +138,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with Returns information when getting CtNoData" in new LocalSetup {
+      override lazy val testCtPartialBuilder: CtPartialBuilder = TestCtPartialBuilderNoData
       when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(CtNoData))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)

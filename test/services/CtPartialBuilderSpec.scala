@@ -22,6 +22,7 @@ import models.requests.AuthenticatedRequest
 import models.{Card, CtData, CtEnrolment, CtNoData, Link}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.MustMatchers
 import org.scalatest.concurrent.ScalaFutures
@@ -70,6 +71,9 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
     }
 
     when(config.getUrl("fileAReturn")).thenReturn("http://localhost:9030/cato")
+    when(config.getUrl("mainPage")).thenReturn("http://localhost:9731/business-account/corporation-tax")
+    when(config.getPortalUrl("balance")(ctEnrolment)(fakeRequestWithEnrolments))
+        .thenReturn("http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
   }
 
   "Calling CtPartialBuilder.buildReturnsPartial" should {
@@ -113,6 +117,15 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You owe £543.21.")
+
+        assertLinkById(doc,
+          linkId = "make-ct-payment",
+          expectedText = "Make a Corporation Tax payment",
+          expectedUrl = "http://localhost:9731/business-account/corporation-tax/make-a-payment",
+          expectedGAEvent = "link - click:CT cards:Make a CT payment",
+          expectedIsExternal = false,
+          expectedOpensInNewTab = false
+        )
       }
 
       "the user has no tax to pay" in new LocalSetup {
@@ -122,15 +135,15 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You have no tax to pay.")
-      }
 
-      "the user has no balance to show" in new LocalSetup {
-        val ctPartialBuilder: CtPartialBuilderImpl = new CtPartialBuilderImpl(config)
-        override lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))
-        val view: String =  ctPartialBuilder.buildPaymentsPartial(None)(fakeRequestWithEnrolments, messages).body
-        val doc: Document = Jsoup.parse(view)
-
-        doc.text() must include("There is no balance information to display.")
+        assertLinkById(doc,
+          linkId = "view-ct-statement",
+          expectedText = "View your Corporation Tax statement",
+          expectedUrl = "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
+          expectedGAEvent = "link - click:CT cards:View your CT statement",
+          expectedIsExternal = true,
+          expectedOpensInNewTab = true
+        )
       }
 
     }

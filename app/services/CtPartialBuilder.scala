@@ -33,26 +33,22 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
   override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
     views.html.partials.card.returns.potential_returns(appConfig)
 
-  override def buildPaymentsPartial(ctData: Option[CtAccountSummary])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = {
-
+  override def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = {
     ctData match {
       case Some(CtData(accountSummaryData)) => accountSummaryData match {
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
           if (amount > 0) {
-            Html("greater than zero")
             views.html.partials.card.payments.in_debit(amount.abs, appConfig)
           }
           else if (amount == 0) {
-            Html("amount equal to zero")
-            views.html.partials.card.payments.no_balance()
+            views.html.partials.card.payments.no_balance(appConfig)
           }
           else {
             views.html.partials.card.payments.in_credit(amount.abs, appConfig)
           }
-        case _ => Html("WORK IN PROGRESS")
+        case _ => Html("")
       }
-      case None => Html("aaaaa")
-      case _ => Html("vvvvv")
+      case None => Html("")
     }
   }
 
@@ -61,5 +57,5 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
 @ImplementedBy(classOf[CtPartialBuilderImpl])
 trait CtPartialBuilder {
   def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html
-  def buildPaymentsPartial(ctData: Option[CtAccountSummary])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
+  def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
 }
