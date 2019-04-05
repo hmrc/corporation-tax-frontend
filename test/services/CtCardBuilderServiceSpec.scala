@@ -118,7 +118,6 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
     when(testAppConfig.getUrl("mainPage")).thenReturn("http://someTestUrl")
     when(testAppConfig.getUrl("fileAReturn")).thenReturn("http://testReturnsUrl")
-
   }
 
 

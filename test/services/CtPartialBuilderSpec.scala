@@ -129,7 +129,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
           expectedIsExternal = false,
           expectedOpensInNewTab = false
         )
-
       }
 
       "the user has no tax to pay" in new LocalSetup {

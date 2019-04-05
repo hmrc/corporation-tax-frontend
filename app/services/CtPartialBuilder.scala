@@ -37,7 +37,6 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
     views.html.partials.card.returns.potential_returns(appConfig)
 
   override def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = {
-
     ctData match {
       case Some(CtData(accountSummaryData)) => accountSummaryData match {
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
@@ -61,5 +60,5 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
 @ImplementedBy(classOf[CtPartialBuilderImpl])
 trait CtPartialBuilder {
   def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html
-  def buildPaymentsPartial(ctData: Option[CtAccountSummary])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
+  def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
 }
