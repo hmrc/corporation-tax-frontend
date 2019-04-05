@@ -40,9 +40,11 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
           if (amount > 0) {
             Html("greater than zero")
+            views.html.partials.card.payments.in_debit(amount.abs, appConfig)
           }
           else if (amount == 0) {
             Html("amount equal to zero")
+            views.html.partials.card.payments.no_balance()
           }
           else {
             views.html.partials.card.payments.in_credit(amount.abs, appConfig)

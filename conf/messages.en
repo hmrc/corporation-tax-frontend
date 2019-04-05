@@ -124,3 +124,6 @@ card.you_may_have_returns_to_complete = You may have returns to complete.
 card.complete_corporation_tax_return = Complete Corporation Tax return
 card.you_are = You are
 card.in_credit = in credit.
+card.you_owe = You owe
+card.you_have_no_tax_to_pay = You have no tax to pay.
+card.tehre_is_no_balance_information_to_display = There is no balance information to display
