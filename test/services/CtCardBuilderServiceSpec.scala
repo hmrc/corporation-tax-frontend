@@ -73,7 +73,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
           external = false
         )
       ),
-      messageReferenceKey = Some(""),
+      messageReferenceKey = Some("card.ct.utr"),
       paymentsPartial = Some("Payments partial"),
       returnsPartial = Some("Returns partial")
     )

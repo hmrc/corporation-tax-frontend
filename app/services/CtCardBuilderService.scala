@@ -62,7 +62,7 @@ class CtCardBuilderServiceImpl @Inject() (val messagesApi: MessagesApi,
           title = messagesApi.preferred(request)("partial.heading")
         )
       ),
-      messageReferenceKey = Some(""),
+      messageReferenceKey = Some("card.ct.utr"),
       paymentsPartial = paymentsContent,
       returnsPartial = returnsContent
     )
