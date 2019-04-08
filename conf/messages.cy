@@ -115,3 +115,10 @@ not_activated.activate = Cychwyn
 not_activated.need_code = Bydd angen y cod cychwyn a anfonwyd atoch drwy’r post.
 not_activated.lost_code = Rwyf wedi colli fy nghod cychwyn
 not_activated.72_hours = Mae cychwyn yn cymryd hyd at 72 awr.
+
+
+#######################################################
+##  Cards
+#######################################################
+card.you_may_have_returns_to_complete = Efallai bod gennych Ffurflenni Treth i’w llenwi.
+card.complete_corporation_tax_return = Llenwi Ffurflen Treth Gorfforaeth
