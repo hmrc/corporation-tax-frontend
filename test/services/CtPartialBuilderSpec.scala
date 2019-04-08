@@ -146,6 +146,25 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         )
       }
 
+      "there is no balance information to display" in new LocalSetup {
+        val ctPartialBuilder: CtPartialBuilderImpl = new CtPartialBuilderImpl(config)
+        override lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))
+        val view: String =  ctPartialBuilder.buildPaymentsPartial(None)(fakeRequestWithEnrolments, messages).body
+        val doc: Document = Jsoup.parse(view)
+
+        doc.text() must include("There is no balance information to display.")
+
+        assertLinkById(doc,
+          linkId = "view-ct-statement",
+          expectedText = "View your Corporation Tax statement",
+          expectedUrl = "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
+          expectedGAEvent = "link - click:CT cards:View your CT statement",
+          expectedIsExternal = true,
+          expectedOpensInNewTab = true
+        )
+      }
+
+
     }
 
   }

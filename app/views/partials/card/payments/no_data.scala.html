@@ -23,7 +23,7 @@
  Some(appConfig.getPortalUrl("balance")(request.ctEnrolment)).map { url => url }
 }
 
-<p role="text">@messages("card.you_have_no_tax_to_pay")</p>
+<p role="text">@messages("card.there_is_no_balance_information_to_display")</p>
 
 <a id="view-ct-statement" href="@statementLink" data-sso="false"
   data-journey-click="link - click:CT cards:View your CT statement" target="_blank" rel="external noopener">

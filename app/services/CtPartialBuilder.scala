@@ -48,11 +48,12 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
           }
         case _ => Html("")
       }
-      case None => Html("")
+      case None => views.html.partials.card.payments.no_data(appConfig)
     }
   }
 
 }
+
 
 @ImplementedBy(classOf[CtPartialBuilderImpl])
 trait CtPartialBuilder {
