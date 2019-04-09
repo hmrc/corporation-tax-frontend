@@ -68,7 +68,7 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
   "Calling PartialController.onPageLoad" must {
     "return OK and render the subpage for a GET" in new LocalSetup {
       val result: Future[Result] = c.onPageLoad(fakeRequest)
-ψοωερ
+
       status(result) mustBe OK
       contentType(result) mustBe Some("text/html")
       contentAsString(result) mustBe viewAsString()
