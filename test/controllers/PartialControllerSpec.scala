@@ -27,14 +27,6 @@ import play.twirl.api.Html
 import services.CtCardBuilderService
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.Upstream5xxResponse
-import play.api.libs.json.Json
-import play.api.mvc.Result
-import play.api.test.Helpers._
-import play.twirl.api.Html
-import services.CtCardBuilderService
-import uk.gov.hmrc.domain.CtUtr
-import uk.gov.hmrc.http.Upstream5xxResponse
-import views.html.partial
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -66,7 +58,7 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
       returnsPartial = Some("")
     )
 
-    def viewAsString(): String = partial(CtUtr("utr"), accountSummary, frontendAppConfig)(fakeRequest, messages).toString
+    def viewAsString(): String = views.html.partial(CtUtr("utr"), accountSummary, frontendAppConfig)(fakeRequest, messages).toString
 
     when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(accountSummary))
@@ -76,7 +68,7 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
   "Calling PartialController.onPageLoad" must {
     "return OK and render the subpage for a GET" in new LocalSetup {
       val result: Future[Result] = c.onPageLoad(fakeRequest)
-
+ψοωερ
       status(result) mustBe OK
       contentType(result) mustBe Some("text/html")
       contentAsString(result) mustBe viewAsString()

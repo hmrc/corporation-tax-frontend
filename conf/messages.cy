@@ -128,5 +128,5 @@ card.you_owe = Mae arnoch
 card.you_have_no_tax_to_pay = Nid oes gennych dreth i’w thalu.
 card.there_is_no_balance_information_to_display = Nid oes gwybodaeth am falans i’w dangos.
 card.view_your_corporation_tax_statement = Bwrw golwg ar eich datganiad Treth Gorfforaeth
-cards.make_a_corporation_tax_payment = Gwneud taliad Treth Gorfforaeth
-cards.view_your_corporation_tax_statement = Bwrw golwg ar eich datganiad Treth Gorfforaeth
+card.make_a_corporation_tax_payment = Gwneud taliad Treth Gorfforaeth
+card.view_your_corporation_tax_statement = Bwrw golwg ar eich datganiad Treth Gorfforaeth

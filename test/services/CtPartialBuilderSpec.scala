@@ -19,10 +19,6 @@ package services
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models.requests.AuthenticatedRequest
-import models.{Card, CtData, CtEnrolment, CtNoData, Link}
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.mockito.Matchers
 import models.{Card, CtData, CtEnrolment, Link}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

@@ -20,11 +20,8 @@ import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.{Inject, Singleton}
+import models.CtData
 import models.requests.AuthenticatedRequest
-import models.{CtAccountSummary, CtData}
-import javax.inject.{Inject, Singleton}
-import models.requests.AuthenticatedRequest
-import models.{CtAccountSummary, CtData}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
