@@ -65,7 +65,7 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         )
       ),
       messageReferenceKey = Some(""),
-      paymentsPartial = Some("Work in Progress"),
+      paymentsPartial = Some("Payments partial"),
       returnsPartial = Some("\n\n<p>You may have returns to complete.</p>\n<a id=\"ct-complete-return\" href=\"http://testReturnsUrl\"\n  target=\"_blank\" rel=\"external noopener\"\n  data-journey-click=\"link - click:CT cards:Complete CT Return\">\nComplete Corporation Tax return\n</a>\n")
     )
 
