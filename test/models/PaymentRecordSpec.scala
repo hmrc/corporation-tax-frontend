@@ -19,6 +19,7 @@ package models
 import java.time.LocalDate
 
 import base.SpecBase
+import models.payments.{Created, PaymentRecord, Successful}
 import org.joda.time.DateTime
 import play.api.i18n.Messages
 import play.api.test.FakeRequest

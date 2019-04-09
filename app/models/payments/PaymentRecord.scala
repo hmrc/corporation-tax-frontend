@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package models.payments
 
 import org.joda.time.{DateTime, LocalDate}
 import play.api.i18n.Messages
-import play.api.libs.functional.syntax.unlift
+import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import utils.CurrencyFormatter
 
 
 case class PaymentRecord(
@@ -34,12 +34,7 @@ case class PaymentRecord(
 
     try {
       val date = new DateTime(createdOn)
-      if (date.plusDays(7).isAfter(currentDateTime)){
-        true
-      }
-      else{
-        false
-      }
+      date.plusDays(7).isAfter(currentDateTime)
     } catch {
       case _: IllegalArgumentException => false
     }
@@ -55,6 +50,10 @@ case class PaymentRecord(
     } catch {
       case _: IllegalArgumentException => "problem displaying date"
     }
+  }
+
+  def currencyFormatted()(implicit messages: Messages) = {
+    CurrencyFormatter.formatCurrencyFromPennies(amountInPence)
   }
 
   object DateFormatting {

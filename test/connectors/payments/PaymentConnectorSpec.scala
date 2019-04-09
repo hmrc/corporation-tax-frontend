@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.payments
 
 import base.SpecBase
-import connectors.payments._
+import connectors.MockHttpClient
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures

@@ -15,7 +15,8 @@
  *@
 
 @import config.FrontendAppConfig
-@(balanceInformation: String, appConfig: FrontendAppConfig, breakdownLink: Option[String] = None, breakdownText: String = "", shouldShowCreditCardMessage: Boolean)(implicit request: Request[_], messages: Messages)
+@import models.payments.PaymentRecord
+@(balanceInformation: String, appConfig: FrontendAppConfig, breakdownLink: Option[String] = None, breakdownText: String = "", shouldShowCreditCardMessage: Boolean = false, paymentHistory: List[PaymentRecord] = Nil)(implicit request: Request[_], messages: Messages)
 
 <section>
     <h2 style="margin-top: 1.875em !important">@Messages("account.summary.your_returns")</h2>
@@ -37,7 +38,7 @@
             data-journey-click="link - click:CTSubpage:How we worked this out">@breakdownText</a>
     }
     </p>
-
+    @payment_history(paymentHistory)
     <a id="ct-make-payment-link"
         href="@appConfig.getUrl("mainPage")/make-a-payment"
         data-sso="false"

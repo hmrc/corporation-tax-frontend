@@ -121,13 +121,23 @@ not_activated.request_a_new_activation_code = wneud cais am god cychwyn newydd
 #######################################################
 ##  Cards
 #######################################################
+
 card.you_may_have_returns_to_complete = Efallai bod gennych Ffurflenni Treth i’w llenwi.
 card.complete_corporation_tax_return = Llenwi Ffurflen Treth Gorfforaeth
+
 card.you_are = Rydych
 card.in_credit = mewn credyd.
 card.you_owe = Mae arnoch
 card.you_have_no_tax_to_pay = Nid oes gennych dreth i’w thalu.
 card.there_is_no_balance_information_to_display = Nid oes gwybodaeth am falans i’w dangos.
-card.view_your_corporation_tax_statement = Bwrw golwg ar eich datganiad Treth Gorfforaeth
 card.make_a_corporation_tax_payment = Gwneud taliad Treth Gorfforaeth
 card.view_your_corporation_tax_statement = Bwrw golwg ar eich datganiad Treth Gorfforaeth
+
+#######################################################
+## Payments
+#######################################################
+
+payment.history.title = Eich taliadau cerdyn yn ystod y 7 diwrnod diwethaf
+payment.history.message = Bydd yn cymryd hyd at 7 diwrnod i ddiweddaru’ch balans ar ôl pob taliad.
+payment.history.amount = Gwnaethoch dalu {0} ar {1}
+payment.history.reference = Cyfeirnod eich taliad yw {0}.

@@ -16,16 +16,24 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.Inject
 
+import config.FrontendAppConfig
+import connectors.models.{CtAccountBalance, CtAccountSummaryData}
+import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import models.{CtData, CtEnrolment, CtNoData, CtUnactivated}
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
 import services.{CtService, EnrolmentsStoreService}
+import models.{CtAccountSummary, CtData, CtNoData, CtUnactivated}
+import org.joda.time.DateTime
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.RequestHeader
+import play.twirl.api.HtmlFormat
+import services.{CtServiceInterface, PaymentHistoryServiceInterface}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.views.formatting.Money.pounds
 import views.html.partials.{account_summary, generic_error, not_activated}
@@ -34,77 +42,84 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AccountSummaryHelper @Inject()(
                                       appConfig: FrontendAppConfig,
-                                      ctService: CtService,
+                                      ctService: CtServiceInterface,
                                       enrolmentsStoreService: EnrolmentsStoreService,
+                                      paymentHistoryService: PaymentHistoryServiceInterface,
                                       override val messagesApi: MessagesApi
                                     ) extends I18nSupport {
 
-  private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit r: AuthenticatedRequest[_], ec:ExecutionContext) = {
+  private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit r: AuthenticatedRequest[_],
+                                                                                        ec:ExecutionContext): Future[HtmlFormat.Appendable] = {
 
-    implicit def hc(implicit rh: RequestHeader) = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
+    implicit def hc(implicit rh: RequestHeader): HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
 
-    val breakdownLink = Some(appConfig.getPortalUrl("balance")(r.ctEnrolment))
+    val modelHistory: Future[(CtAccountSummary,List[PaymentRecord])] = for{
+      model <- ctService.fetchCtModel(Some(r.ctEnrolment))
+      history <- paymentHistoryService.getPayments(Some(r.ctEnrolment),DateTime.now())
+    } yield {
+      (model, history)
+    }
 
-    ctService.fetchCtModel(Some(r.ctEnrolment)) flatMap {
-      case CtData(accountSummaryData) => accountSummaryData match {
-        case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
-          buildCtAccountSummaryForKnownBalance(amount,showCreditCardMessage, breakdownLink)
-        case _ => {
-          Future.successful(
-            account_summary(
-              Messages("account.summary.nothing_to_pay"),
-              appConfig,
-              breakdownLink, Messages("account.summary.view_statement"),
-              shouldShowCreditCardMessage = showCreditCardMessage
-            )
-          )
-        }
-      }
-      case CtNoData => {
-        Future.successful(
-          account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage)
-        )
-      }
-      case CtUnactivated =>{
+    modelHistory flatMap {
+      case (CtData(accountSummaryData), history) => Future.successful(
+        buildView(accountSummaryData, history, showCreditCardMessage)
+      )
+      case (CtNoData,_) => Future.successful(
+        account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage)
+      )
+      case (CtUnactivated,_) =>
         val showNewPinLink = enrolmentsStoreService.showNewPinLink(r.ctEnrolment, DateTime.now())
-        showNewPinLink.map{ showLink => not_activated(appConfig.getUrl("enrolment-management-access"),
-          appConfig.getUrl("enrolment-management-new-code"), showLink)}
-      }
-      case _ => {
-        Future.successful(generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment)))
-      }
+        showNewPinLink.map( showLink =>
+            not_activated(appConfig.getUrl("enrolment-management-access"),
+              appConfig.getUrl("enrolment-management-new-code"), showLink)
+        )
+      case _ => Future.successful(generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment)))
     }
   }
 
-  def buildCtAccountSummaryForKnownBalance(amount: BigDecimal,showCreditCardMessage: Boolean,
-                                           breakdownLink: Option[String])(implicit r: AuthenticatedRequest[_]) = {
+  private def buildCtAccountSummaryForKnownBalance(amount: BigDecimal,showCreditCardMessage: Boolean,
+                                           breakdownLink: Option[String], history: List[PaymentRecord])(implicit r: AuthenticatedRequest[_]):HtmlFormat.Appendable = {
     if (amount < 0) {
-      Future.successful(
-        account_summary(
-          Messages("account.summary.in_credit", pounds(amount.abs, 2)),
-          appConfig,
-          breakdownLink, Messages("account.summary.worked_out"),
-          shouldShowCreditCardMessage = showCreditCardMessage
-        )
+      account_summary(
+        Messages("account.summary.in_credit", pounds(amount.abs, 2)),
+        appConfig,
+        breakdownLink, Messages("account.summary.worked_out"),
+        shouldShowCreditCardMessage = showCreditCardMessage,
+        history
       )
     } else if (amount == 0) {
-      Future.successful(
-        account_summary(
-          Messages("account.summary.nothing_to_pay"),
-          appConfig,
-          breakdownLink, Messages("account.summary.view_statement"),
-          shouldShowCreditCardMessage = showCreditCardMessage
-        )
+      account_summary(
+        Messages("account.summary.nothing_to_pay"),
+        appConfig,
+        breakdownLink, Messages("account.summary.view_statement"),
+        shouldShowCreditCardMessage = showCreditCardMessage,
+        history
       )
     } else {
-      Future.successful(
-        account_summary(
-          Messages("account.summary.in_debit", pounds(amount.abs, 2)),
-          appConfig,
-          breakdownLink, Messages("account.summary.worked_out"),
-          shouldShowCreditCardMessage = showCreditCardMessage
-        )
+      account_summary(
+        Messages("account.summary.in_debit", pounds(amount.abs, 2)),
+        appConfig,
+        breakdownLink, Messages("account.summary.worked_out"),
+        shouldShowCreditCardMessage = showCreditCardMessage,
+        history
       )
     }
   }
+
+  private def buildView(accountSummaryData: CtAccountSummaryData, history: List[PaymentRecord],
+                        showCreditCardMessage: Boolean)(implicit r: AuthenticatedRequest[_]): HtmlFormat.Appendable = {
+    val breakdownLink = Some(appConfig.getPortalUrl("balance")(r.ctEnrolment))
+    accountSummaryData match {
+      case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
+        buildCtAccountSummaryForKnownBalance(amount, showCreditCardMessage, breakdownLink, history)
+      case _ => account_summary(
+        Messages("account.summary.nothing_to_pay"),
+        appConfig,
+        breakdownLink, Messages("account.summary.view_statement"),
+        shouldShowCreditCardMessage = showCreditCardMessage,
+        history
+      )
+    }
+  }
+
 }

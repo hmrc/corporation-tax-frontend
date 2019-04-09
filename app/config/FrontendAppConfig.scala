@@ -75,4 +75,6 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   
   def sessionTimeoutInSeconds: Long = 900
   def sessionCountdownInSeconds: Int = 60
+
+  lazy val getCTPaymentHistoryToggle: Boolean = runModeConfiguration.getBoolean("toggles.ct-payment-history").getOrElse(false)
 }
