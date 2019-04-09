@@ -21,6 +21,7 @@ import javax.inject.Singleton
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.payments.{PaymentHistory, PaymentHistoryInterface, PaymentHistoryNotFound}
+import play.api.http.Status.OK
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -40,7 +41,7 @@ class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAp
   def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, PaymentHistoryInterface]] = {
     http.GET[HttpResponse](buildUrl(searchTag)).map {
       r => r.status match {
-        case 200 => {
+        case OK => {
           Try(r.json.as[PaymentHistory]) match {
             case Success(data) => Right(data)
             case Failure(_) => Left("unable to parse data from payment api")

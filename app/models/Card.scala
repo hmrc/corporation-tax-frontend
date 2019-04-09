@@ -16,6 +16,7 @@
 
 package models
 
+import models.payments.PaymentRecord
 import play.api.libs.json.{Json, OFormat}
 
 case class Link(
@@ -39,7 +40,8 @@ case class Card(
   messageReferenceKey: Option[String],
   additionalLinks: Seq[Link] = Nil,
   paymentsPartial: Option[String] = None,
-  returnsPartial: Option[String] = None
+  returnsPartial: Option[String] = None,
+  paymentHistory: List[PaymentRecord] = Nil
 )
 
 object Card {
