@@ -21,19 +21,21 @@ import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.Inject
 
 import models.requests.AuthenticatedRequest
-import models.{CtData, CtNoData, CtUnactivated}
+import models.{CtData, CtEnrolment, CtNoData, CtUnactivated}
+import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
-import services.CtService
+import services.{CtService, EnrolmentsStoreService}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.views.formatting.Money.pounds
 import views.html.partials.{account_summary, generic_error, not_activated}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AccountSummaryHelper @Inject()(
                                       appConfig: FrontendAppConfig,
                                       ctService: CtService,
+                                      enrolmentsStoreService: EnrolmentsStoreService,
                                       override val messagesApi: MessagesApi
                                     ) extends I18nSupport {
 
@@ -43,41 +45,61 @@ class AccountSummaryHelper @Inject()(
 
     val breakdownLink = Some(appConfig.getPortalUrl("balance")(r.ctEnrolment))
 
-    ctService.fetchCtModel(Some(r.ctEnrolment)) map {
+    ctService.fetchCtModel(Some(r.ctEnrolment)) flatMap {
       case CtData(accountSummaryData) => accountSummaryData match {
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
           if (amount < 0) {
-            account_summary(
-              Messages("account.summary.in_credit", pounds(amount.abs, 2)),
-              appConfig,
-              breakdownLink, Messages("account.summary.worked_out"),
-              shouldShowCreditCardMessage = showCreditCardMessage
+            Future.successful(
+              account_summary(
+                Messages("account.summary.in_credit", pounds(amount.abs, 2)),
+                appConfig,
+                breakdownLink, Messages("account.summary.worked_out"),
+                shouldShowCreditCardMessage = showCreditCardMessage
+              )
             )
           } else if (amount == 0) {
+            Future.successful(
+              account_summary(
+                Messages("account.summary.nothing_to_pay"),
+                appConfig,
+                breakdownLink, Messages("account.summary.view_statement"),
+                shouldShowCreditCardMessage = showCreditCardMessage
+              )
+            )
+          } else {
+            Future.successful(
+              account_summary(
+                Messages("account.summary.in_debit", pounds(amount.abs, 2)),
+                appConfig,
+                breakdownLink, Messages("account.summary.worked_out"),
+                shouldShowCreditCardMessage = showCreditCardMessage
+              )
+            )
+          }
+        case _ => {
+          Future.successful(
             account_summary(
               Messages("account.summary.nothing_to_pay"),
               appConfig,
               breakdownLink, Messages("account.summary.view_statement"),
               shouldShowCreditCardMessage = showCreditCardMessage
             )
-          } else {
-            account_summary(
-              Messages("account.summary.in_debit", pounds(amount.abs, 2)),
-              appConfig,
-              breakdownLink, Messages("account.summary.worked_out"),
-              shouldShowCreditCardMessage = showCreditCardMessage
-            )
-          }
-        case _ => account_summary(
-          Messages("account.summary.nothing_to_pay"),
-          appConfig,
-          breakdownLink, Messages("account.summary.view_statement"),
-          shouldShowCreditCardMessage = showCreditCardMessage
+          )
+        }
+      }
+      case CtNoData => {
+        Future.successful(
+          account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage)
         )
       }
-      case CtNoData => account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage)
-      case CtUnactivated => not_activated(appConfig.getPortalUrl("activate")(r.ctEnrolment), appConfig.getPortalUrl("reset")(r.ctEnrolment))
-      case _ => generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment))
+      case CtUnactivated =>{
+        val showNewPinLink = enrolmentsStoreService.showNewPinLink(r.ctEnrolment, DateTime.now())
+        showNewPinLink.map{ showLink => not_activated(appConfig.getPortalUrl("activate")(r.ctEnrolment),
+          appConfig.getPortalUrl("reset")(r.ctEnrolment), showLink)}
+      }
+      case _ => {
+        Future.successful(generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment)))
+      }
     }
   }
 }

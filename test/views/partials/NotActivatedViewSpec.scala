@@ -24,37 +24,61 @@ class NotActivatedViewSpec extends ViewSpecBase {
   val activateUrl = "http://activate.url"
   val resetCodeUrl = "http://reset-code.url"
 
-  def view = () => not_activated(activateUrl, resetCodeUrl)(fakeRequest, messages)
+  def viewAfterSevenDays = () => not_activated(activateUrl, resetCodeUrl, true)(fakeRequest, messages)
+  def viewWithinSevenDays = () => not_activated(activateUrl, resetCodeUrl, false)(fakeRequest, messages)
 
-  "NotActivated" should {
+  "NotActivated after seven days" should {
     "have a link to activate using the provided url" in {
-      val doc = asDocument(view())
+      val doc = asDocument(viewAfterSevenDays())
       assertLinkById(
         doc,
         "ir-ct",
-        "Activate",
+        "access your Corporation Tax",
         activateUrl,
         "link - click:Not Activated:Activate your CT account"
       )
-      doc.text() must include("(opens in HMRC online)")
     }
 
     "have the need activation code content" in {
-      asDocument(view()).text() must include("You’ll need the activation code we sent you in the post.")
+      asDocument(viewAfterSevenDays()).text() must include("Use the activation code we posted to you to")
+      asDocument(viewAfterSevenDays()).text() must include("access your Corporation Tax")
+      asDocument(viewAfterSevenDays()).text() must include("It can take up to 72 hours to display your details.")
+      asDocument(viewAfterSevenDays()).text() must include("You can")
     }
 
     "have a link to reset the activation code using the provided url" in {
       assertLinkById(
-        asDocument(view()),
+        asDocument(viewAfterSevenDays()),
         "ir-ct-reset",
-        "I’ve lost my activation code",
+        "request a new activation code",
         resetCodeUrl,
         "link - click:Not Activated:I’ve lost my activation code"
       )
     }
 
-    "have the activation period message" in {
-      asDocument(view()).text() must include("Activation takes up to 72 hours.")
+  }
+
+  "NotActivated within seven days" should {
+    "have a link to activate using the provided url" in {
+      val doc = asDocument(viewWithinSevenDays())
+      assertLinkById(
+        doc,
+        "ir-ct",
+        "access your Corporation Tax",
+        activateUrl,
+        "link - click:Not Activated:Activate your CT account"
+      )
+    }
+
+    "have the need activation code content" in {
+      asDocument(viewWithinSevenDays()).text() must include("We posted an activation code to you. Delivery takes up to 7 days.")
+      asDocument(viewWithinSevenDays()).text() must include("Use the activation code to")
+      asDocument(viewWithinSevenDays()).text() must include("access your Corporation Tax")
+      asDocument(viewWithinSevenDays()).text() must include("It can take up to 72 hours to display your details.")
+    }
+
+    "not have a link to reset the activation code using the provided url" in {
+      asDocument(viewWithinSevenDays()).getElementById("ir-ct-reset") mustBe null
     }
   }
 

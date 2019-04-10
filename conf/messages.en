@@ -116,6 +116,14 @@ not_activated.need_code = You’ll need the activation code we sent you in the p
 not_activated.lost_code = I’ve lost my activation code
 not_activated.72_hours = Activation takes up to 72 hours.
 
+not_activated.we_posted_ = We posted an activation code to you. Delivery takes up to 7 days.
+not_activated.use_the_activation_code_to = Use the activation code to
+not_activated.use_the_activation_code_we_posted_ = Use the activation code we posted to you to
+not_activated.access_your_corporation_tax_mynd = access your Corporation Tax
+not_activated.access_your_corporation_tax_fynd = access your Corporation Tax
+not_activated.it_can_take_up_to_ = It can take up to 72 hours to display your details.
+not_activated.you_can = You can
+not_activated.request_a_new_activation_code = request a new activation code
 
 #######################################################
 ##  Cards

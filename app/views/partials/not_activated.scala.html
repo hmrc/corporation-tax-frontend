@@ -14,19 +14,42 @@
  * limitations under the License.
  *@
 
-@(activateUrl: String, resetCodeUrl: String)(implicit request: Request[_], messages: Messages)
-<a id="ir-ct"
-    href="@activateUrl"
-    data-sso="false"
-    data-journey-click="link - click:Not Activated:Activate your CT account"
-    class="activate-enrolment-link button--secondary">
-    @Html(Messages("not_activated.activate","<span class=\"visuallyhidden\">", "CT" ,"</span>")) @*partials.open_in_portal_window()-->*@
-</a><span class="visuallyhidden"> @Messages("links.opens_in_portal")</span>
-<p>@Messages("not_activated.need_code")
+@(activateUrl: String, resetCodeUrl: String, showNewPinLink: Boolean)(implicit request: Request[_], messages: Messages)
+
+@if(showNewPinLink){
+  <p>
+    @messages("not_activated.use_the_activation_code_we_posted_")
+    <a id="ir-ct"
+       href="@activateUrl"
+       data-sso="false"
+       data-journey-click="link - click:Not Activated:Activate your CT account">
+      @messages("not_activated.access_your_corporation_tax_fynd")
+    </a>.
+  </p>
+} else {
+  <p>
+    @messages("not_activated.we_posted_")
+  </p>
+  <p>
+    @messages("not_activated.use_the_activation_code_to")
+    <a id="ir-ct"
+       href="@activateUrl"
+       data-sso="false"
+       data-journey-click="link - click:Not Activated:Activate your CT account">
+      @messages("not_activated.access_your_corporation_tax_mynd")
+    </a>.
+  </p>
+}
+
+<p>@messages("not_activated.it_can_take_up_to_")</p>
+
+@if(showNewPinLink){
+  <p>@messages("not_activated.you_can")
     <a id="ir-ct-reset"
-    href="@resetCodeUrl"
-    data-sso="false"
-    data-journey-click="link - click:Not Activated:I’ve lost my activation code">
-    @Messages("not_activated.lost_code")</a>
-</p>
-<p class="ct-not-activated-msg">@Messages("not_activated.72_hours")</p>
+      href="@resetCodeUrl"
+      data-sso="false"
+      data-journey-click="link - click:Not Activated:I’ve lost my activation code">
+      @Messages("not_activated.request_a_new_activation_code")
+    </a>
+  </p>
+}
