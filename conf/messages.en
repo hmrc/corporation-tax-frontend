@@ -111,10 +111,6 @@ partial.more_details = More Corporation Tax details
 #######################################################
 ##  Not Activated
 #######################################################
-not_activated.activate = Activate
-not_activated.need_code = You’ll need the activation code we sent you in the post.
-not_activated.lost_code = I’ve lost my activation code
-not_activated.72_hours = Activation takes up to 72 hours.
 
 not_activated.we_posted_ = We posted an activation code to you. Delivery takes up to 7 days.
 not_activated.use_the_activation_code_to = Use the activation code to

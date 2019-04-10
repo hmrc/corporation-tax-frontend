@@ -111,10 +111,6 @@ partial.more_details = Rhagor o fanylion Treth Gorfforaeth
 #######################################################
 ##  Not Activated
 #######################################################
-not_activated.activate = Cychwyn
-not_activated.need_code = Bydd angen y cod cychwyn a anfonwyd atoch drwy’r post.
-not_activated.lost_code = Rwyf wedi colli fy nghod cychwyn
-not_activated.72_hours = Mae cychwyn yn cymryd hyd at 72 awr.
 
 not_activated.we_posted_ = to 7 days.	Anfonom god cychwyn atoch drwy’r post. Gall hwn gymryd hyd at 7 diwrnod i’ch cyrraedd.
 not_activated.use_the_activation_code_to = Defnyddiwch y cod cychwyn er mwyn
