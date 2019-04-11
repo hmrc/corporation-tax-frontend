@@ -14,16 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.domain.CtUtr
 @import config.FrontendAppConfig
-@(ctUtr: CtUtr, accountSummary: Html, appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@import models.requests.AuthenticatedRequest
+@import uk.gov.hmrc.play.views.formatting.Money.pounds
 
-<h2>@Messages("partial.heading")</h2>
+@(amount: BigDecimal, appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
-<p class="utr-heading">@Messages("partial.utr", ctUtr)</p>
+<p role="text">@messages("card.you_owe") <span class="bold-small">@pounds(amount.abs, 2)</span>.</p>
 
-@accountSummary
-<div class="subsection">
-  <a id="ct-account-details-link" href='@appConfig.getUrl("mainPage")'
-    data-journey-click="link - click:Corporation Tax:More Corporation Tax details" class="enrolment-link">@Messages("partial.more_details")</a>
-</div>
+<a id="make-ct-payment" href="@appConfig.getUrl("mainPage")/make-a-payment" data-sso="false"
+ data-journey-click="link - click:CT cards:Make a CT payment">
+ @messages("card.make_a_corporation_tax_payment")
+</a>

@@ -14,16 +14,18 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.domain.CtUtr
 @import config.FrontendAppConfig
-@(ctUtr: CtUtr, accountSummary: Html, appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@import models.requests.AuthenticatedRequest
 
-<h2>@Messages("partial.heading")</h2>
+@(appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
-<p class="utr-heading">@Messages("partial.utr", ctUtr)</p>
+@statementLink = @{
+ Some(appConfig.getPortalUrl("balance")(request.ctEnrolment)).map { url => url }
+}
 
-@accountSummary
-<div class="subsection">
-  <a id="ct-account-details-link" href='@appConfig.getUrl("mainPage")'
-    data-journey-click="link - click:Corporation Tax:More Corporation Tax details" class="enrolment-link">@Messages("partial.more_details")</a>
-</div>
+<p role="text">@messages("card.you_have_no_tax_to_pay")</p>
+
+<a id="view-ct-statement" href="@statementLink" data-sso="false"
+  data-journey-click="link - click:CT cards:View your CT statement" target="_blank" rel="external noopener">
+@messages("card.view_your_corporation_tax_statement")
+</a>

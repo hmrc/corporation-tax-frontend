@@ -22,9 +22,9 @@ import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json.toJson
 import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.AnyContent
 import services.CtCardBuilderService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import views.html.partial
 
 import scala.concurrent.ExecutionContext
 
@@ -38,7 +38,7 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
     accountSummaryHelper.getAccountSummaryView(showCreditCardMessage = false).map { accountSummaryView =>
-      Ok(partial(request.ctEnrolment.ctUtr, accountSummaryView, appConfig))
+      Ok(views.html.partial(request.ctEnrolment.ctUtr, accountSummaryView, appConfig))
     }
   }
 
