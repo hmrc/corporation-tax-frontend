@@ -48,34 +48,7 @@ class AccountSummaryHelper @Inject()(
     ctService.fetchCtModel(Some(r.ctEnrolment)) flatMap {
       case CtData(accountSummaryData) => accountSummaryData match {
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
-          if (amount < 0) {
-            Future.successful(
-              account_summary(
-                Messages("account.summary.in_credit", pounds(amount.abs, 2)),
-                appConfig,
-                breakdownLink, Messages("account.summary.worked_out"),
-                shouldShowCreditCardMessage = showCreditCardMessage
-              )
-            )
-          } else if (amount == 0) {
-            Future.successful(
-              account_summary(
-                Messages("account.summary.nothing_to_pay"),
-                appConfig,
-                breakdownLink, Messages("account.summary.view_statement"),
-                shouldShowCreditCardMessage = showCreditCardMessage
-              )
-            )
-          } else {
-            Future.successful(
-              account_summary(
-                Messages("account.summary.in_debit", pounds(amount.abs, 2)),
-                appConfig,
-                breakdownLink, Messages("account.summary.worked_out"),
-                shouldShowCreditCardMessage = showCreditCardMessage
-              )
-            )
-          }
+          buildCtAccountSummaryForKnownBalance(amount,showCreditCardMessage, breakdownLink)
         case _ => {
           Future.successful(
             account_summary(
@@ -94,12 +67,44 @@ class AccountSummaryHelper @Inject()(
       }
       case CtUnactivated =>{
         val showNewPinLink = enrolmentsStoreService.showNewPinLink(r.ctEnrolment, DateTime.now())
-        showNewPinLink.map{ showLink => not_activated(appConfig.getPortalUrl("activate")(r.ctEnrolment),
-          appConfig.getPortalUrl("reset")(r.ctEnrolment), showLink)}
+        showNewPinLink.map{ showLink => not_activated(appConfig.getUrl("enrolment-management-access"),
+          appConfig.getUrl("enrolment-management-new-code"), showLink)}
       }
       case _ => {
         Future.successful(generic_error(appConfig.getPortalUrl("home")(r.ctEnrolment)))
       }
+    }
+  }
+
+  def buildCtAccountSummaryForKnownBalance(amount: BigDecimal,showCreditCardMessage: Boolean,
+                                           breakdownLink: Option[String])(implicit r: AuthenticatedRequest[_]) = {
+    if (amount < 0) {
+      Future.successful(
+        account_summary(
+          Messages("account.summary.in_credit", pounds(amount.abs, 2)),
+          appConfig,
+          breakdownLink, Messages("account.summary.worked_out"),
+          shouldShowCreditCardMessage = showCreditCardMessage
+        )
+      )
+    } else if (amount == 0) {
+      Future.successful(
+        account_summary(
+          Messages("account.summary.nothing_to_pay"),
+          appConfig,
+          breakdownLink, Messages("account.summary.view_statement"),
+          shouldShowCreditCardMessage = showCreditCardMessage
+        )
+      )
+    } else {
+      Future.successful(
+        account_summary(
+          Messages("account.summary.in_debit", pounds(amount.abs, 2)),
+          appConfig,
+          breakdownLink, Messages("account.summary.worked_out"),
+          shouldShowCreditCardMessage = showCreditCardMessage
+        )
+      )
     }
   }
 }

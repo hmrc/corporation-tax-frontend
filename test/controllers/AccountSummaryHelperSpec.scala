@@ -119,8 +119,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user has an unactivated enrolment created more than seven days ago" should {
       "return the not activated view with the new pin link" in {
         val notActivated = not_activated(
-          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=enteractivationpin&lang=eng",
-          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=requestactivationpin&lang=eng",
+          "/enrolment-management-frontend/IR-CT/get-access-tax-scheme?continue=%2Fbusiness-account",
+          "/enrolment-management-frontend/IR-CT/request-new-activation-code?continue=%2Fbusiness-account",
           true
         )(fakeRequest, messages)
 
@@ -137,8 +137,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user has an unactivated enrolment created less than seven days ago" should {
       "return the not activated view without the new pin link" in {
         val notActivated = not_activated(
-          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=enteractivationpin&lang=eng",
-          "http://localhost:8080/portal/service/corporation-tax?action=activate&step=requestactivationpin&lang=eng",
+          "/enrolment-management-frontend/IR-CT/get-access-tax-scheme?continue=%2Fbusiness-account",
+          "/enrolment-management-frontend/IR-CT/request-new-activation-code?continue=%2Fbusiness-account",
           false
         )(fakeRequest, messages)
 
