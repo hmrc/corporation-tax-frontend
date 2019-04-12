@@ -53,8 +53,8 @@ class EnrolmentStoreServiceImpl @Inject()(connector: EnrolmentStoreConnector)(im
         case _ => true
       })
     }
-    case CtEnrolment(_,true) => Future(false)
-    case _ => Future(true)
+    case CtEnrolment(_,true) => Future.successful(false)
+    case _ => Future.successful(true)
   }
 }
 
