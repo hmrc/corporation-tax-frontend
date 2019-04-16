@@ -85,7 +85,6 @@ subpage.no_longer_use_personal_credit_card=Ni allwch ddefnyddio cerdyn credyd pe
 #######################################################
 ##  Account Summary
 #######################################################
-
 account.summary.file_a_return = Llenwi Ffurflen Dreth Gorfforaeth
 account.summary.make_a_payment = Gwneud taliad Treth Gorfforaeth
 
@@ -103,7 +102,6 @@ account.summary.generic_error.portal = Rhowch gynnig ar adnewyddu’r dudalen me
 #######################################################
 ##  Partial
 #######################################################
-
 partial.heading = Treth Gorfforaeth
 partial.utr = Eich Cyfeirnod Unigryw y Trethdalwr (UTR) yw {0}.
 partial.more_details = Rhagor o fanylion Treth Gorfforaeth
@@ -111,11 +109,14 @@ partial.more_details = Rhagor o fanylion Treth Gorfforaeth
 #######################################################
 ##  Not Activated
 #######################################################
-not_activated.activate = Cychwyn
-not_activated.need_code = Bydd angen y cod cychwyn a anfonwyd atoch drwy’r post.
-not_activated.lost_code = Rwyf wedi colli fy nghod cychwyn
-not_activated.72_hours = Mae cychwyn yn cymryd hyd at 72 awr.
-
+not_activated.we_posted_ = Anfonom god cychwyn atoch drwy’r post. Gall hwn gymryd hyd at 7 diwrnod i’ch cyrraedd.
+not_activated.use_the_activation_code_to = Defnyddiwch y cod cychwyn er mwyn
+not_activated.use_the_activation_code_we_posted_ = Defnyddiwch y cod cychwyn yr anfonom atoch drwy’r post i
+not_activated.access_your_corporation_tax_mynd = mynd i mewn i’ch cyfrif Treth Gorfforaeth
+not_activated.access_your_corporation_tax_fynd = fynd i mewn i’ch cyfrif Treth Gorfforaeth
+not_activated.it_can_take_up_to_ = Gall gymryd hyd at 72 awr i ddangos eich manylion.
+not_activated.you_can = Gallwch
+not_activated.request_a_new_activation_code = wneud cais am god cychwyn newydd
 
 #######################################################
 ##  Cards

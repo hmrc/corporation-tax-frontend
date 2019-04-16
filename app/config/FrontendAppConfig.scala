@@ -48,6 +48,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
 
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
+  lazy val enrolmentStoreUrl = baseUrl("enrolment-store")
 
   private lazy val businessAccountHost = runModeConfiguration.getString("urls.business-account.host").getOrElse("")
   private lazy val helpAndContactHost = runModeConfiguration.getString("urls.help-and-contact.host").getOrElse("")
