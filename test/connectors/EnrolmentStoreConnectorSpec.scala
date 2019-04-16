@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with ScalaFutures with MockHttpClient {
   implicit val hc = HeaderCarrier()
 
-  val httpGet = mock[HttpClient]
+  lazy val httpGet: HttpClient = mock[HttpClient]
 
   val connector = new EnrolmentStoreConnectorImpl(httpGet,frontendAppConfig)
   def result = connector.getEnrolments("cred-id")

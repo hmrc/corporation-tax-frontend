@@ -31,10 +31,10 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfter with MockHttpClient{
-  val activeOct13 = UserEnrolmentStatus("IR-CT", Some("active"),  Some(new DateTime("2018-10-13T23:59:59.999Z").toLocalDateTime))
-  val activeJan01 = UserEnrolmentStatus("IR-CT", Some("active"),  Some(new DateTime("2018-01-01T23:59:59.999Z").toLocalDateTime))
-  val activeFeb28 = UserEnrolmentStatus("IR-CT", Some("active"),  Some(new DateTime("2018-02-28T23:59:59.999Z").toLocalDateTime))
-  val noDate = UserEnrolmentStatus("IR-CT", Some("active"),  None)
+  val activeOct13 = UserEnrolmentStatus("IR-CT", Some("active"), Some(new DateTime("2018-10-13T23:59:59.999Z").toLocalDateTime))
+  val activeJan01 = UserEnrolmentStatus("IR-CT", Some("active"), Some(new DateTime("2018-01-01T23:59:59.999Z").toLocalDateTime))
+  val activeFeb28 = UserEnrolmentStatus("IR-CT", Some("active"), Some(new DateTime("2018-02-28T23:59:59.999Z").toLocalDateTime))
+  val noDate = UserEnrolmentStatus("IR-CT", Some("active"), None)
 
   class TestEnrolmentStoreConnector extends EnrolmentStoreConnector{
 
