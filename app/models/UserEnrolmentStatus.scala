@@ -33,21 +33,13 @@ object UserEnrolmentStatus {
   def enrolmentTokenExpiryDateReads: Reads[Option[LocalDateTime]] = new Reads[Option[LocalDateTime]] {
 
     override def reads(json: JsValue): JsResult[Option[LocalDateTime]] = {
-
       json match {
-
-        case JsString(x) => {
-
-          x.toLowerCase match {
-
-            case x if x.nonEmpty => {
-
+        case JsString(contentOfDateField) => {
+          contentOfDateField.toLowerCase match {
+            case dateAsString if dateAsString.nonEmpty => {
               try {
-
-                val date = new DateTime(x).toLocalDateTime
-
+                val date = new DateTime(dateAsString).toLocalDateTime
                 JsSuccess(Some(date))
-
               } catch {
                 case _:Throwable => JsSuccess(None)
               }
@@ -57,21 +49,19 @@ object UserEnrolmentStatus {
         }
         case _ => JsError()
       }
-
     }
-
   }
 
   implicit val reads: Reads[UserEnrolmentStatus] = (
     (JsPath \ "service").read[String] and
-      (JsPath \ "state").readNullable[String] and
-      (JsPath \ "enrolmentTokenExpiryDate").read[Option[LocalDateTime]](UserEnrolmentStatus.enrolmentTokenExpiryDateReads)
-    )(UserEnrolmentStatus.apply _)
+    (JsPath \ "state").readNullable[String] and
+    (JsPath \ "enrolmentTokenExpiryDate").read[Option[LocalDateTime]](UserEnrolmentStatus.enrolmentTokenExpiryDateReads)
+  )(UserEnrolmentStatus.apply _)
 
   implicit val writes: Writes[UserEnrolmentStatus] = (
     (JsPath \ "service").write[String] and
-      (JsPath \ "state").writeNullable[String] and
-      (JsPath \ "enrolmentTokenExpiryDate").write[Option[LocalDateTime]](UserEnrolmentStatus.enrolmentTokenExpiryDateWrites)
-    )(unlift(UserEnrolmentStatus.unapply))
+    (JsPath \ "state").writeNullable[String] and
+    (JsPath \ "enrolmentTokenExpiryDate").write[Option[LocalDateTime]](UserEnrolmentStatus.enrolmentTokenExpiryDateWrites)
+  )(unlift(UserEnrolmentStatus.unapply))
 
 }
