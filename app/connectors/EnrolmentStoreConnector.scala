@@ -38,15 +38,15 @@ class EnrolmentStoreConnectorImpl @Inject()(override val http: HttpClient, confi
 
     http.GET[HttpResponse](buildURL(credId)).map{
 
-      x => x.status match {
+      response => response.status match {
 
         case Status.OK => {
-          Try(x.json.as[UserEnrolments]) match {
+          Try(response.json.as[UserEnrolments]) match {
             case Success(r) => Right(r)
             case Failure(a) => Left("Unable to parse data from enrolment API")
           }
         }
-        case _ => Left(errorMessage(x))
+        case _ => Left(errorMessage(response))
 
       }
 
