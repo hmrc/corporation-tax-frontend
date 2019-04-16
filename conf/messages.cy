@@ -85,7 +85,6 @@ subpage.no_longer_use_personal_credit_card=Ni allwch ddefnyddio cerdyn credyd pe
 #######################################################
 ##  Account Summary
 #######################################################
-
 account.summary.file_a_return = Llenwi Ffurflen Dreth Gorfforaeth
 account.summary.make_a_payment = Gwneud taliad Treth Gorfforaeth
 
@@ -103,7 +102,6 @@ account.summary.generic_error.portal = Rhowch gynnig ar adnewyddu’r dudalen me
 #######################################################
 ##  Partial
 #######################################################
-
 partial.heading = Treth Gorfforaeth
 partial.utr = Eich Cyfeirnod Unigryw y Trethdalwr (UTR) yw {0}.
 partial.more_details = Rhagor o fanylion Treth Gorfforaeth
@@ -111,7 +109,6 @@ partial.more_details = Rhagor o fanylion Treth Gorfforaeth
 #######################################################
 ##  Not Activated
 #######################################################
-
 not_activated.we_posted_ = Anfonom god cychwyn atoch drwy’r post. Gall hwn gymryd hyd at 7 diwrnod i’ch cyrraedd.
 not_activated.use_the_activation_code_to = Defnyddiwch y cod cychwyn er mwyn
 not_activated.use_the_activation_code_we_posted_ = Defnyddiwch y cod cychwyn yr anfonom atoch drwy’r post i

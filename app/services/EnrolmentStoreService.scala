@@ -36,17 +36,17 @@ class EnrolmentStoreServiceImpl @Inject()(connector: EnrolmentStoreConnector)(im
     case CtEnrolment(CtUtr(utr), false) => {
       val enrolmentDetailsList: Future[Either[String, UserEnrolments]] = connector.getEnrolments(utr)
       enrolmentDetailsList.map({
-        case Right(UserEnrolments(y)) if y.nonEmpty => {
+        case Right(UserEnrolments(enrolmentDataList)) if enrolmentDataList.nonEmpty => {
 
-          val a: Seq[UserEnrolmentStatus] = y.filter(_.enrolmentTokenExpiryDate.isDefined).sortWith { (left, right) =>
+          val enrolmentStatus: Seq[UserEnrolmentStatus] = enrolmentDataList.filter(_.enrolmentTokenExpiryDate.isDefined).sortWith { (left, right) =>
             left.enrolmentTokenExpiryDate.get.isAfter(right.enrolmentTokenExpiryDate.get)
           }
 
-          a match {
+          enrolmentStatus match {
             case Nil => true
             case _ =>
               val expectedArrivalDate =
-                a.head.enrolmentTokenExpiryDate.get.minusDays(daysBetweenExpectedArrivalAndExpiry).toDateTime(DateTimeZone.UTC).getMillis
+                enrolmentStatus.head.enrolmentTokenExpiryDate.get.minusDays(daysBetweenExpectedArrivalAndExpiry).toDateTime(DateTimeZone.UTC).getMillis
               currentDate.isAfter(expectedArrivalDate)
           }
         }

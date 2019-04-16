@@ -85,7 +85,6 @@ subpage.no_longer_use_personal_credit_card=You can no longer use a personal cred
 #######################################################
 ##  Account Summary
 #######################################################
-
 account.summary.file_a_return = Complete Corporation Tax return
 account.summary.make_a_payment = Make a Corporation Tax payment
 
@@ -103,7 +102,6 @@ account.summary.generic_error.portal = Try refreshing the page in a few minutes 
 #######################################################
 ##  Partial
 #######################################################
-
 partial.heading = Corporation Tax
 partial.utr = Your Unique Taxpayer Reference (UTR) is {0}.
 partial.more_details = More Corporation Tax details
@@ -111,7 +109,6 @@ partial.more_details = More Corporation Tax details
 #######################################################
 ##  Not Activated
 #######################################################
-
 not_activated.we_posted_ = We posted an activation code to you. Delivery takes up to 7 days.
 not_activated.use_the_activation_code_to = Use the activation code to
 not_activated.use_the_activation_code_we_posted_ = Use the activation code we posted to you to
