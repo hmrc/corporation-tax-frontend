@@ -16,14 +16,17 @@
 
 @import uk.gov.hmrc.domain.CtUtr
 @import config.FrontendAppConfig
-@(ctUtr: CtUtr, accountSummary: Html, appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@(ctUtr: CtUtr, accountSummary: Html, appConfig: FrontendAppConfig, activated: Boolean = true)(implicit request: Request[_], messages: Messages)
 
 <h2>@Messages("partial.heading")</h2>
 
 <p class="utr-heading">@Messages("partial.utr", ctUtr)</p>
 
 @accountSummary
-<div class="subsection">
-  <a id="ct-account-details-link" href='@appConfig.getUrl("mainPage")'
-    data-journey-click="link - click:Corporation Tax:More Corporation Tax details" class="enrolment-link">@Messages("partial.more_details")</a>
-</div>
+
+@if(activated){
+  <div class="subsection">
+    <a id="ct-account-details-link" href='@appConfig.getUrl("mainPage")'
+      data-journey-click="link - click:Corporation Tax:More Corporation Tax details" class="enrolment-link">@Messages("partial.more_details")</a>
+  </div>
+}
