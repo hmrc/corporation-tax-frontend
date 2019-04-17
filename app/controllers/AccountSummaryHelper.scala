@@ -22,17 +22,12 @@ import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
-import models.{CtData, CtEnrolment, CtNoData, CtUnactivated}
-import org.joda.time.DateTime
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.RequestHeader
-import services.{CtService, EnrolmentsStoreService}
 import models.{CtAccountSummary, CtData, CtNoData, CtUnactivated}
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
 import play.twirl.api.HtmlFormat
-import services.{CtServiceInterface, PaymentHistoryServiceInterface}
+import services.{CtServiceInterface, EnrolmentsStoreService, PaymentHistoryServiceInterface}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.views.formatting.Money.pounds
