@@ -48,3 +48,30 @@ class PartialViewSpec extends ViewBehaviours {
     }
   }
 }
+
+class PartialViewNotActivatedSpec extends ViewBehaviours {
+
+  val messageKeyPrefix = "partial"
+
+  val fakeSummary = Html("<p>This is the account summary</p>")
+
+  def createView = () => partial(CtUtr("UTR"), fakeSummary, frontendAppConfig, false)(fakeRequest, messages)
+
+  "Partial view when the account is not activated" must {
+    "pass the title" in {
+      asDocument(createView()).text() must include ("Corporation Tax")
+    }
+
+    "pass the utr of the user" in {
+      asDocument(createView()).text() must include ("Your Unique Taxpayer Reference (UTR) is UTR.")
+    }
+
+    "not have a more details link" in {
+      asDocument(createView()).getElementById("ct-account-details-link") mustBe null
+    }
+
+    "pass the account summary partial" in {
+      asDocument(createView()).html() must include(fakeSummary.toString())
+    }
+  }
+}
