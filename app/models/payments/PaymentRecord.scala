@@ -81,7 +81,7 @@ object PaymentRecord {
 
   implicit val writes: Writes[PaymentRecord] = (
     (JsPath \ "reference").write[String] and
-      (JsPath \ "amountInPence").write[Long] and
+    (JsPath \ "amountInPence").write[Long] and
       (JsPath \ "status").write[PaymentStatus](PaymentStatus.paymentStatusWrites) and
       (JsPath \ "createdOn").write[String] and
       (JsPath \ "taxType").write[String]
@@ -89,7 +89,7 @@ object PaymentRecord {
 
   implicit val reads: Reads[PaymentRecord] = (
     (JsPath \ "reference").read[String] and
-      (JsPath \ "amountInPence").read[Long] and
+    (JsPath \ "amountInPence").read[Long] and
       (JsPath \ "status").read[PaymentStatus](PaymentStatus.paymentStatusReads) and
       (JsPath \ "createdOn").read[String] and
       (JsPath \ "taxType").read[String]
