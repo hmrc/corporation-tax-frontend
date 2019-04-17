@@ -45,8 +45,8 @@ class CtCardBuilderServiceImpl @Inject() (val messagesApi: MessagesApi,
     }
 
     modelHistory.map { tuple =>
-      val model = tuple._1
-      val history = tuple._2
+      val model: CtAccountSummary = tuple._1
+      val history: List[PaymentRecord] = tuple._2
       model match {
         case CtNoData => buildCtCardData(
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(None).toString()),

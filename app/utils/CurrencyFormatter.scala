@@ -19,17 +19,17 @@ package utils
 object CurrencyFormatter {
   def formatCurrency(amount: BigDecimal, symbol:String = "£"): String = {
 
-    val absoluteAmount = amount.abs
-    val pence = (absoluteAmount * 100).toBigInt()
-    val pounds = absoluteAmount.toBigInt()
+    val absoluteAmount: BigDecimal = amount.abs
+    val pence: BigInt = (absoluteAmount * 100).toBigInt()
+    val pounds: BigInt = absoluteAmount.toBigInt()
 
-    val negative = if (amount < 0) {
+    val negative: String = if (amount < 0) {
       "-"
     } else {
       ""
     }
 
-    val formattedAmount = if(pounds * 100 == pence){
+    val formattedAmount: String = if(pounds * 100 == pence){
       "%,d".format(pounds)
     } else {
       "%,.2f".format(absoluteAmount)
@@ -39,7 +39,7 @@ object CurrencyFormatter {
 
   def formatCurrencyFromPennies(amount: Long, symbol:String = "£"): String = {
 
-    val pounds = BigDecimal(amount) / 100
+    val pounds: BigDecimal = BigDecimal(amount) / 100
 
     formatCurrency(pounds, symbol)
   }

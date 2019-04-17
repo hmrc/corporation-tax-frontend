@@ -95,6 +95,3 @@ object PaymentRecord {
       (JsPath \ "taxType").read[String]
     )(PaymentRecord.apply _)
 }
-
-
-

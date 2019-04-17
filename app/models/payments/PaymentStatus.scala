@@ -51,8 +51,8 @@ object PaymentStatus {
   def paymentStatusReads: Reads[PaymentStatus] = new Reads[PaymentStatus] {
     override def reads(json: JsValue): JsResult[PaymentStatus] = {
       json match {
-        case JsString(x) => {
-          x.toLowerCase match {
+        case JsString(paymentStatus) => {
+          paymentStatus.toLowerCase match {
             case Successful.value => JsSuccess(Successful)
             case Created.value => JsSuccess(Created)
             case _ => JsSuccess(Invalid) //don't throw error if status doesn't match
@@ -64,6 +64,6 @@ object PaymentStatus {
   }
 
   def paymentStatusWrites: Writes[PaymentStatus] = new Writes[PaymentStatus] {
-    def writes(x: PaymentStatus): JsValue = JsString(x.value)
+    def writes(paymentStatus: PaymentStatus): JsValue = JsString(paymentStatus.value)
   }
 }

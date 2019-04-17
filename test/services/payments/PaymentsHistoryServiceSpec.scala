@@ -107,9 +107,7 @@ class PaymentsHistoryServiceSpec  extends PlaySpec with ScalaFutures with GuiceO
   }
 
   def fakeRequest = FakeRequest("", "")
-
-
-
+  
   override def newAppForTest(testData: TestData): Application = {
     val builder = new GuiceApplicationBuilder()
     testData.name match {
