@@ -19,8 +19,11 @@ package services
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import javax.inject.Inject
+
 import models._
+import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
+import org.joda.time.DateTime
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -29,26 +32,38 @@ import scala.concurrent.{ExecutionContext, Future}
 class CtCardBuilderServiceImpl @Inject() (val messagesApi: MessagesApi,
                                           appConfig: FrontendAppConfig,
                                           ctService: CtServiceInterface,
-                                          ctPartialBuilder: CtPartialBuilder
+                                          ctPartialBuilder: CtPartialBuilder,
+                                          paymentHistoryService: PaymentHistoryServiceInterface
                                          )(implicit ec: ExecutionContext) extends CtCardBuilderService {
 
   def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] = {
-    ctService.fetchCtModel(Some(request.ctEnrolment)).map { ctAccountSummary =>
-      ctAccountSummary match {
+    val modelHistory = for{
+      model <- ctService.fetchCtModel(Some(request.ctEnrolment))
+      history <- paymentHistoryService.getPayments(Some(request.ctEnrolment),DateTime.now())
+    } yield {
+      (model,history)
+    }
+
+    modelHistory.map { tuple =>
+      val model: CtAccountSummary = tuple._1
+      val history: List[PaymentRecord] = tuple._2
+      model match {
         case CtNoData => buildCtCardData(
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(None).toString()),
-          returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString())
+          returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString()),
+          paymentHistory = history
         )
         case data: CtData => buildCtCardData(
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(Some(data)).toString()),
-          returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString())
+          returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString()),
+          paymentHistory = history
         )
         case _ => throw new Exception
       }
     }
   }
 
-  private def buildCtCardData(paymentsContent: Option[String] = None, returnsContent: Option[String] = None)
+  private def buildCtCardData(paymentsContent: Option[String] = None, returnsContent: Option[String] = None, paymentHistory: List[PaymentRecord])
                            (implicit request: AuthenticatedRequest[_], messages: Messages, hc: HeaderCarrier): Card = {
     Card(
       title = messagesApi.preferred(request)("partial.heading"),
@@ -64,7 +79,8 @@ class CtCardBuilderServiceImpl @Inject() (val messagesApi: MessagesApi,
       ),
       messageReferenceKey = Some("card.ct.utr"),
       paymentsPartial = paymentsContent,
-      returnsPartial = returnsContent
+      returnsPartial = returnsContent,
+      paymentHistory = paymentHistory
     )
   }
 }
