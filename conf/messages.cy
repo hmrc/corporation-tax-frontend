@@ -19,7 +19,6 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = Mae problem wedi codi
-error.summary.text = Check the following
 
 index.title = corporation-tax-frontend
 index.heading = corporation-tax-frontend
