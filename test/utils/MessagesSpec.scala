@@ -76,7 +76,7 @@ class MessagesSpec extends SpecBase {
       }
     }
 
-    // 67% of app needs to be translated into Welsh. 67% allows for:
+    // 75% of app needs to be translated into Welsh. 75% allows for:
     //   - Messages which just can't be different from English
     //     E.g. addresses, acronyms, numbers, etc.
     //   - Content which is pending translation to Welsh
@@ -88,7 +88,7 @@ class MessagesSpec extends SpecBase {
 
       withClue("##############################################\n" +
         s"${same.size.toDouble * 100 / englishMesssages.size.toDouble}% of messages match between english and welsh\n$same\n") {
-        same.size.toDouble / englishMesssages.size.toDouble < 0.33 mustBe true
+        same.size.toDouble / englishMesssages.size.toDouble < 0.25 mustBe true
       }
     }
 
