@@ -25,7 +25,7 @@ import models.CtEnrolment
 import org.jsoup.nodes.Document
 import uk.gov.hmrc.domain.CtUtr
 
-class no_dataViewSpec extends ViewSpecBase {
+class NoDataViewSpec extends ViewSpecBase {
 
 
   def ctEnrolment(activated: Boolean = true) =  CtEnrolment(CtUtr("utr"), isActivated = true)

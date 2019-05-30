@@ -25,7 +25,7 @@ import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
 import views.html.partials.card.payments.{no_balance, no_data}
 
-class NoDataViewSpec extends ViewSpecBase {
+class NoBalanceViewSpec extends ViewSpecBase {
 
 
   def ctEnrolment(activated: Boolean = true) =  CtEnrolment(CtUtr("utr"), isActivated = true)
