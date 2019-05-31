@@ -200,7 +200,7 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
-          asDocument(view).text() must include("You have nothing to pay view statement")
+          asDocument(view).text() must include("You have nothing to pay View statement (opens in a new window or tab)")
         }
       }
     }
@@ -215,7 +215,7 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
-          asDocument(view).text() must include("You have nothing to pay view statement")
+          asDocument(view).text() must include("You have nothing to pay View statement (opens in a new window or tab)")
         }
       }
     }

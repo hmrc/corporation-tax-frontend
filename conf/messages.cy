@@ -80,7 +80,7 @@ account.summary.in_debit = Mae arnoch {0} -
 account.summary.in_credit = Rydych {0} mewn credyd -
 account.summary.nothing_to_pay = Does dim byd gennych i’w dalu -
 account.summary.worked_out = Sut y gwnaethom gyfrifo hyn (yn agor mewn ffenestr neu dab newydd)
-account.summary.view_statement = gweld y datganiad
+account.summary.view_statement = Gweld y datganiad (yn agor mewn ffenestr neu dab newydd)
 account.summary.no_balance = Dim gwybodaeth am weddill i’w dangos
 account.summary.generic_error = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.
 account.summary.generic_error.portal = Rhowch gynnig ar adnewyddu’r dudalen mewn ychydig o funudau neu defnyddiwch {0}hen wefan CThEM{1}.
@@ -127,3 +127,6 @@ payment.history.title = Eich taliadau cerdyn yn ystod y 7 diwrnod diwethaf
 payment.history.message = Bydd yn cymryd hyd at 7 diwrnod i ddiweddaru’ch balans ar ôl pob taliad.
 payment.history.amount = Gwnaethoch dalu {0} ar {1}
 payment.history.reference = Cyfeirnod eich taliad yw {0}.
+
+#todo get the welsh
+payment.history.we_cannot_display_ = We cannot display your card payment history at the moment. Check again later.
