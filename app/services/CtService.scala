@@ -18,10 +18,9 @@ package services
 
 import com.google.inject.ImplementedBy
 import connectors.CtConnector
-import connectors.models.{CtAccountSummaryData, CtDesignatoryDetailsCollection}
+import connectors.models.CtAccountSummaryData
 import javax.inject.{Inject, Singleton}
 import models._
-import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,32 +28,23 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
 
-  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary] = {
+  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier,
+                                                        ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
     ctEnrolmentOpt match {
-      case Some(enrolment@CtEnrolment(utr, true)) =>
+      case Some(CtEnrolment(utr, true)) =>
         ctConnector.accountSummary(utr).map {
-          case Some(accountSummary@CtAccountSummaryData(Some(_))) => CtData(accountSummary)
-          case _ => CtNoData
+          case Some(accountSummary@CtAccountSummaryData(Some(_))) => Right(Some(CtData(accountSummary)))
+          case _ => Right(None)
         }.recover {
-          case _ => CtGenericError
+          case _ => Left(CtGenericError)
         }
-      case Some(enrolment@CtEnrolment(utr, false)) => Future(CtUnactivated)
-      case _ => Future(CtEmpty)
+      case Some(CtEnrolment(_, false)) => Future.successful(Left(CtUnactivated))
+      case _ => Future.successful(Left(CtEmpty))
     }
-  }
-
-  def designatoryDetails(ctEnrolment: CtEnrolment)
-                        (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[CtDesignatoryDetailsCollection]] = {
-    ctConnector.designatoryDetails(ctEnrolment.ctUtr).recover {
-      case e  =>
-        Logger.warn(s"Failed to fetch ct designatory details with message - ${e.getMessage}")
-        None
-    }
-  }
 
 }
 
 @ImplementedBy(classOf[CtService])
 trait CtServiceInterface {
-  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary]
+  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]]
 }

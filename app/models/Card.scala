@@ -41,9 +41,11 @@ case class Card(
   additionalLinks: Seq[Link] = Nil,
   paymentsPartial: Option[String] = None,
   returnsPartial: Option[String] = None,
-  paymentHistory: List[PaymentRecord] = Nil
+  paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(Nil)
 )
 
 object Card {
   implicit val cardFormat: OFormat[Card] = Json.format[Card]
 }
+
+case object PaymentRecordFailure

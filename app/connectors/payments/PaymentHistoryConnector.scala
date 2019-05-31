@@ -16,54 +16,44 @@
 
 package connectors.payments
 
-import javax.inject.Singleton
-
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import models.payments.{PaymentHistory, PaymentHistoryInterface, PaymentHistoryNotFound}
-import play.api.http.Status.OK
+import javax.inject.Singleton
+import models.payments.CtPaymentRecord
+import play.api.http.Status._
+import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
-
-
 
 @Singleton
-class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) extends PaymentHistoryConnectorInterface{
+class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) extends PaymentHistoryConnectorInterface {
+
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  lazy val host = config.baseUrl("pay-api")
-
-  val searchScope: String = "BTA"
-
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, PaymentHistoryInterface]] = {
-    http.GET[HttpResponse](buildUrl(searchTag)).map {
-      r => r.status match {
-        case OK => {
-          Try(r.json.as[PaymentHistory]) match {
-            case Success(data) => Right(data)
-            case Failure(_) => Left("unable to parse data from payment api")
+  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, List[CtPaymentRecord]]] =
+    http.GET[HttpResponse](buildUrl(searchTag)).map { response =>
+      response.status match {
+        case OK =>
+          (response.json \ "payments").validate[List[CtPaymentRecord]] match {
+            case JsSuccess(paymentHistory, _) => Right(paymentHistory)
+            case _ => Left("unable to parse data from payment api")
           }
-        }
         case _ => Left("couldn't handle response from payment api")
       }
+    }.recover {
+      case _: NotFoundException => Right(Nil)
+      case _: BadRequestException => Left("invalid request sent")
+      case e: Exception =>
+        Left("exception thrown from payment api")
     }
-      .recover({
-        case _ : NotFoundException => Right(PaymentHistoryNotFound)
-        case _ : BadRequestException => Left("invalid request sent")
-        case _ : Exception => {
-          Left("exception thrown from payment api")
-        }
-      })
-  }
 
-  private def buildUrl(searchTag: String, taxType: String = "corporation-tax") = s"$host/pay-api/payment/search/$searchScope/$searchTag?taxType=$taxType"
+  private def buildUrl(searchTag: String) = s"${config.baseUrl("pay-api")}/pay-api/payment/search/BTA/$searchTag?taxType=corporation-tax"
+
 }
 
 @ImplementedBy(classOf[PaymentHistoryConnector])
 trait PaymentHistoryConnectorInterface {
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, PaymentHistoryInterface]]
+  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, List[CtPaymentRecord]]]
 }
-

@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object PaymentStartController {
   def toAmountInPence(amountInPounds: BigDecimal): Long = (amountInPounds * 100).toLong
+
   implicit val localDateOrdering: Ordering[LocalDate] = new Ordering[LocalDate] {
     def compare(x: LocalDate, y: LocalDate): Int = x compareTo y
   }
@@ -48,18 +49,15 @@ class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
   def makeAPayment: Action[AnyContent] = authenticate.async {
     implicit request =>
       ctService.fetchCtModel(Some(request.ctEnrolment)).flatMap {
-        case CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))))) =>
+        case Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))))))) =>
           val spjRequestBtaVat = SpjRequestBtaCt(
             toAmountInPence(amount),
             appConfig.businessAccountHomeAbsoluteUrl,
             appConfig.businessAccountHomeAbsoluteUrl,
             request.ctEnrolment.ctUtr.utr)
           payConnector.ctPayLink(spjRequestBtaVat).map(response => Redirect(response.nextUrl))
-
         case _ => Future.successful(BadRequest(generic_error(appConfig.getPortalUrl("home")(request.ctEnrolment))))
       }
-        .recover {
-          case _ => BadRequest(generic_error(appConfig.getPortalUrl("home")(request.ctEnrolment)))
-        }
   }
+
 }

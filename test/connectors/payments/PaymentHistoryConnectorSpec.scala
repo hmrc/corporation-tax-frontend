@@ -18,6 +18,7 @@ package connectors.payments
 
 import base.SpecBase
 import connectors.MockHttpClient
+import models.payments.PaymentStatus.{Successful, Invalid}
 import models.payments._
 import org.mockito.Matchers
 import org.mockito.Mockito.when
@@ -25,8 +26,9 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import uk.gov.hmrc.domain.CtUtr
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import play.api.http.Status._
 
 class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with MockHttpClient {
 
@@ -46,11 +48,11 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
 
   val ctUtr = CtUtr("utr")
 
-  "The Payment History connector" when{
+  "The Payment History connector" when {
 
     "GET is called" should {
       "handle a valid 200 response with minimum data" in {
-        val hodData =  Json.parse(
+        val hodData = Json.parse(
           """
             |{
             |"searchScope": "bta",
@@ -59,17 +61,17 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
             |}
           """.stripMargin
         )
-        val hodResponse = HttpResponse(200, Some(hodData))
+        val hodResponse = HttpResponse(OK, Some(hodData))
         val connector = testConnector(hodResponse)
         val result = connector.get("")
-        whenReady(result) { r =>
-          r mustBe Right(PaymentHistory("bta", "search-tag", Nil))
+        whenReady(result) {
+          _ mustBe Right(Nil)
         }
 
       }
 
       "handle a valid 200 response with single payments record" in {
-        val hodResponse = HttpResponse( 200,
+        val hodResponse = HttpResponse(OK,
           Some(
             Json.parse(
               """
@@ -93,18 +95,16 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Right(
-            PaymentHistory(
-              "bta", "search-tag", List(PaymentRecord("reference number",100,Successful,"data string","tax type"))
-            )
+        whenReady(result) {
+          _ mustBe Right(
+            List(CtPaymentRecord("reference number", 100, Successful, "data string", "tax type"))
           )
         }
       }
 
       "handle a valid 200 response with multiple payment records" in {
         val hodResponse = HttpResponse(
-          200, Some(
+          OK, Some(
             Json.parse(
               """
                 |{
@@ -135,21 +135,17 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Right(
-            PaymentHistory(
-              "bta", "search-tag", List(
-                PaymentRecord("reference number",100,Successful,"data string","tax type"),
-                PaymentRecord("reference number 2",2000000000,Successful,"data string","tax type")
-              )
-            )
-          )
+        whenReady(result) {
+          _ mustBe Right(List(
+            CtPaymentRecord("reference number", 100, Successful, "data string", "tax type"),
+            CtPaymentRecord("reference number 2", 2000000000, Successful, "data string", "tax type")
+          ))
         }
       }
 
       "handle an invalid status response within payment records" in {
         val hodResponse = HttpResponse(
-          200, Some(
+          OK, Some(
             Json.parse(
               """
                 |{
@@ -179,21 +175,17 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Right(
-            PaymentHistory(
-              "bta", "search-tag", List(
-                PaymentRecord("reference number", 100, Invalid, "data string", "tax type"),
-                PaymentRecord("reference number 2", 2000000000, Successful, "data string", "tax type")
-              )
-            )
-          )
+        whenReady(result) {
+          _ mustBe Right(List(
+            CtPaymentRecord("reference number", 100, Invalid, "data string", "tax type"),
+            CtPaymentRecord("reference number 2", 2000000000, Successful, "data string", "tax type")
+          ))
         }
       }
 
       "handle an incomplete json object" in {
         val hodResponse = HttpResponse(
-          200, Some(
+          OK, Some(
             Json.parse(
               """{"searchScope": "bta"}"""
             )
@@ -202,14 +194,14 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Left("unable to parse data from payment api")
+        whenReady(result) {
+          _ mustBe Left("unable to parse data from payment api")
         }
       }
 
       "handle an invalid json object" in {
         val hodResponse = HttpResponse(
-          200, Some(
+          OK, Some(
             Json.toJson(
               """{"searchScope", }"""
             )
@@ -219,53 +211,53 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Left("unable to parse data from payment api")
+        whenReady(result) {
+          _ mustBe Left("unable to parse data from payment api")
         }
       }
 
       "handle 400 response" in {
-        val hodResponse = HttpResponse(400, Some(Json.obj()))
+        val hodResponse = HttpResponse(BAD_REQUEST, Some(Json.obj()))
 
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Left("invalid request sent")
+        whenReady(result) {
+          _ mustBe Left("invalid request sent")
         }
       }
 
       "handle 404 response" in {
-        val hodResponse = HttpResponse(404, Some(Json.obj()))
+        val hodResponse = HttpResponse(NOT_FOUND, Some(Json.obj()))
 
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Right(PaymentHistoryNotFound)
+        whenReady(result) {
+          _ mustBe Right(Nil)
         }
       }
 
       "handle invalid response code" in {
-        val hodResponse = HttpResponse(201, Some(Json.obj()))
+        val hodResponse = HttpResponse(CREATED, Some(Json.obj()))
 
         val connector = testConnector(hodResponse)
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Left("couldn't handle response from payment api")
+        whenReady(result) {
+          _ mustBe Left("couldn't handle response from payment api")
         }
       }
 
       "handle 5xx response" in {
-        val hodResponse = HttpResponse(500, Some(Json.obj()))
+        val hodResponse = HttpResponse(INTERNAL_SERVER_ERROR, Some(Json.obj()))
 
         val connector = testConnector(hodResponse)
 
         val result = connector.get("")
 
-        whenReady(result) { r =>
-          r mustBe Left("exception thrown from payment api")
+        whenReady(result) {
+          _ mustBe Left("exception thrown from payment api")
         }
       }
     }
