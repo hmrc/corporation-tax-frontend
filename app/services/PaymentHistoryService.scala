@@ -39,8 +39,6 @@ class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterfac
           connector.get(ctEnrolment.ctUtr.utr).map {
             case Right(payments) => Right(filterPaymentHistory(payments, currentDate))
             case Left(message) => log(message)
-          }.recover {
-            case _ => Left(PaymentRecordFailure)
           }
         case None => Future.successful(Right(Nil))
       }

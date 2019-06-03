@@ -46,10 +46,6 @@ class PaymentHistoryParseError extends PaymentHistoryConnectorInterface {
   def get(searchTag: String)(implicit headerCarrier: HeaderCarrier) = Future.successful(Left("unable to parse data from payment api"))
 }
 
-class PaymentHistoryFailed extends PaymentHistoryConnectorInterface {
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier) = Future.failed(new Throwable)
-}
-
 class PaymentHistoryConnectorSingleRecord(val date: String = "2018-10-20T08:00:00.000", status: PaymentStatus = Successful) extends PaymentHistoryConnectorInterface {
   def get(searchTag: String)(implicit headerCarrier: HeaderCarrier) = Future.successful(
     Right(List(
@@ -166,10 +162,6 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
 
       "return Nil when payment history could not be found" in new buildService(new PaymentHistoryConnectorNotFound) {
         testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(Nil)
-      }
-
-      "return Left(PaymentRecordFailure) when connector throws exception" in new buildService(new PaymentHistoryFailed) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Left(PaymentRecordFailure)
       }
 
       "return Left(PaymentRecordFailure) when connector fails to parse" in new buildService(new PaymentHistoryParseError) {

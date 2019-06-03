@@ -45,7 +45,7 @@ class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAp
     }.recover {
       case _: NotFoundException => Right(Nil)
       case _: BadRequestException => Left("invalid request sent")
-      case e: Exception =>
+      case _: Exception =>
         Left("exception thrown from payment api")
     }
 
