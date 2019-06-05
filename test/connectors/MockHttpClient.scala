@@ -24,13 +24,13 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.hooks.HttpHook
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 
 trait MockHttpClient extends MockitoSugar {
 
-
-  def http(httpWrapper: HttpWrapper) = new HttpClient {
+  // todo replace this with an actual mock/spy
+  def http(httpWrapper: HttpWrapper): HttpClient = new HttpClient {
 
     override def actorSystem: ActorSystem = ActorSystem("test")
 
@@ -58,6 +58,9 @@ trait MockHttpClient extends MockitoSugar {
     override val hooks: Seq[HttpHook] = NoneRequired
 
     override def configuration: Option[Config] = None
+
+    override def doPutString(url: String, body: String, headers: Seq[(String, String)])(implicit hc: HeaderCarrier): Future[HttpResponse] = ???
+
   }
 
   class HttpWrapper {
