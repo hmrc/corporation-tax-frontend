@@ -58,13 +58,13 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     mockPaymentHistoryService, messagesApi)
 
   case class TestCtService(data: Either[CtAccountFailure, Option[CtData]]) extends CtServiceInterface {
-    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] = {
+    override def fetchCtModel(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] = {
       Future.successful(data)
     }
   }
 
   case class TestHistoryService(history: List[PaymentRecord]) extends PaymentHistoryServiceInterface {
-    override def getPayments(enrolment: Option[CtEnrolment], date: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
+    override def getPayments(enrolment: CtEnrolment, date: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
       Future.successful(Right(history))
     }
   }

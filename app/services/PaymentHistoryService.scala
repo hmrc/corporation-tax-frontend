@@ -31,16 +31,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterface, config: FrontendAppConfig)
                                      (implicit ec: ExecutionContext) extends PaymentHistoryServiceInterface {
 
-  def getPayments(enrolment: Option[CtEnrolment],
+  def getPayments(ctEnrolment: CtEnrolment,
                   currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
     if (config.getCTPaymentHistoryToggle) {
-      enrolment match {
-        case Some(ctEnrolment) =>
-          connector.get(ctEnrolment.ctUtr.utr).map {
-            case Right(payments) => Right(filterPaymentHistory(payments, currentDate))
-            case Left(message) => log(message)
-          }
-        case None => Future.successful(Right(Nil))
+      connector.get(ctEnrolment.ctUtr.utr).map {
+        case Right(payments) => Right(filterPaymentHistory(payments, currentDate))
+        case Left(message) => log(message)
       }
     } else {
       Future.successful(Right(Nil))
@@ -58,6 +54,6 @@ class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterfac
 
 @ImplementedBy(classOf[PaymentHistoryService])
 trait PaymentHistoryServiceInterface {
-  def getPayments(enrolment: Option[CtEnrolment],
+  def getPayments(enrolment: CtEnrolment,
                   currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]]
 }

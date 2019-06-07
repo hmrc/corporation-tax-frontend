@@ -47,7 +47,7 @@ class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
         reset(mockCtConnector)
         when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.successful(Option(ctAccountSummary)))
 
-        whenReady(service.fetchCtModel(Some(ctEnrolment))) {
+        whenReady(service.fetchCtModel(ctEnrolment)) {
           _ mustBe Right(Some(CtData(ctAccountSummary)))
         }
       }
@@ -57,7 +57,7 @@ class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
         reset(mockCtConnector)
         when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.successful(None))
 
-        whenReady(service.fetchCtModel(Some(ctEnrolment))) {
+        whenReady(service.fetchCtModel(ctEnrolment)) {
           _ mustBe Right(None)
         }
       }
@@ -67,17 +67,8 @@ class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
         reset(mockCtConnector)
         when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.failed(new Throwable))
 
-        whenReady(service.fetchCtModel(Some(ctEnrolment))) {
+        whenReady(service.fetchCtModel(ctEnrolment)) {
           _ mustBe Left(CtGenericError)
-        }
-      }
-    }
-    "the ct enrolment is empty" should {
-      "return a CtEmpty" in {
-        reset(mockCtConnector)
-
-        whenReady(service.fetchCtModel(None)) {
-          _ mustBe Left(CtEmpty)
         }
       }
     }
@@ -85,7 +76,7 @@ class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
       "return a Left(CtUnactivated)" in {
         reset(mockCtConnector)
 
-        whenReady(service.fetchCtModel(Some(CtEnrolment(CtUtr("utr"), isActivated = false)))) {
+        whenReady(service.fetchCtModel(CtEnrolment(CtUtr("utr"), isActivated = false))) {
           _ mustBe Left(CtUnactivated)
         }
       }

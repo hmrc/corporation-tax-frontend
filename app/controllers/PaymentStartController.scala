@@ -48,7 +48,7 @@ class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
 
   def makeAPayment: Action[AnyContent] = authenticate.async {
     implicit request =>
-      ctService.fetchCtModel(Some(request.ctEnrolment)).flatMap {
+      ctService.fetchCtModel(request.ctEnrolment).flatMap {
         case Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))))))) =>
           val spjRequestBtaVat = SpjRequestBtaCt(
             toAmountInPence(amount),

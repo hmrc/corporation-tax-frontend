@@ -48,8 +48,8 @@ class AccountSummaryHelper @Inject()(
                                                                                         ec: ExecutionContext): Future[HtmlFormat.Appendable] = {
     val modelHistory: Future[(Either[CtAccountFailure, Option[CtData]], Either[PaymentRecordFailure.type, List[PaymentRecord]])] =
       for {
-        model <- ctService.fetchCtModel(Some(request.ctEnrolment))
-        maybeHistory <- paymentHistoryService.getPayments(Some(request.ctEnrolment), DateTime.now())
+        model <- ctService.fetchCtModel(request.ctEnrolment)
+        maybeHistory <- paymentHistoryService.getPayments(request.ctEnrolment, DateTime.now())
       } yield (model, maybeHistory)
 
     modelHistory flatMap {

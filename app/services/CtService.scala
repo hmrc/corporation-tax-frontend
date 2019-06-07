@@ -28,17 +28,17 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
 
-  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier,
-                                                        ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
-    ctEnrolmentOpt match {
-      case Some(CtEnrolment(utr, true)) =>
+  def fetchCtModel(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier,
+                                             ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
+    ctEnrolment match {
+      case CtEnrolment(utr, true) =>
         ctConnector.accountSummary(utr).map {
           case Some(accountSummary@CtAccountSummaryData(Some(_))) => Right(Some(CtData(accountSummary)))
           case _ => Right(None)
         }.recover {
           case _ => Left(CtGenericError)
         }
-      case Some(CtEnrolment(_, false)) => Future.successful(Left(CtUnactivated))
+      case CtEnrolment(_, false) => Future.successful(Left(CtUnactivated))
       case _ => Future.successful(Left(CtEmpty))
     }
 
@@ -46,5 +46,5 @@ class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
 
 @ImplementedBy(classOf[CtService])
 trait CtServiceInterface {
-  def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]]
+  def fetchCtModel(ctEnrolmentOpt: CtEnrolment)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]]
 }

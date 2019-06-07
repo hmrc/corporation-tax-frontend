@@ -59,7 +59,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
                                 ) extends CtCardBuilderServiceImpl(messagesApi, appConfig, ctServiceInterface, ctPartialBuilder, paymentHistoryService)
 
   case class TestHistoryService(history: List[PaymentRecord]) extends PaymentHistoryServiceInterface {
-    override def getPayments(enrolment: Option[CtEnrolment], currentDate: DateTime
+    override def getPayments(enrolment: CtEnrolment, currentDate: DateTime
                             )(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]]
     = Future.successful(Right(history))
 
@@ -128,7 +128,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
   "Calling CtCardBuilderService.buildCtCard" should {
 
     "return a card with Payments information when getting CtData" in new LocalSetup {
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Right(Some(ctData))))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Right(Some(ctData))))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
 
@@ -138,7 +138,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     "return a card with No Payments information when getting CtNoData" in new LocalSetup {
       override lazy val testCtPartialBuilder: CtPartialBuilder = TestCtPartialBuilderNoData
 
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Right(None)))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Right(None)))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
 
@@ -146,7 +146,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with Returns information when getting CtData" in new LocalSetup {
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Right(Some(ctData))))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Right(Some(ctData))))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
 
@@ -155,7 +155,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
     "return a card with Returns information when getting CtNoData" in new LocalSetup {
       override lazy val testCtPartialBuilder: CtPartialBuilder = TestCtPartialBuilderNoData
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Right(None)))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Right(None)))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
 
@@ -163,7 +163,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with payment history information when that information is available" in new LocalSetup {
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Right(Some(ctData))))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Right(Some(ctData))))
       override lazy val history = List(PaymentRecord("test", 100, DateTime.now(), "test-type"))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
@@ -171,7 +171,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "throw an exception when getting CtGenericError" in new LocalSetup {
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Left(CtGenericError)))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Left(CtGenericError)))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
 
@@ -179,7 +179,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "throw an exception when getting CtEmpty" in new LocalSetup {
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Left(CtEmpty)))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Left(CtEmpty)))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
 
@@ -187,7 +187,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "throw an exception when getting CtUnactivated" in new LocalSetup {
-      when(testCtService.fetchCtModel(Some(ctEnrolment))).thenReturn(Future.successful(Left(CtUnactivated)))
+      when(testCtService.fetchCtModel(ctEnrolment)).thenReturn(Future.successful(Left(CtUnactivated)))
 
       val result: Future[Card] = cardBuilderService.buildCtCard()(authenticatedRequest, hc, messages)
 

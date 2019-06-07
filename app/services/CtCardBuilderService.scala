@@ -38,8 +38,8 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
 
   def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] =
     for {
-      model <- ctService.fetchCtModel(Some(request.ctEnrolment))
-      history <- paymentHistoryService.getPayments(Some(request.ctEnrolment), DateTime.now())
+      model <- ctService.fetchCtModel(request.ctEnrolment)
+      history <- paymentHistoryService.getPayments(request.ctEnrolment, DateTime.now())
     } yield {
       model match {
         case Right(None) => buildCtCardData(

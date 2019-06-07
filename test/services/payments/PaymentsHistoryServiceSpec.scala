@@ -117,7 +117,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
     "getPayments is called and getSAPaymentHistory toggle set to false" should {
 
       "return Nil" in new buildService(new PaymentHistoryConnectorSingleRecord()) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(Nil)
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
     }
@@ -125,7 +125,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
     "getPayments is called and getSAPaymentHistory toggle set to true" should {
 
       "return payment history when valid payment history is returned" in new buildService(new PaymentHistoryConnectorSingleRecord()) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(List(
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(List(
           PaymentRecord(
             reference = "reference number",
             amountInPence = 100,
@@ -136,7 +136,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
       }
 
       "return payment history when payments fall within and outside 7 days" in new buildService(new PaymentHistoryConnectorMultiple()) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(List(
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(List(
           PaymentRecord(
             reference = "reference number",
             amountInPence = 150,
@@ -147,25 +147,25 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
       }
 
       "not return payment history when status is not Successful" in new buildService(new PaymentHistoryConnectorSingleRecord(status = Invalid)) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(Nil)
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
       "not return payment history when payment falls outside of 7 days" in new buildService(
         new PaymentHistoryConnectorSingleRecord("2018-10-13T07:59:00.000")
       ) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(Nil)
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
       "return Nil when date is invalid format" in new buildService(new PaymentHistoryConnectorSingleRecord("invalid-date")) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(Nil)
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
       "return Nil when payment history could not be found" in new buildService(new PaymentHistoryConnectorNotFound) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Right(Nil)
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
       "return Left(PaymentRecordFailure) when connector fails to parse" in new buildService(new PaymentHistoryParseError) {
-        testService.getPayments(Some(CtEnrolment(CtUtr("utr"), true)), date).futureValue mustBe Left(PaymentRecordFailure)
+        testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Left(PaymentRecordFailure)
       }
 
     }

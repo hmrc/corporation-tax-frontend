@@ -42,7 +42,7 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar {
   when(mockPayConnector.ctPayLink(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(NextUrl(testPayUrl)))
 
   class TestCtService(testModel: Either[CtAccountFailure, Option[CtData]]) extends CtServiceInterface {
-    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])
+    override def fetchCtModel(ctEnrolment: CtEnrolment)
                              (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
       Future.successful(testModel)
   }
