@@ -21,3 +21,8 @@
 @(amount: BigDecimal, appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 <p role="text">@messages("card.you_are") <span class="bold-small">@pounds(amount.abs, 2)</span> @messages("card.in_credit")</p>
+
+<a id="make-ct-payment" href="@appConfig.getUrl("mainPage")/make-a-payment" data-sso="false"
+data-journey-click="link - click:CT cards:Make a CT payment">
+@messages("card.make_a_corporation_tax_payment")
+</a>

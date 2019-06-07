@@ -84,7 +84,8 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
 
       doc.text() must include("You may have returns to complete.")
 
-      assertLinkById(doc,
+      assertLinkById(
+        doc,
         linkId = "ct-complete-return",
         expectedText = "Complete Corporation Tax return",
         expectedUrl = "http://localhost:9030/cato",
@@ -107,6 +108,16 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You are £123.45 in credit.")
+
+        assertLinkById(
+          doc,
+          linkId = "make-ct-payment",
+          expectedText = "Make a Corporation Tax payment",
+          expectedUrl = "http://localhost:9731/business-account/corporation-tax/make-a-payment",
+          expectedGAEvent = "link - click:CT cards:Make a CT payment",
+          expectedIsExternal = false,
+          expectedOpensInNewTab = false
+        )
       }
 
       "the user is in debit" in new LocalSetup {
@@ -117,7 +128,8 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
 
         doc.text() must include("You owe £543.21.")
 
-        assertLinkById(doc,
+        assertLinkById(
+          doc,
           linkId = "make-ct-payment",
           expectedText = "Make a Corporation Tax payment",
           expectedUrl = "http://localhost:9731/business-account/corporation-tax/make-a-payment",
@@ -135,7 +147,8 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
 
         doc.text() must include("You have no tax to pay.")
 
-        assertLinkById(doc,
+        assertLinkById(
+          doc,
           linkId = "view-ct-statement",
           expectedText = "View your Corporation Tax statement",
           expectedUrl = "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
@@ -153,7 +166,8 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
 
         doc.text() must include("There is no balance information to display.")
 
-        assertLinkById(doc,
+        assertLinkById(
+          doc,
           linkId = "view-ct-statement",
           expectedText = "View your Corporation Tax statement",
           expectedUrl = "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
