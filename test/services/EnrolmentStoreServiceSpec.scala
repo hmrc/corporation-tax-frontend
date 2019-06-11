@@ -105,7 +105,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
   private val multipleRecords = new DateTime("2018-02-01T17:36:00.000")
 
-  implicit val hc: HeaderCarrier = new HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "EnrolmentStoreService" when {
 

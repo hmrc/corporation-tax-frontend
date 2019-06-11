@@ -19,8 +19,8 @@ package services
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.payments.PaymentHistoryConnectorInterface
-import models.CtEnrolment
-import models.payments.{PaymentHistory, PaymentHistoryNotFound, PaymentRecord}
+import models.payments.{CtPaymentRecord, PaymentRecord}
+import models.{CtEnrolment, PaymentRecordFailure}
 import org.joda.time.DateTime
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,38 +30,30 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterface, config: FrontendAppConfig)
                                      (implicit ec: ExecutionContext) extends PaymentHistoryServiceInterface {
-  def getPayments(enrolment: Option[CtEnrolment], currentDate: DateTime)(implicit hc: HeaderCarrier): Future[List[PaymentRecord]] = {
-    if(config.getCTPaymentHistoryToggle) {
-      enrolment match {
 
-        case Some(ctEnrolment) => {
-          connector.get(ctEnrolment.ctUtr.utr).map {
-            case Right(PaymentHistoryNotFound) => Nil
-            case Right(PaymentHistory(_, _, payments)) => filterPaymentHistory(payments, currentDate)
-            case Right(_) => Nil
-            case Left(message) => log(message)
-          }.recover {
-            case _ => Nil
-          }
-        }
-        case None => Future.successful(Nil)
+  def getPayments(ctEnrolment: CtEnrolment,
+                  currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+    if (config.getCTPaymentHistoryToggle) {
+      connector.get(ctEnrolment.ctUtr.utr).map {
+        case Right(payments) => Right(filterPaymentHistory(payments, currentDate))
+        case Left(message) => log(message)
       }
     } else {
-      Future.successful(Nil)
+      Future.successful(Right(Nil))
     }
+
+  private def log(errorMessage: String): Either[PaymentRecordFailure.type, List[PaymentRecord]] = {
+    Logger.warn(s"[PaymentHistoryService][getPayments] $errorMessage")
+    Left(PaymentRecordFailure)
   }
 
-  private def log(x: String): List[PaymentRecord] = {
-    Logger.warn(s"[PaymentHistoryService][getPayments] $x")
-    Nil
-  }
+  private def filterPaymentHistory(payments: List[CtPaymentRecord], currentDate: DateTime): List[PaymentRecord] =
+    payments.flatMap(PaymentRecord.from(_, currentDate))
 
-  private def filterPaymentHistory(payments: List[PaymentRecord], currentDate: DateTime): List[PaymentRecord] = {
-    payments.filter(_.isValid(currentDate)).filter(_.isSuccessful)
-  }
 }
 
 @ImplementedBy(classOf[PaymentHistoryService])
 trait PaymentHistoryServiceInterface {
-  def getPayments(enrolment: Option[CtEnrolment], currentDate: DateTime)(implicit hc: HeaderCarrier): Future[List[PaymentRecord]]
+  def getPayments(enrolment: CtEnrolment,
+                  currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]]
 }

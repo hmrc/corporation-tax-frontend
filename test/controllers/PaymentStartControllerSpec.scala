@@ -41,26 +41,18 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val mockPayConnector: PaymentConnector = mock[PaymentConnector]
   when(mockPayConnector.ctPayLink(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(NextUrl(testPayUrl)))
 
-  class TestCtService(testModel: CtAccountSummary) extends CtServiceInterface {
-    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])
-                             (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary] =
-      Future(testModel)
-  }
-
-  class BrokenVatService extends CtServiceInterface {
-    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])
-                             (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary] =
-      Future.failed(new Throwable())
+  class TestCtService(testModel: Either[CtAccountFailure, Option[CtData]]) extends CtServiceInterface {
+    override def fetchCtModel(ctEnrolment: CtEnrolment)
+                             (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
+      Future.successful(testModel)
   }
 
   def buildController(ctService: CtServiceInterface) = new PaymentStartController(
     frontendAppConfig, mockPayConnector, FakeAuthAction, ctService, messagesApi)
 
-  def customController(testModel: CtAccountSummary = testCtData): PaymentStartController = {
+  def customController(testModel: Either[CtAccountFailure, Option[CtData]] = Right(Some(testCtData))): PaymentStartController = {
     buildController(new TestCtService(testModel))
   }
-
-  def brokenController: PaymentStartController = buildController(new BrokenVatService)
 
   "Payment Controller" must {
 
@@ -70,20 +62,14 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar {
       redirectLocation(result) mustBe Some(testPayUrl)
     }
 
-    "return Bad Request and the error page when the call to the backend fails" in {
-      val result: Future[Result] = brokenController.makeAPayment(fakeRequest)
-      contentType(result) mustBe Some("text/html")
-      status(result) mustBe BAD_REQUEST
-    }
-
     "return Bad Request and the error page when the user has no account balance" in {
-      val result: Future[Result] = customController(testCtDataNoAccountBalance).makeAPayment(fakeRequest)
+      val result: Future[Result] = customController(Right(Some(testCtDataNoAccountBalance))).makeAPayment(fakeRequest)
       contentType(result) mustBe Some("text/html")
       status(result) mustBe BAD_REQUEST
     }
 
-    "return Bad Request and the error page when the user has erroneous vat data " in {
-      val result: Future[Result] = customController(CtGenericError).makeAPayment(fakeRequest)
+    "return Bad Request and the error page when CtGenericError is returend " in {
+      val result: Future[Result] = customController(Left(CtGenericError)).makeAPayment(fakeRequest)
       contentType(result) mustBe Some("text/html")
       status(result) mustBe BAD_REQUEST
     }

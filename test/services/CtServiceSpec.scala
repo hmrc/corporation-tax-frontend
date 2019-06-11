@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.CtConnector
-import connectors.models.{CtAccountBalance, CtAccountSummaryData, CtDesignatoryDetailsCollection}
+import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -26,12 +26,12 @@ import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  implicit val hc: HeaderCarrier = new HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val mockCtConnector: CtConnector = mock[CtConnector]
 
@@ -43,74 +43,44 @@ class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   "The CtService fetchCtModel method" when {
     "the connector return data" should {
-      "return CtData" in {
+      "return Right(CtData)" in {
         reset(mockCtConnector)
         when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.successful(Option(ctAccountSummary)))
 
-        whenReady(service.fetchCtModel(Some(ctEnrolment))) {
-          _ mustBe CtData(ctAccountSummary)
+        whenReady(service.fetchCtModel(ctEnrolment)) {
+          _ mustBe Right(Some(CtData(ctAccountSummary)))
         }
       }
     }
     "the connector returns no data" should {
-      "return CtNotFoundError" in {
+      "return Right(None)" in {
         reset(mockCtConnector)
         when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.successful(None))
 
-        whenReady(service.fetchCtModel(Some(ctEnrolment))) {
-          _ mustBe CtNoData
+        whenReady(service.fetchCtModel(ctEnrolment)) {
+          _ mustBe Right(None)
         }
       }
     }
     "the connector throws an exception" should {
-      "return CtGenericError" in {
+      "return Left(CtGenericError)" in {
         reset(mockCtConnector)
         when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.failed(new Throwable))
 
-        whenReady(service.fetchCtModel(Some(ctEnrolment))) {
-          _ mustBe CtGenericError
-        }
-      }
-    }
-    "the ct enrolment is empty" should {
-      "return a CtEmpty" in {
-        reset(mockCtConnector)
-
-        whenReady(service.fetchCtModel(None)) {
-          _ mustBe CtEmpty
+        whenReady(service.fetchCtModel(ctEnrolment)) {
+          _ mustBe Left(CtGenericError)
         }
       }
     }
     "the ct enrolment is not activated" should {
-      "return a CtUnactivated" in {
+      "return a Left(CtUnactivated)" in {
         reset(mockCtConnector)
 
-        whenReady(service.fetchCtModel(Some(CtEnrolment(CtUtr("utr"), isActivated = false)))) {
-          _ mustBe CtUnactivated
+        whenReady(service.fetchCtModel(CtEnrolment(CtUtr("utr"), isActivated = false))) {
+          _ mustBe Left(CtUnactivated)
         }
       }
     }
   }
 
-  "The CtService designatoryDetails method" when {
-    "the connector returns designatory details" should {
-      "return CtDesignatoryDetailsCollection" in {
-        val designatoryDetails = Some(CtDesignatoryDetailsCollection(None, None))
-        when(mockCtConnector.designatoryDetails(ctEnrolment.ctUtr)).thenReturn(Future.successful(designatoryDetails))
-
-        whenReady(service.designatoryDetails(ctEnrolment)) {
-          _ mustBe designatoryDetails
-        }
-      }
-    }
-    "the connector returns an exception" should {
-      "return None when designatoryDetails call throws an exception" in {
-        when(mockCtConnector.designatoryDetails(ctEnrolment.ctUtr)).thenReturn(Future.failed(new Throwable))
-
-        whenReady(service.designatoryDetails(ctEnrolment)) {
-          _ mustBe None
-        }
-      }
-    }
-  }
 }

@@ -18,34 +18,30 @@ package controllers
 
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models._
-import models.payments.{PaymentRecord, Successful}
+import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import org.joda.time.DateTime
 import org.mockito.Matchers
 import org.mockito.Mockito.{reset, when}
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
-import services.{CtService, EnrolmentsStoreService}
-import services.{CtService, CtServiceInterface, PaymentHistoryService, PaymentHistoryServiceInterface}
+import services._
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 import views.ViewSpecBase
 import views.html.partials.not_activated
 import views.html.subpage
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
 class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with ScalaFutures {
 
-  override implicit val patienceConfig = PatienceConfig(timeout = 5 seconds)
+  override implicit val patienceConfig: PatienceConfig = PatienceConfig(timeout = 5 seconds)
 
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
@@ -54,26 +50,27 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
   when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
 
   val mockCtService: CtService = mock[CtService]
-  when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
+  when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Right(None)))
 
   val mockPaymentHistoryService: PaymentHistoryService = mock[PaymentHistoryService]
 
   def accountSummaryHelper() = new AccountSummaryHelper(frontendAppConfig, mockCtService, mockEnrolmentService,
     mockPaymentHistoryService, messagesApi)
 
-  case class TestCtService(data: CtAccountSummary) extends CtServiceInterface{
-    override def fetchCtModel(ctEnrolmentOpt: Option[CtEnrolment])(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[CtAccountSummary] = {
-      Future(data)
+  case class TestCtService(data: Either[CtAccountFailure, Option[CtData]]) extends CtServiceInterface {
+    override def fetchCtModel(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] = {
+      Future.successful(data)
     }
   }
 
-  case class TestHistoryService(history:List[PaymentRecord]) extends PaymentHistoryServiceInterface{
-    override def getPayments(enrolment: Option[CtEnrolment], date: DateTime)(implicit hc: HeaderCarrier):Future[List[PaymentRecord]] = {
-      Future(history)
+  case class TestHistoryService(history: List[PaymentRecord]) extends PaymentHistoryServiceInterface {
+    override def getPayments(enrolment: CtEnrolment, date: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
+      Future.successful(Right(history))
     }
   }
 
-  def ctEnrolment(activated: Boolean = true) =  CtEnrolment(CtUtr("utr"), isActivated = true)
+  def ctEnrolment(activated: Boolean = true) = CtEnrolment(CtUtr("utr"), isActivated = true)
+
   def requestWithEnrolment(activated: Boolean): AuthenticatedRequest[AnyContent] = {
     AuthenticatedRequest[AnyContent](FakeRequest(), "", ctEnrolment(activated))
   }
@@ -86,12 +83,12 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "getAccountSummaryView" when {
-    "rendered" should  {
+    "rendered" should {
       "show personal credit card message" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Right(None)))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -103,12 +100,12 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "not show personal credit card message when boolean is false" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Right(None)))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
         whenReady(accountSummaryHelper().getAccountSummaryView(showCreditCardMessage = false)
-          (fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
+        (fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           view.toString must not include
             "You can no longer use a personal credit card. If you pay with a credit card, it must be linked to a business bank account."
         }
@@ -118,8 +115,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "return 'No Balance information to display'" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtNoData))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Right(None)))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -131,8 +128,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "return the generic error message" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtGenericError))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Left(CtGenericError)))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -145,8 +142,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "return the generic error message" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtEmpty))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Left(CtEmpty)))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -165,8 +162,8 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
 
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtUnactivated))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Left(CtUnactivated)))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -184,7 +181,7 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
         )(fakeRequest, messages)
 
         reset(mockCtService)
-        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(CtUnactivated))
+        when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Left(CtUnactivated)))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -197,13 +194,13 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "return Nothing to pay" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(None))))))
+          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(None))))))))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
-          asDocument(view).text() must include("You have nothing to pay view statement")
+          asDocument(view).text() must include("You have nothing to pay View statement (opens in a new window or tab)")
         }
       }
     }
@@ -212,13 +209,13 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "return Nothing to pay" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))))
+          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))))))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
-          asDocument(view).text() must include("You have nothing to pay view statement")
+          asDocument(view).text() must include("You have nothing to pay View statement (opens in a new window or tab)")
         }
       }
     }
@@ -227,9 +224,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "return You are in credit" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(-123.45)))))))
+          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(-123.45)))))))))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -242,9 +239,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "return You owe money" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))
+          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -257,9 +254,9 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       "direct the user to the breakdown page" in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))
+          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
         reset(mockEnrolmentService)
         when(mockEnrolmentService.showNewPinLink(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
@@ -270,13 +267,13 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
       }
     }
 
-    "the user has no payments history" should{
+    "the user has no payments history" should {
       "not display the payment history section " in {
         reset(mockCtService)
         reset(mockPaymentHistoryService)
-        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future(Nil))
+        when(mockPaymentHistoryService.getPayments(Matchers.any(), Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))
+          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
 
         whenReady(accountSummaryHelper().getAccountSummaryView()(fakeRequestWithEnrolments, scala.concurrent.ExecutionContext.global)) { view =>
           asDocument(view).html.contains("Your card payments in the last 7 days") mustBe false
@@ -287,17 +284,16 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
     "the user has a single payment" should {
       "display the appropriate content" in {
 
-         val history = List(
+        val history = List(
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 100,
-            status = Successful,
-            createdOn = "2018-10-21T08:00:00.000",
+            createdOn = new DateTime("2018-10-21T08:00:00.000"),
             taxType = "tax type"
           )
         )
 
-        val ctService = TestCtService(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99))))))
+        val ctService = TestCtService(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99))))))))
         val historyService = TestHistoryService(history)
 
         val testAccountSummaryHelper = new AccountSummaryHelper(frontendAppConfig, ctService, mockEnrolmentService, historyService, messagesApi)
@@ -316,20 +312,18 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 100,
-            status = Successful,
-            createdOn = "2018-10-21T08:00:00.000",
+            createdOn = new DateTime("2018-10-21T08:00:00.000"),
             taxType = "tax type"
           ),
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 300,
-            status = Successful,
-            createdOn = "2018-10-22T08:00:00.000",
+            createdOn = new DateTime("2018-10-22T08:00:00.000"),
             taxType = "tax type"
           )
         )
 
-        val ctService = TestCtService(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99))))))
+        val ctService = TestCtService(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99))))))))
         val historyService = TestHistoryService(history)
 
         val testAccountSummaryHelper = new AccountSummaryHelper(frontendAppConfig, ctService, mockEnrolmentService, historyService, messagesApi)

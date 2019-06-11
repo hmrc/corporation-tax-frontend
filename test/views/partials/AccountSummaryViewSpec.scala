@@ -16,12 +16,25 @@
 
 package views.partials
 
+import models.PaymentRecordFailure
+import models.payments.PaymentRecord
+import org.joda.time.DateTime
+import play.api.i18n.Messages
+import play.twirl.api.Html
 import views.ViewSpecBase
-import views.html.partials.account_summary
+import views.html.partials.{account_summary, payment_history}
 
 class AccountSummaryViewSpec extends ViewSpecBase {
 
-  def view = () => account_summary("hello world", frontendAppConfig, shouldShowCreditCardMessage = true)(fakeRequest, messages)
+  val testPaymentRecord = PaymentRecord(
+    reference = "TEST1",
+    amountInPence = 100,
+    createdOn = new DateTime("2018-10-21T08:00:00.000"),
+    taxType = "tax type"
+  )
+  val testPaymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(List(testPaymentRecord))
+
+  def view: () => Html = () => account_summary("hello world", frontendAppConfig, shouldShowCreditCardMessage = true, maybePaymentHistory = testPaymentHistory)(fakeRequest, messages)
 
   "Account summary" when {
     "there is a user" should {
@@ -41,5 +54,12 @@ class AccountSummaryViewSpec extends ViewSpecBase {
         asDocument(view()).getElementsByTag("p").text() must include("hello world")
       }
     }
+
+    "must include the payment_history section" in {
+      implicit val implicitMessages: Messages = messages
+      view().toString() must include(payment_history(testPaymentHistory).toString)
+    }
   }
+
 }
+
