@@ -59,7 +59,7 @@ subpage.sidebar.cert_of_residence = Get a certificate of residence (opens in a n
 subpage.sidebar.partnership = Set up a partnership or add a partner (opens in a new window or tab)
 subpage.sidebar.help_and_contact = Help and contact
 subpage.sidebar.more = More (opens in a new window or tab)
-subpage.sidebar.help_with_tax = Help with tax
+subpage.sidebar.help_with_tax = Help
 
 subpage.more_options.dormant = Make your company dormant (opens in a new window or tab)
 subpage.more_options.close = Close your company (opens in a new window or tab)
