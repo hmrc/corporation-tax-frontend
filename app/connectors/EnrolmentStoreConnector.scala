@@ -16,61 +16,53 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
-
+import _root_.models.UserEnrolments
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
-import _root_.models.UserEnrolments
+import javax.inject.{Inject, Singleton}
 import play.api.http.Status
+import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 
 @Singleton
 class EnrolmentStoreConnectorImpl @Inject()(override val http: HttpClient, config: FrontendAppConfig)
-                                           (implicit val ec:ExecutionContext) extends EnrolmentStoreConnector{
+                                           (implicit val ec: ExecutionContext) extends EnrolmentStoreConnector {
 
-  val host = config.enrolmentStoreUrl
-  def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-
-    http.GET[HttpResponse](buildURL(credId)).map{
-
-      response => response.status match {
-
-        case Status.OK => {
-          Try(response.json.as[UserEnrolments]) match {
-            case Success(r) => Right(r)
-            case Failure(a) => Left("Unable to parse data from enrolment API")
+  def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] =
+    http.GET[HttpResponse](buildURL(credId)).map { response =>
+      response.status match {
+        case Status.OK =>
+          response.json.validate[UserEnrolments] match {
+            case JsSuccess(userEnrolments, _) => Right(userEnrolments)
+            case _ => Left("Unable to parse data from enrolment API")
           }
-        }
         case _ => Left(errorMessage(response))
-
       }
+    }.recover {
+      case _: Exception => Left("Exception thrown from enrolment API")
+    }
 
-    }.recover({
-      case _ : Exception => Left("Exception thrown from enrolment API")
-    })
-  }
-
-  def errorMessage(response: HttpResponse): String = {
-    response.status match{
+  def errorMessage(response: HttpResponse): String =
+    response.status match {
       case Status.NOT_FOUND => "User not found from enrolment API"
       case Status.BAD_REQUEST => "Bad request to enrolment API"
       case Status.FORBIDDEN => "Forbidden from enrolment API"
       case Status.SERVICE_UNAVAILABLE => "Unexpected error from enrolment API"
       case Status.NO_CONTENT => "No content from enrolment API"
-      case _:Int => "Enrolment API couldn't handle response code"
+      case _ => "Enrolment API couldn't handle response code"
     }
-  }
 
-  private def buildURL(credId: String): String = s"$host/enrolment-store/users/$credId/enrolments?service=IR-CT"
+  private def buildURL(credId: String): String = s"${config.enrolmentStoreUrl}/enrolment-store/users/$credId/enrolments?service=IR-CT"
+
 }
 
 @ImplementedBy(classOf[EnrolmentStoreConnectorImpl])
-trait EnrolmentStoreConnector{
+trait EnrolmentStoreConnector {
   def http: HttpClient
+
   def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]]
 }
