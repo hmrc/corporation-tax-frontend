@@ -59,7 +59,7 @@ subpage.sidebar.cert_of_residence = Cael tystysgrif preswylio (yn agor mewn ffen
 subpage.sidebar.partnership = Sefydlu partneriaeth neu ychwanegu partner (yn agor mewn ffenestr neu dab newydd)
 subpage.sidebar.help_and_contact = Help a Chysylltu
 subpage.sidebar.more = Rhagor (yn agor mewn ffenestr neu dab newydd)
-subpage.sidebar.help_with_tax= Cymorth gyda threth
+subpage.sidebar.help_with_tax= Cynorthwyo
 
 subpage.more_options.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
 subpage.more_options.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
