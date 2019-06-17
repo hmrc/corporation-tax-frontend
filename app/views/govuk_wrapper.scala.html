@@ -78,7 +78,6 @@
 
 @footerTop = {}
 
-
 @serviceInfo = {
     @uiLayouts.serviceInfo(
       betaBanner = HtmlFormat.empty,
@@ -89,15 +88,12 @@
 
 @getHelpForm = @{uiHelpers.reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
 
-
-
 @headerAndMainContent = {
   @if(contentHeader.isDefined) {
     @uiLayouts.main_content_header(contentHeader = contentHeader.get)
   }
   @mainContent
 }
-
 
 @content = {
 <div class="centered-content soft--ends">
@@ -125,6 +121,5 @@
   </div>
 </main>
 }
-
 
 @hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links(None, Some(uiLayouts.eu_exit_links()))), true)(content)
