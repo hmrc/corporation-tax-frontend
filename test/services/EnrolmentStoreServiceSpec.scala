@@ -41,7 +41,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
     override def http: HttpClient = mock[HttpClient]
 
     override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future(Right(UserEnrolments(List(activeOct13))))
+      Future.successful(Right(UserEnrolments(List(activeOct13))))
     }
   }
 
@@ -50,7 +50,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
     override def http: HttpClient = mock[HttpClient]
 
     override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future(Right(UserEnrolments(Nil)))
+      Future.successful(Right(UserEnrolments(Nil)))
     }
   }
 
@@ -59,7 +59,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
     override def http: HttpClient = mock[HttpClient]
 
     override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future(Left("Simulated Failure"))
+      Future.successful(Left("Simulated Failure"))
     }
   }
 
@@ -68,7 +68,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
     override def http: HttpClient = mock[HttpClient]
 
     override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future(Right(UserEnrolments(List(activeJan01, activeFeb28))))
+      Future.successful(Right(UserEnrolments(List(activeJan01, activeFeb28))))
     }
   }
 
@@ -77,7 +77,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
     override def http: HttpClient = mock[HttpClient]
 
     override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future(Right(UserEnrolments(List(noDate))))
+      Future.successful(Right(UserEnrolments(List(noDate))))
     }
   }
 
@@ -86,7 +86,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
     override def http: HttpClient = mock[HttpClient]
 
     override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future(Right(UserEnrolments(List(noDate, noDate))))
+      Future.successful(Right(UserEnrolments(List(noDate, noDate))))
     }
   }
 

@@ -36,7 +36,7 @@ class DataCacheConnectorImpl @Inject()(val sessionRepository: SessionRepository,
 
   def remove(cacheId: String, key: String): Future[Boolean] = {
     sessionRepository().get(cacheId).flatMap { optionalCacheMap =>
-      optionalCacheMap.fold(Future(false)) { cacheMap =>
+      optionalCacheMap.fold(Future.successful(false)) { cacheMap =>
         val newCacheMap = cacheMap copy (data = cacheMap.data - key)
         sessionRepository().upsert(newCacheMap)
       }
