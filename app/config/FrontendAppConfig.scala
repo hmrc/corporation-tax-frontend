@@ -75,7 +75,7 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
 
   def getHelpAndContactUrl(key: String): String = helpAndContactHost + runModeConfiguration.getString(s"urls.help-and-contact.$key").getOrElse("")
 
-  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
+  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("toggles.welsh-translation").getOrElse(true)
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
