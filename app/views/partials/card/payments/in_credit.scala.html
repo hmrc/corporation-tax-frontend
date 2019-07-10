@@ -21,7 +21,7 @@
 @(amount: BigDecimal, appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @statementLink = @{
- Some(appConfig.getPortalUrl("balance")(request.ctEnrolment)).map { url => url }
+ appConfig.getPortalUrl("balance")(request.ctEnrolment)
 }
 
 <p role="text">@messages("card.you_are") <span class="bold-small">@pounds(amount.abs, 2)</span> @messages("card.in_credit")</p>
