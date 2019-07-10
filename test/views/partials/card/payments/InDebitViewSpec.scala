@@ -23,9 +23,9 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
-import views.html.partials.card.payments.in_credit
+import views.html.partials.card.payments.in_debit
 
-class InCreditViewSpec extends ViewSpecBase {
+class InDebitViewSpec extends ViewSpecBase {
   def ctEnrolment(activated: Boolean = true) =  CtEnrolment(CtUtr("utr"), isActivated = true)
 
   def requestWithEnrolment(activated: Boolean): AuthenticatedRequest[AnyContent] = {
@@ -33,15 +33,15 @@ class InCreditViewSpec extends ViewSpecBase {
   }
 
   lazy val fakeRequestWithEnrolments: AuthenticatedRequest[AnyContent] = requestWithEnrolment(activated = true)
-  lazy val inCreditAmount: BigDecimal = BigDecimal(123.45)
-  def view = () => in_credit(inCreditAmount, frontendAppConfig)(fakeRequestWithEnrolments, messages)
+  lazy val inDebitAmount: BigDecimal = BigDecimal(123.45)
+  def view = () => in_debit(inDebitAmount, frontendAppConfig)(fakeRequestWithEnrolments, messages)
 
   lazy val doc: Document = asDocument(view())
 
-  "Partial in_credit view" must {
+  "Partial in_debit view" must {
 
-    "must have text 'You are £123.45 in credit.' " in {
-      doc.getElementsByTag("p").first().text() mustBe "You are £123.45 in credit."
+    "must have text 'You owe £123.45.' " in {
+      doc.getElementsByTag("p").first().text() mustBe "You owe £123.45."
     }
 
     "must have 'View your Corporation Tax statement' link" in {
