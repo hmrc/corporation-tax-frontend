@@ -20,7 +20,7 @@
 @(appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @statementLink = @{
- Some(appConfig.getPortalUrl("balance")(request.ctEnrolment)).map { url => url }
+ appConfig.getPortalUrl("balance")(request.ctEnrolment)
 }
 
 <p role="text">@messages("card.there_is_no_balance_information_to_display")</p>
@@ -38,4 +38,5 @@
  @messages("card.make_a_corporation_tax_payment")
  </a>
 </p>
+
 

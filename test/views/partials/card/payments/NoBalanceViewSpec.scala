@@ -44,15 +44,17 @@ class NoBalanceViewSpec extends ViewSpecBase {
     }
 
     "must have 'View your Corporation Tax statement' link" in {
-      doc.getElementById("view-ct-statement").text() mustBe "View your Corporation Tax statement"
-      doc.getElementById("view-ct-statement").attr("href", "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
-      doc.getElementById("view-ct-statement").attr("data-journey-click", "link - click:CT cards:View your CT statement")
+      lazy val viewCtStatement = doc.getElementById("view-ct-statement")
+      viewCtStatement.text() mustBe "View your Corporation Tax statement"
+      viewCtStatement.attr("href") mustBe "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng"
+      viewCtStatement.attr("data-journey-click") mustBe "link - click:CT cards:View your CT statement"
     }
 
     "must have 'Make a Corporation Tax payment ' link" in {
-      doc.getElementById("make-ct-payment").text() mustBe "Make a Corporation Tax payment"
-      doc.getElementById("make-ct-payment").attr("href", "http://localhost:9731/business-account/corporation-tax/make-a-payment")
-      doc.getElementById("make-ct-payment").attr("data-journey-click", "link - click:CT cards:Make a CT payment")
+      lazy val makeCtPayment = doc.getElementById("make-ct-payment")
+      makeCtPayment.text() mustBe "Make a Corporation Tax payment"
+      makeCtPayment.attr("href") mustBe "http://localhost:9731/business-account/corporation-tax/make-a-payment"
+      makeCtPayment.attr("data-journey-click") mustBe "link - click:CT cards:Make a CT payment"
     }
   }
 }
