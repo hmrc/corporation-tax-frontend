@@ -17,6 +17,10 @@
 package controllers
 
 import connectors.FakeDataCacheConnector
+import play.api.data.Form
+import play.api.libs.json.JsString
+import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.FakeNavigator
 import controllers.actions.{FakeServiceInfoAction, _}
 import forms.StopFormProvider
 import models.Stop
@@ -33,8 +37,8 @@ class StopControllerSpec extends ControllerSpecBase {
   val formProvider = new StopFormProvider()
   val form = formProvider()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new StopController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
+  def controller() =
+    new StopController(frontendAppConfig, messagesApi, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
       FakeServiceInfoAction, formProvider)
 
   def viewAsString(form: Form[_] = form) = stop(frontendAppConfig, form)(HtmlFormat.empty)(fakeRequest, messages).toString
@@ -68,14 +72,14 @@ class StopControllerSpec extends ControllerSpecBase {
     }
 
     "return OK if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }
 
     "redirect to next page when valid data is submitted and no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", (Stop.options.head.value)))
-      val result = controller(dontGetAnyData).onSubmit()(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)

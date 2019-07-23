@@ -17,6 +17,7 @@
 package controllers
 
 import javax.inject.Inject
+
 import config.FrontendAppConfig
 import controllers.actions._
 import models.requests.ServiceInfoRequest
@@ -35,13 +36,12 @@ class SubpageController @Inject()(appConfig: FrontendAppConfig,
                                  (implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
 
-
   def onPageLoad = (authenticate andThen serviceInfo).async {
     implicit request => getAccountSummaryView(request)
 
   }
 
-  private def getAccountSummaryView(request: ServiceInfoRequest[AnyContent])= {
+  private def getAccountSummaryView(request: ServiceInfoRequest[AnyContent]) = {
     implicit val requestToUse = request.request
     accountSummaryHelper.getAccountSummaryView().map { accountSummaryView =>
       Ok(subpage(appConfig, request.request.ctEnrolment, accountSummaryView)(request.serviceInfoContent))

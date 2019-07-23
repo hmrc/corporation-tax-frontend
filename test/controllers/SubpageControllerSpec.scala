@@ -27,13 +27,11 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
-import services.CtService
-import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
-import views.html.partials.account_summary
 import views.html.subpage
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.domain.CtUtr
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with ViewSpecBase {
@@ -43,10 +41,11 @@ class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with Sc
   val mockAccountSummaryHelper = mock[AccountSummaryHelper]
   when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(accountSummary))
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+  def controller() =
     new SubpageController(frontendAppConfig, messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper)
 
-  def ctEnrolment(activated: Boolean = true) =  CtEnrolment(CtUtr("utr"), isActivated = true)
+  def ctEnrolment(activated: Boolean = true) = CtEnrolment(CtUtr("utr"), isActivated = true)
+
   def requestWithEnrolment(activated: Boolean): ServiceInfoRequest[AnyContent] = {
     ServiceInfoRequest[AnyContent](AuthenticatedRequest(FakeRequest(), "", ctEnrolment(activated)), HtmlFormat.empty)
   }
@@ -64,7 +63,6 @@ class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with Sc
       contentAsString(result) mustBe viewAsString(balanceInformation = "No balance information to display")
     }
   }
-
 
 
 }

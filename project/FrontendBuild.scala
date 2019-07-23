@@ -1,8 +1,4 @@
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 
 object FrontendBuild extends Build with MicroService {
@@ -13,8 +9,9 @@ object FrontendBuild extends Build with MicroService {
 }
 
 private object AppDependencies {
-  import play.sbt.PlayImport._
+
   import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   private val playHealthVersion = "3.14.0-play-25"
   private val logbackJsonLoggerVersion = "4.6.0"
@@ -50,7 +47,7 @@ private object AppDependencies {
 
   trait TestDependencies {
     lazy val scope: String = "test"
-    lazy val test : Seq[ModuleID] = ???
+    lazy val test: Seq[ModuleID] = ???
   }
 
   object Test {

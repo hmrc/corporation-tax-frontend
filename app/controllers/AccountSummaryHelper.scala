@@ -16,9 +16,10 @@
 
 package controllers
 
+import javax.inject.Inject
+
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
-import javax.inject.Inject
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import models.{CtAccountFailure, CtData, CtUnactivated, PaymentRecordFailure}
