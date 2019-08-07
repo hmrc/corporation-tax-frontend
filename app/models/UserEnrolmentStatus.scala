@@ -18,7 +18,6 @@ package models
 
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import org.joda.time.{DateTime, LocalDateTime}
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 import scala.util.Try

@@ -55,7 +55,7 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
               |}
             """.stripMargin))))
         )
-        result.futureValue mustBe  Right(UserEnrolments(List(UserEnrolmentStatus("IR-PAYE", Some("active"), Some(new DateTime("2018-10-13T17:36:00.000").toLocalDateTime)))))
+        result.futureValue mustBe Right(UserEnrolments(List(UserEnrolmentStatus("IR-PAYE", Some("active"), Some(new DateTime("2018-10-13T17:36:00.000").toLocalDateTime)))))
       }
       "handle a 200 response with multiple enrolments" in {
         when(httpGet.GET[HttpResponse](Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(
