@@ -16,22 +16,22 @@ private object AppDependencies {
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val playHealthVersion = "3.9.0-play-25"
+  private val playHealthVersion = "3.14.0-play-25"
   private val logbackJsonLoggerVersion = "3.1.0"
-  private val govukTemplateVersion = "5.26.0-play-25"
-  private val playUiVersion = "7.31.0-play-25"
+  private val govukTemplateVersion = "5.36.0-play-25"
+  private val playUiVersion = "7.40.0-play-25"
   private val scalaTestVersion = "3.0.4"
   private val scalaTestPlusPlayVersion = "2.0.1"
   private val pegdownVersion = "1.6.0"
   private val mockitoAllVersion = "1.10.19"
-  private val httpCachingClientVersion = "7.1.0"
-  private val playReactivemongoVersion = "6.2.0"
+  private val httpCachingClientVersion = "8.4.0-play-25"
+  private val playReactivemongoVersion = "6.7.0"
   private val playConditionalFormMappingVersion = "0.2.0"
   private val playLanguageVersion = "3.4.0"
-  private val bootstrapVersion = "4.12.0"
+  private val bootstrapVersion = "4.13.0"
   private val scalacheckVersion = "1.13.4"
-  private val playPartialsVersion = "6.3.0"
-  private val domainVersion = "5.2.0"
+  private val playPartialsVersion = "6.9.0-play-25"
+  private val domainVersion = "5.6.0-play-25"
 
   val compile = Seq(
     ws,

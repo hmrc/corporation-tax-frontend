@@ -49,5 +49,5 @@ class LanguageSwitchController @Inject() (
   }
 
   private def isWelshEnabled: Boolean =
-    configuration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
+    configuration.getBoolean("toggles.welsh-translation").getOrElse(true)
 }
