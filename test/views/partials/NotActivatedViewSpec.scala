@@ -32,7 +32,7 @@ class NotActivatedViewSpec extends ViewSpecBase {
       val doc = asDocument(viewAfterSevenDays())
       assertLinkById(
         doc,
-        "ir-ct",
+        "ir-ct-activate",
         "access your Corporation Tax",
         activateUrl,
         "link - click:Not Activated:Activate your CT account"
@@ -63,7 +63,7 @@ class NotActivatedViewSpec extends ViewSpecBase {
       val doc = asDocument(viewWithinSevenDays())
       assertLinkById(
         doc,
-        "ir-ct",
+        "ir-ct-activate",
         "access your Corporation Tax",
         activateUrl,
         "link - click:Not Activated:Activate your CT account"
