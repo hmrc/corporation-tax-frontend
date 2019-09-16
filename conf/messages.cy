@@ -64,7 +64,7 @@ subpage.sidebar.help_with_tax= Cynorthwyo
 subpage.more_options.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
 subpage.more_options.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
 
-subpage.payments_notice = Bydd taliadau’n cymryd 4 i 7 diwrnod gwaith i ymddangos ar y dudalen hon. Bydd symiau ar ddatganiadau wedi’u llenwi’n cymryd 1 i 2 ddiwrnod.
+subpage.payments_notice = Bydd yn cymryd hyd at 7 diwrnod gwaith i daliadau ymddangos, yn dibynnu ar sut rydych yn talu. Ar ôl i chi lenwi’ch Ffurflen Dreth, bydd eich cyfrifiad treth yn cymryd hyd at 2 ddiwrnod.
 
 subpage.no_longer_use_personal_credit_card=Ni allwch ddefnyddio cerdyn credyd personol mwyach. Os talwch â cherdyn credyd, rhaid iddo fod wedi’i gysylltu â chyfrif banc busnes.
 
