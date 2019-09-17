@@ -64,7 +64,7 @@ subpage.sidebar.help_with_tax = Help
 subpage.more_options.dormant = Make your company dormant (opens in a new window or tab)
 subpage.more_options.close = Close your company (opens in a new window or tab)
 
-subpage.payments_notice = Payments will take 4 to 7 working days to show on this page. Completed return amounts will take 1 to 2 days.
+subpage.payments_notice = Payments will take up to 7 working days to show, depending on how you pay. After you complete your return your tax calculation will take up to 2 days.
 
 subpage.no_longer_use_personal_credit_card=You can no longer use a personal credit card. If you pay with a credit card, it must be linked to a business bank account.
 
