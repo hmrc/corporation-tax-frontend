@@ -19,15 +19,15 @@
 @(
         field: Field,
         legend: String,
+        inputs: Seq[RadioOption],
         legendClass: Option[String] = None,
         hint: Option[String] = None,
         trackGa: Boolean = false,
-        gaEvent: String = "corporation-tax-frontend",
-        inputs: Seq[RadioOption]
+        gaEvent: String = "corporation-tax-frontend"
 )(implicit messages: Messages)
 
 <div class="form-field @if(field.hasErrors){form-field--error}">
-    <fieldset class="" id="@{field.id}">
+    <fieldset class="inline" id="@{field.id}">
         <legend>
             <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
             @if(hint.nonEmpty){
