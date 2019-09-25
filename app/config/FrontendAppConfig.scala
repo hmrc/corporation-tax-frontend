@@ -40,10 +40,7 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val analyticsHost: String = loadConfig(s"google-analytics.host")
   lazy val reportAProblemPartialUrl: String = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl: String = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  lazy val betaFeedbackUrl: String = s"$contactHost/contact/beta-feedback"
-  lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactHost/contact/beta-feedback-unauthenticated"
 
-  lazy val authUrl: String = baseUrl("auth")
   lazy val btaUrl: String = baseUrl("business-tax-account")
   lazy val ctUrl: String = baseUrl("ct")
 
