@@ -17,8 +17,6 @@ GET        /                                            controllers.SubpageContr
 GET        /stop                                        controllers.StopController.onPageLoad()
 POST       /stop                                        controllers.StopController.onSubmit()
 
-GET        /partial                                     controllers.PartialController.onPageLoad()
-
 GET        /get-card                                    controllers.PartialController.getCard()
 
 GET        /make-a-payment                              controllers.PaymentStartController.makeAPayment()

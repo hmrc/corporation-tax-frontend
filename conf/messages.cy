@@ -89,8 +89,6 @@ account.summary.generic_error.portal = Rhowch gynnig ar adnewyddu’r dudalen me
 ##  Partial
 #######################################################
 partial.heading = Treth Gorfforaeth
-partial.utr = Eich Cyfeirnod Unigryw y Trethdalwr (UTR) yw {0}.
-partial.more_details = Rhagor o fanylion Treth Gorfforaeth
 
 #######################################################
 ##  Not Activated
