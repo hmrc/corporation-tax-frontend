@@ -28,12 +28,13 @@ class MessagesSpec extends SpecBase {
   private lazy val welshMessages = messagesApi.messages("cy") -- messagesApi.messages("default").keys
 
   private def describeMismatch(defaultKeySet: Set[String], welshKeySet: Set[String]): String =
-    if (defaultKeySet.size > welshKeySet.size)
+    if (defaultKeySet.size > welshKeySet.size) {
       listMissingMessageKeys("The following message keys are missing from the Welsh Set:", defaultKeySet -- welshKeySet)
-    else
+    } else {
       listMissingMessageKeys(
         "The following message keys are missing from the Default Set:",
         welshKeySet -- defaultKeySet)
+    }
 
   private def listMissingMessageKeys(header: String, missingKeys: Set[String]) =
     missingKeys.toList.sorted.mkString(header + displayLine, "\n", displayLine)
