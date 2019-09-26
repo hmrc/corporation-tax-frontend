@@ -89,8 +89,6 @@ account.summary.generic_error.portal = Try refreshing the page in a few minutes 
 ##  Partial
 #######################################################
 partial.heading = Corporation Tax
-partial.utr = Your Unique Taxpayer Reference (UTR) is {0}.
-partial.more_details = More Corporation Tax details
 
 #######################################################
 ##  Not Activated

@@ -58,21 +58,8 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
       returnsPartial = Some("")
     )
 
-    def viewAsString(): String = views.html.partial(CtUtr("utr"), accountSummary, frontendAppConfig)(fakeRequest, messages).toString
-
     when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(accountSummary))
-  }
-
-
-  "Calling PartialController.onPageLoad" must {
-    "return OK and render the subpage for a GET" in new LocalSetup {
-      val result: Future[Result] = c.onPageLoad(fakeRequest)
-
-      status(result) mustBe OK
-      contentType(result) mustBe Some("text/html")
-      contentAsString(result) mustBe viewAsString()
-    }
   }
 
   "Calling PartialController.getCard" must {
