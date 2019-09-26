@@ -32,12 +32,11 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading("stop.heading")
+
 
         @components.input_radio(
             field = form("value"),
-            legend = messages("stop.heading"),
-            legendClass = Some("visually-hidden"),
+            legend = components.heading("stop.heading").body,
             inputs = Stop.options.toSeq,
             trackGa = true,
             gaEvent = "Stop",
