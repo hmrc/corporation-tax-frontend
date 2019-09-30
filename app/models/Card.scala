@@ -41,7 +41,8 @@ case class Card(
   additionalLinks: Seq[Link] = Nil,
   paymentsPartial: Option[String] = None,
   returnsPartial: Option[String] = None,
-  paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(Nil)
+  paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(Nil),
+  makePaymentLink: Option[Link] = None
 )
 
 object Card {
