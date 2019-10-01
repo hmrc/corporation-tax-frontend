@@ -81,12 +81,14 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
       paymentsPartial = paymentsContent,
       returnsPartial = returnsContent,
       paymentHistory = paymentHistory,
-      makePaymentLink = Some(
-        Link(
-          href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
-          ga = "link - click:CT cards:Make a CT payment",
-          id = "make-ct-payment",
-          title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
+      paymentSectionAdditionalLinks = Some(
+        List(
+          Link(
+            href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
+            ga = "link - click:CT cards:Make a CT payment",
+            id = "make-ct-payment",
+            title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
+          )
         )
       )
     )

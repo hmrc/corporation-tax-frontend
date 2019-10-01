@@ -97,12 +97,14 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
       paymentsPartial = Some("Payments partial"),
       returnsPartial = Some("Returns partial"),
       paymentHistory = Right(history),
-      makePaymentLink = Some(
-        Link(
-          href = "http://someTestUrl/make-a-payment",
-          ga = "link - click:CT cards:Make a CT payment",
-          id = "make-ct-payment",
-          title = "Make a Corporation Tax payment"
+      paymentSectionAdditionalLinks = Some(
+        List(
+          Link(
+            href = "http://someTestUrl/make-a-payment",
+            ga = "link - click:CT cards:Make a CT payment",
+            id = "make-ct-payment",
+            title = "Make a Corporation Tax payment"
+          )
         )
       )
     )
@@ -124,12 +126,14 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
       messageReferenceKey = Some("card.ct.utr"),
       paymentsPartial = Some("There is no balance information to display."),
       returnsPartial = Some("Returns partial"),
-      makePaymentLink = Some(
-        Link(
-          href = "http://someTestUrl/make-a-payment",
-          ga = "link - click:CT cards:Make a CT payment",
-          id = "make-ct-payment",
-          title = "Make a Corporation Tax payment"
+      paymentSectionAdditionalLinks = Some(
+        List(
+          Link(
+            href = "http://someTestUrl/make-a-payment",
+            ga = "link - click:CT cards:Make a CT payment",
+            id = "make-ct-payment",
+            title = "Make a Corporation Tax payment"
+          )
         )
       )
     )
