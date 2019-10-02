@@ -38,12 +38,6 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
     new PaymentHistoryConnector(httpClient, frontendAppConfig)
   }
 
-  def testFailingConnector[A](mockedException: Exception, httpWrapper: HttpWrapper = mock[HttpWrapper]): PaymentHistoryConnector = {
-    when(httpWrapper.getF[A](Matchers.any())).thenThrow(mockedException)
-    val httpClient: HttpClient = http(httpWrapper)
-    new PaymentHistoryConnector(httpClient, frontendAppConfig)
-  }
-
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val ctUtr = CtUtr("utr")

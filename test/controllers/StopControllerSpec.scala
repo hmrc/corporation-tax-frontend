@@ -16,22 +16,19 @@
 
 package controllers
 
-import play.api.data.Form
-import play.api.libs.json.JsString
-import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
 import connectors.FakeDataCacheConnector
 import controllers.actions.{FakeServiceInfoAction, _}
-import play.api.test.Helpers._
 import forms.StopFormProvider
-import identifiers.StopId
 import models.Stop
+import play.api.data.Form
+import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import utils.FakeNavigator
 import views.html.stop
 
 class StopControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute = routes.SubpageController.onPageLoad()
 
   val formProvider = new StopFormProvider()
   val form = formProvider()

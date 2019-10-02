@@ -27,13 +27,12 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import services._
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 import views.ViewSpecBase
 import views.html.partials.not_activated
-import views.html.subpage
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
@@ -76,9 +75,6 @@ class AccountSummaryHelperSpec extends ViewSpecBase with MockitoSugar with Scala
   }
 
   val fakeRequestWithEnrolments: AuthenticatedRequest[AnyContent] = requestWithEnrolment(activated = true)
-
-  def viewAsString(balanceInformation: String = ""): String =
-    subpage(frontendAppConfig, ctEnrolment(), accountSummary)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

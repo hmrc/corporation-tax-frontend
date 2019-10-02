@@ -7,10 +7,6 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = Mae problem wedi codi
 
-index.title = corporation-tax-frontend
-index.heading = corporation-tax-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
-
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
 session_expired.guidance = The details you have given have been deleted because you did not continue the service for 1 hour.
