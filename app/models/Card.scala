@@ -33,15 +33,16 @@ object Link {
 }
 
 case class Card(
-  title: String,
-  description: String,
-  referenceNumber: String,
-  primaryLink: Option[Link] = None,
-  messageReferenceKey: Option[String],
-  additionalLinks: Seq[Link] = Nil,
-  paymentsPartial: Option[String] = None,
-  returnsPartial: Option[String] = None,
-  paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(Nil)
+                 title: String,
+                 description: String,
+                 referenceNumber: String,
+                 primaryLink: Option[Link] = None,
+                 messageReferenceKey: Option[String],
+                 additionalLinks: Seq[Link] = Nil,
+                 paymentsPartial: Option[String] = None,
+                 returnsPartial: Option[String] = None,
+                 paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(Nil),
+                 paymentSectionAdditionalLinks: Option[List[Link]] = None
 )
 
 object Card {

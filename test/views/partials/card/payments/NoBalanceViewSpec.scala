@@ -50,12 +50,6 @@ class NoBalanceViewSpec extends ViewSpecBase {
       viewCtStatement.attr("data-journey-click") mustBe "link - click:CT cards:View your CT statement"
     }
 
-    "must have 'Make a Corporation Tax payment ' link" in {
-      lazy val makeCtPayment = doc.getElementById("make-ct-payment")
-      makeCtPayment.text() mustBe "Make a Corporation Tax payment"
-      makeCtPayment.attr("href") mustBe "http://localhost:9731/business-account/corporation-tax/make-a-payment"
-      makeCtPayment.attr("data-journey-click") mustBe "link - click:CT cards:Make a CT payment"
-    }
   }
 }
 

@@ -16,10 +16,10 @@
 
 package services
 
-import com.google.inject.ImplementedBy
-import config.FrontendAppConfig
 import javax.inject.Inject
 
+import com.google.inject.ImplementedBy
+import config.FrontendAppConfig
 import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
@@ -56,8 +56,15 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
       }
     }
 
-  private def buildCtCardData(paymentsContent: Option[String] = None, returnsContent: Option[String] = None, paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]])
-                             (implicit request: AuthenticatedRequest[_], messages: Messages, hc: HeaderCarrier): Card = {
+  private def buildCtCardData(
+                               paymentsContent: Option[String] = None,
+                               returnsContent: Option[String] = None,
+                               paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]]
+                             )(
+                               implicit request: AuthenticatedRequest[_],
+                               messages: Messages,
+                               hc: HeaderCarrier
+                             ): Card = {
     Card(
       title = messagesApi.preferred(request)("partial.heading"),
       description = "",
@@ -73,7 +80,17 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
       messageReferenceKey = Some("card.ct.utr"),
       paymentsPartial = paymentsContent,
       returnsPartial = returnsContent,
-      paymentHistory = paymentHistory
+      paymentHistory = paymentHistory,
+      paymentSectionAdditionalLinks = Some(
+        List(
+          Link(
+            href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
+            ga = "link - click:CT cards:Make a CT payment",
+            id = "make-ct-payment",
+            title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
+          )
+        )
+      )
     )
   }
 }

@@ -108,16 +108,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You are £123.45 in credit.")
-
-        assertLinkById(
-          doc,
-          linkId = "make-ct-payment",
-          expectedText = "Make a Corporation Tax payment",
-          expectedUrl = "http://localhost:9731/business-account/corporation-tax/make-a-payment",
-          expectedGAEvent = "link - click:CT cards:Make a CT payment",
-          expectedIsExternal = false,
-          expectedOpensInNewTab = false
-        )
       }
 
       "the user is in debit" in new LocalSetup {
@@ -127,16 +117,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You owe £543.21.")
-
-        assertLinkById(
-          doc,
-          linkId = "make-ct-payment",
-          expectedText = "Make a Corporation Tax payment",
-          expectedUrl = "http://localhost:9731/business-account/corporation-tax/make-a-payment",
-          expectedGAEvent = "link - click:CT cards:Make a CT payment",
-          expectedIsExternal = false,
-          expectedOpensInNewTab = false
-        )
       }
 
       "the user has no tax to pay" in new LocalSetup {
