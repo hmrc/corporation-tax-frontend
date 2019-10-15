@@ -19,7 +19,7 @@ package services
 import javax.inject.Inject
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
-import models.{Link, _}
+import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import org.joda.time.DateTime
