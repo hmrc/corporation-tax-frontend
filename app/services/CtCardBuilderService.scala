@@ -17,10 +17,9 @@
 package services
 
 import javax.inject.Inject
-
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
-import models._
+import models.{Link, _}
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import org.joda.time.DateTime
@@ -88,6 +87,12 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
             ga = "link - click:CT cards:Make a CT payment",
             id = "make-ct-payment",
             title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
+          ),
+            Link(
+            href = appConfig.getPortalUrl("balance")(request.ctEnrolment),
+            ga = "link - click:CT cards:View your CT statement",
+            id = "view-ct-statement",
+            title = messagesApi.preferred(request)("card.view_your_corporation_tax_statement")
           )
         )
       )
