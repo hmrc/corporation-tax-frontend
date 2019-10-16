@@ -83,16 +83,16 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
       paymentSectionAdditionalLinks = Some(
         List(
           Link(
-            href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
-            ga = "link - click:CT cards:Make a CT payment",
-            id = "make-ct-payment",
-            title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
-          ),
-            Link(
             href = appConfig.getPortalUrl("balance")(request.ctEnrolment),
             ga = "link - click:CT cards:View your CT statement",
             id = "view-ct-statement",
             title = messagesApi.preferred(request)("card.view_your_corporation_tax_statement")
+          ),
+          Link(
+            href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
+            ga = "link - click:CT cards:Make a CT payment",
+            id = "make-ct-payment",
+            title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
           )
         )
       )
