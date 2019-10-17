@@ -100,6 +100,12 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
       paymentSectionAdditionalLinks = Some(
         List(
           Link(
+            href = "http://testStatementUrl",
+            ga = "link - click:CT cards:View your CT statement",
+            id = "view-ct-statement",
+            title = "View your Corporation Tax statement"
+          ),
+          Link(
             href = "http://someTestUrl/make-a-payment",
             ga = "link - click:CT cards:Make a CT payment",
             id = "make-ct-payment",
@@ -129,6 +135,12 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
       paymentSectionAdditionalLinks = Some(
         List(
           Link(
+            href = "http://testStatementUrl",
+            ga = "link - click:CT cards:View your CT statement",
+            id = "view-ct-statement",
+            title = "View your Corporation Tax statement"
+          ),
+          Link(
             href = "http://someTestUrl/make-a-payment",
             ga = "link - click:CT cards:Make a CT payment",
             id = "make-ct-payment",
@@ -143,6 +155,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
     when(testAppConfig.getUrl("mainPage")).thenReturn("http://someTestUrl")
     when(testAppConfig.getUrl("fileAReturn")).thenReturn("http://testReturnsUrl")
+    when(testAppConfig.getPortalUrl("balance")(authenticatedRequest.ctEnrolment)(authenticatedRequest)).thenReturn("http://testStatementUrl")
   }
 
   "Calling CtCardBuilderService.buildCtCard" should {

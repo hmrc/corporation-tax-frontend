@@ -43,13 +43,6 @@ class InCreditViewSpec extends ViewSpecBase {
     "must have text 'You are £123.45 in credit.' " in {
       doc.getElementsByTag("p").first().text() mustBe "You are £123.45 in credit."
     }
-
-    "must have 'View your Corporation Tax statement' link" in {
-      lazy val viewCtStatement = doc.getElementById("view-ct-statement")
-      viewCtStatement.text() mustBe "View your Corporation Tax statement"
-      viewCtStatement.attr("href") mustBe "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng"
-      viewCtStatement.attr("data-journey-click") mustBe "link - click:CT cards:View your CT statement"
-    }
   }
   
 }

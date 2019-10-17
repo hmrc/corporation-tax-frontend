@@ -17,7 +17,6 @@
 package services
 
 import javax.inject.Inject
-
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import models._
@@ -83,6 +82,12 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
       paymentHistory = paymentHistory,
       paymentSectionAdditionalLinks = Some(
         List(
+          Link(
+            href = appConfig.getPortalUrl("balance")(request.ctEnrolment),
+            ga = "link - click:CT cards:View your CT statement",
+            id = "view-ct-statement",
+            title = messagesApi.preferred(request)("card.view_your_corporation_tax_statement")
+          ),
           Link(
             href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
             ga = "link - click:CT cards:Make a CT payment",

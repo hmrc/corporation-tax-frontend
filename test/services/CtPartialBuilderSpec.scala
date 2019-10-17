@@ -127,15 +127,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
 
         doc.text() must include("You have no tax to pay.")
 
-        assertLinkById(
-          doc,
-          linkId = "view-ct-statement",
-          expectedText = "View your Corporation Tax statement",
-          expectedUrl = "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
-          expectedGAEvent = "link - click:CT cards:View your CT statement",
-          expectedIsExternal = true,
-          expectedOpensInNewTab = true
-        )
       }
 
       "there is no balance information to display" in new LocalSetup {
@@ -145,16 +136,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with OneAppPerSuite with Mockito
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("There is no balance information to display.")
-
-        assertLinkById(
-          doc,
-          linkId = "view-ct-statement",
-          expectedText = "View your Corporation Tax statement",
-          expectedUrl = "http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng",
-          expectedGAEvent = "link - click:CT cards:View your CT statement",
-          expectedIsExternal = true,
-          expectedOpensInNewTab = true
-        )
       }
 
     }
