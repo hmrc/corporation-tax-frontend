@@ -26,6 +26,12 @@ class UnauthorisedViewSpec extends ViewBehaviours {
   "Unauthorised view" must {
 
     behave like normalPage(view, "unauthorised")
+
+    "contain heading ID" in {
+      val doc = asDocument(view())
+      doc.getElementsByTag("h1").attr("id") mustBe "unauthorised"
+    }
+
     "have the correct content" in {
       val doc = asDocument(view())
       doc.text() must include ("You can’t see this page")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.componants
+package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -31,9 +31,9 @@ class HeadingSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
   implicit lazy val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
-  val view : Html = heading("Test heading", "heading-large")
+  val view : Html = heading("test-id", "Test heading", "heading-large")
 
-  "Heading componant" must {
+  "Heading component" must {
 
     "include heading with heading text and  class" in {
       val doc: Document = Jsoup.parse(view.toString)
@@ -41,6 +41,7 @@ class HeadingSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
       val forms = doc.select("h1")
       forms.size mustBe 1
 
+      forms.get(0).attr("id") mustBe "test-id"
       forms.get(0).text() mustBe "Test heading"
       forms.get(0).className() mustBe "heading-large no-top-margin"
     }
