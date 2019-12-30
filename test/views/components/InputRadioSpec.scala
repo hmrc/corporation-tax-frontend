@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.componants
+package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

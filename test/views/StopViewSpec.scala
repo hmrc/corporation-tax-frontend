@@ -37,6 +37,11 @@ class StopViewSpec extends ViewBehaviours {
 
   "Stop view" must {
     behave like normalPage(createView, messageKeyPrefix, "hint.text")
+
+    "contain heading ID" in {
+      val doc = asDocument(createView())
+      doc.getElementsByTag("h1").attr("id") mustBe "stop"
+    }
   }
 
   "Stop view" when {

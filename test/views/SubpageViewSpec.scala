@@ -33,6 +33,12 @@ class SubpageViewSpec extends ViewBehaviours {
 
   "Subpage view" must {
     behave like normalPage(createView, messageKeyPrefix)
+
+    "contain heading ID" in {
+      val doc = asDocument(createView())
+      doc.getElementsByTag("h1").attr("id") mustBe "ct-details"
+    }
+
     "contain correct content" in {
       val doc = asDocument(createView())
       doc.getElementsByTag("h1").first().text() mustBe "Corporation Tax details"
