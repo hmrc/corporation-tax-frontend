@@ -22,6 +22,7 @@ site.continue = Continue
 site.service_name = Business tax account
 site.text_area.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
+site.service_title = {0} - Business tax account - GOV.UK
 
 unauthorised.title = You can’t see this page
 unauthorised.heading = You can’t see this page
