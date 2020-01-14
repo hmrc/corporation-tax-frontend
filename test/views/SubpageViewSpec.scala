@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,13 @@ class SubpageViewSpec extends ViewBehaviours {
   val utr = CtUtr("this-is-a-utr")
   val ctEnrolment = CtEnrolment(utr, isActivated = true)
 
-  def createView = () => subpage(frontendAppConfig, ctEnrolment, Html("<p id=\"partial-content\">hello world</p>"))(HtmlFormat.empty)(fakeRequest, messages)
+  def createView =
+    () =>
+      subpage(
+        frontendAppConfig,
+        ctEnrolment,
+        Html("<p id=\"partial-content\">hello world</p>")
+      )(HtmlFormat.empty)(fakeRequest, messages)
 
   "Subpage view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -52,7 +58,9 @@ class SubpageViewSpec extends ViewBehaviours {
     }
 
     "render the provided partial content" in {
-      val doc = asDocument(createView()).getElementById("partial-content").text mustBe "hello world"
+      val doc = asDocument(createView())
+        .getElementById("partial-content")
+        .text mustBe "hello world"
     }
   }
 
@@ -64,16 +72,52 @@ class SubpageViewSpec extends ViewBehaviours {
 
     "contain the users UTR" in {
       val utrBlock = asDocument(createView()).getElementById("ct-utr")
-      utrBlock.text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR): this-is-a-utr"
+      utrBlock
+        .text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR): this-is-a-utr"
     }
 
     "contain the more options links" in {
       val doc = asDocument(createView())
-      doc.getElementById("more-options").getElementsByTag("h3").text() mustBe "More options"
-      assertLinkById(doc, "cert-of-residence", "Get a certificate of residence (opens in a new window or tab)", "https://www.gov.uk/guidance/get-a-certificate-of-residence", expectedGAEvent = "link - click:CTMoreOptions:Get a certificate of residence", expectedIsExternal = true, expectedOpensInNewTab = true )
-      assertLinkById(doc, "setup-partnership", "Set up a partnership or add a partner (opens in a new window or tab)", "/forms/form/register-a-partner-or-a-partnership-for-self-assessment/new", expectedGAEvent = "link - click:CTMoreOptions:Set up a partnership or add a partner", expectedIsExternal = true, expectedOpensInNewTab = true )
-      assertLinkById(doc, "help-and-contact", "Help and contact", "http://localhost:9733/business-account/help", expectedGAEvent = "link - click:CTSidebar:Help and contact")
-      assertLinkById(doc, "more", "More (opens in a new window or tab)", s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng", expectedGAEvent = "link - click:CTSidebar:More", expectedIsExternal = true, expectedOpensInNewTab = true)
+      doc
+        .getElementById("more-options")
+        .getElementsByTag("h3")
+        .text() mustBe "More options"
+      assertLinkById(
+        doc,
+        "cert-of-residence",
+        "Get a certificate of residence (opens in a new window or tab)",
+        "https://www.gov.uk/guidance/get-a-certificate-of-residence",
+        expectedGAEvent =
+          "link - click:CTMoreOptions:Get a certificate of residence",
+        expectedIsExternal = true,
+        expectedOpensInNewTab = true
+      )
+      assertLinkById(
+        doc,
+        "setup-partnership",
+        "Set up a partnership or add a partner (opens in a new window or tab)",
+        "/forms/form/register-a-partner-or-a-partnership-for-self-assessment/new",
+        expectedGAEvent =
+          "link - click:CTMoreOptions:Set up a partnership or add a partner",
+        expectedIsExternal = true,
+        expectedOpensInNewTab = true
+      )
+      assertLinkById(
+        doc,
+        "help-and-contact",
+        "Help and contact",
+        "http://localhost:9733/business-account/help",
+        expectedGAEvent = "link - click:CTSidebar:Help and contact"
+      )
+      assertLinkById(
+        doc,
+        "more",
+        "More (opens in a new window or tab)",
+        s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
+        expectedGAEvent = "link - click:CTSidebar:More",
+        expectedIsExternal = true,
+        expectedOpensInNewTab = true
+      )
 
     }
   }
