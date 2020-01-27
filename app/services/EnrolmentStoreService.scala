@@ -16,10 +16,8 @@
 
 package services
 
-import javax.inject.{Inject, Singleton}
-
-import com.google.inject.ImplementedBy
 import connectors.EnrolmentStoreConnector
+import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
 import uk.gov.hmrc.domain.CtUtr
@@ -28,11 +26,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentStoreServiceImpl @Inject()(connector: EnrolmentStoreConnector)(implicit val ec:ExecutionContext) extends EnrolmentsStoreService {
+class EnrolmentStoreService @Inject()(connector: EnrolmentStoreConnector)(implicit val ec: ExecutionContext) {
 
   val daysBetweenExpectedArrivalAndExpiry = 23
 
-  override def showNewPinLink(enrolment: CtEnrolment, currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Boolean] = enrolment match {
+  def showNewPinLink(enrolment: CtEnrolment, currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Boolean] = enrolment match {
     case CtEnrolment(CtUtr(utr), false) => {
       val enrolmentDetailsList: Future[Either[String, UserEnrolments]] = connector.getEnrolments(utr)
       enrolmentDetailsList.map({
@@ -53,13 +51,7 @@ class EnrolmentStoreServiceImpl @Inject()(connector: EnrolmentStoreConnector)(im
         case _ => true
       })
     }
-    case CtEnrolment(_,true) => Future.successful(false)
+    case CtEnrolment(_, true) => Future.successful(false)
     case _ => Future.successful(true)
   }
 }
-
-@ImplementedBy(classOf[EnrolmentStoreServiceImpl])
-trait EnrolmentsStoreService {
-  def showNewPinLink(enrolment: CtEnrolment, currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Boolean]
-}
-

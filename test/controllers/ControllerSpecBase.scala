@@ -18,9 +18,34 @@ package controllers
 
 import uk.gov.hmrc.http.cache.client.CacheMap
 import base.SpecBase
-import controllers.actions.FakeDataRetrievalAction
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction}
+import models.CtEnrolment
+import models.requests.AuthenticatedRequest
+import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito._
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.Answer
+import org.scalatest.mockito.MockitoSugar
+import org.mockito.{Answers, Matchers}
+import play.api.mvc.{Request, Result}
+import uk.gov.hmrc.domain.CtUtr
 
-trait ControllerSpecBase extends SpecBase {
+import scala.concurrent.Future
+
+trait ControllerSpecBase extends SpecBase  with MockitoSugar {
+
+  val mockAuthAction:AuthAction = mock[AuthAction]
+  val mockDataRetrievalAction = mock[DataRetrievalAction]
+
+  def setupFakeAuthAction  = when(mockAuthAction.invokeBlock(Matchers.any(), Matchers.any())).thenAnswer(
+    new Answer[Future[Result]]{
+      def answer(var1: InvocationOnMock):Future[Result] = {
+        val request = var1.getArguments()(0).asInstanceOf[Request[_]]
+        val block = var1.getArguments()(1).asInstanceOf[AuthenticatedRequest[_] => Future[Result]]
+        block(AuthenticatedRequest(request, "id", CtEnrolment(CtUtr("utr"), isActivated = true)))
+      }
+    }
+  )
 
   val cacheMapId = "id"
 

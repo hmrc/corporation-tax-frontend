@@ -16,9 +16,8 @@
 
 package services
 
-import javax.inject.Inject
-import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
+import javax.inject.Inject
 import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
@@ -28,12 +27,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
-                                         appConfig: FrontendAppConfig,
-                                         ctService: CtServiceInterface,
-                                         ctPartialBuilder: CtPartialBuilder,
-                                         paymentHistoryService: PaymentHistoryServiceInterface
-                                        )(implicit ec: ExecutionContext) extends CtCardBuilderService {
+class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
+                                     appConfig: FrontendAppConfig,
+                                     ctService: CtService,
+                                     ctPartialBuilder: CtPartialBuilder,
+                                     paymentHistoryService: PaymentHistoryService
+                                    )(implicit ec: ExecutionContext) {
 
   def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] =
     for {
@@ -98,9 +97,4 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
       )
     )
   }
-}
-
-@ImplementedBy(classOf[CtCardBuilderServiceImpl])
-trait CtCardBuilderService {
-  def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card]
 }

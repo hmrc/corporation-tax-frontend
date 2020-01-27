@@ -21,17 +21,17 @@ import connectors.payments.{NextUrl, PaymentConnector}
 import controllers.actions._
 import models._
 import org.mockito.Matchers
-import org.mockito.Mockito.when
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import services.CtServiceInterface
-import uk.gov.hmrc.http.HeaderCarrier
+import services.CtService
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar {
+class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar with BeforeAndAfterEach {
 
   private val testAccountBalance = CtAccountBalance(Some(0.0))
   private val testCtData = CtData(CtAccountSummaryData(Some(testAccountBalance)))
@@ -41,35 +41,40 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val mockPayConnector: PaymentConnector = mock[PaymentConnector]
   when(mockPayConnector.ctPayLink(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(NextUrl(testPayUrl)))
 
-  class TestCtService(testModel: Either[CtAccountFailure, Option[CtData]]) extends CtServiceInterface {
-    override def fetchCtModel(ctEnrolment: CtEnrolment)
-                             (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
-      Future.successful(testModel)
+  val mockCtService = mock[CtService]
+
+  def buildController = new PaymentStartController(frontendAppConfig, mockPayConnector, FakeAuthAction, mockCtService, messagesApi)
+
+  def setupMockCtService(testModel: Either[CtAccountFailure, Option[CtData]] = Right(Some(testCtData))): Unit = {
+    when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(testModel))
   }
 
-  def buildController(ctService: CtServiceInterface) = new PaymentStartController(
-    frontendAppConfig, mockPayConnector, FakeAuthAction, ctService, messagesApi)
-
-  def customController(testModel: Either[CtAccountFailure, Option[CtData]] = Right(Some(testCtData))): PaymentStartController = {
-    buildController(new TestCtService(testModel))
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockPayConnector)
+    reset(mockCtService)
   }
 
   "Payment Controller" must {
 
     "return See Other and a NextUrl for a GET with the correct user information available" in {
-      val result: Future[Result] = customController().makeAPayment(fakeRequest)
+      setupMockCtService(Right(Some(testCtData)))
+      when(mockPayConnector.ctPayLink(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(NextUrl(testPayUrl)))
+      val result: Future[Result] = buildController.makeAPayment(fakeRequest)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(testPayUrl)
     }
 
     "return Bad Request and the error page when the user has no account balance" in {
-      val result: Future[Result] = customController(Right(Some(testCtDataNoAccountBalance))).makeAPayment(fakeRequest)
+      setupMockCtService(Right(Some(testCtDataNoAccountBalance)))
+      val result: Future[Result] = buildController.makeAPayment(fakeRequest)
       contentType(result) mustBe Some("text/html")
       status(result) mustBe BAD_REQUEST
     }
 
-    "return Bad Request and the error page when CtGenericError is returend " in {
-      val result: Future[Result] = customController(Left(CtGenericError)).makeAPayment(fakeRequest)
+    "return Bad Request and the error page when CtGenericError is returned " in {
+      setupMockCtService(Left(CtGenericError))
+      val result: Future[Result] = buildController.makeAPayment(fakeRequest)
       contentType(result) mustBe Some("text/html")
       status(result) mustBe BAD_REQUEST
     }

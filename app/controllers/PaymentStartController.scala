@@ -26,7 +26,7 @@ import models.CtData
 import org.joda.time.LocalDate
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.CtServiceInterface
+import services.CtService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partials.generic_error
 
@@ -43,7 +43,7 @@ object PaymentStartController {
 class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
                                        payConnector: PaymentConnector,
                                        authenticate: AuthAction,
-                                       ctService: CtServiceInterface,
+                                       ctService: CtService,
                                        override val messagesApi: MessagesApi)(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def makeAPayment: Action[AnyContent] = authenticate.async {

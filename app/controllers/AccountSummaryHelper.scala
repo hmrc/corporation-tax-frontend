@@ -26,7 +26,7 @@ import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.RequestHeader
 import play.twirl.api.HtmlFormat
-import services.{CtServiceInterface, EnrolmentsStoreService, PaymentHistoryServiceInterface}
+import services.{CtService, EnrolmentStoreService, PaymentHistoryService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.views.formatting.Money.pounds
@@ -36,9 +36,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AccountSummaryHelper @Inject()(
                                       appConfig: FrontendAppConfig,
-                                      ctService: CtServiceInterface,
-                                      enrolmentsStoreService: EnrolmentsStoreService,
-                                      paymentHistoryService: PaymentHistoryServiceInterface,
+                                      ctService: CtService,
+                                      enrolmentsStoreService: EnrolmentStoreService,
+                                      paymentHistoryService: PaymentHistoryService,
                                       override val messagesApi: MessagesApi
                                     ) extends I18nSupport {
 

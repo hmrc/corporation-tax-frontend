@@ -16,7 +16,7 @@
 
 package services
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.payments.PaymentHistoryConnectorInterface
 import models.payments.{CtPaymentRecord, PaymentRecord}
@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterface, config: FrontendAppConfig)
-                                     (implicit ec: ExecutionContext) extends PaymentHistoryServiceInterface {
+                                     (implicit ec: ExecutionContext) {
 
   def getPayments(ctEnrolment: CtEnrolment,
                   currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
@@ -50,10 +50,4 @@ class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterfac
   private def filterPaymentHistory(payments: List[CtPaymentRecord], currentDate: DateTime): List[PaymentRecord] =
     payments.flatMap(PaymentRecord.from(_, currentDate))
 
-}
-
-@ImplementedBy(classOf[PaymentHistoryService])
-trait PaymentHistoryServiceInterface {
-  def getPayments(enrolment: CtEnrolment,
-                  currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]]
 }
