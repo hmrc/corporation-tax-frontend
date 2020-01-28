@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.payments.PaymentHistoryConnectorInterface
+import connectors.payments.PaymentHistoryConnector
 import models.payments.{CtPaymentRecord, PaymentRecord}
 import models.{CtEnrolment, PaymentRecordFailure}
 import org.joda.time.DateTime
@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterface, config: FrontendAppConfig)
+class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config: FrontendAppConfig)
                                      (implicit ec: ExecutionContext) {
 
   def getPayments(ctEnrolment: CtEnrolment,

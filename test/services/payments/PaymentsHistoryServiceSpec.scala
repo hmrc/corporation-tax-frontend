@@ -17,13 +17,16 @@
 package services.payments
 
 import config.FrontendAppConfig
-import connectors.payments.PaymentHistoryConnectorInterface
+import connectors.payments.PaymentHistoryConnector
 import models.payments.PaymentStatus._
 import models.payments._
 import models.{CtEnrolment, PaymentRecordFailure}
 import org.joda.time.DateTime
-import org.scalatest.TestData
+import org.mockito.Matchers
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{BeforeAndAfterEach, TestData}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.Application
@@ -38,51 +41,38 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PaymentHistoryConnectorNotFound extends PaymentHistoryConnectorInterface {
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier) = Future.successful(Right(Nil))
-}
+class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerTest with BeforeAndAfterEach with MockitoSugar {
 
-class PaymentHistoryParseError extends PaymentHistoryConnectorInterface {
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier) = Future.successful(Left("unable to parse data from payment api"))
-}
-
-class PaymentHistoryConnectorSingleRecord(val date: String = "2018-10-20T08:00:00.000", status: PaymentStatus = Successful) extends PaymentHistoryConnectorInterface {
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier) = Future.successful(
-    Right(List(
-      CtPaymentRecord(
-        reference = "reference number",
-        amountInPence = 100,
-        status = status,
-        createdOn = date,
-        taxType = "tax type"
-      )
+  def singleRecordHistory(status: PaymentStatus, date: String = "2018-10-20T08:00:00.000") = List(
+    CtPaymentRecord(
+      reference = "reference number",
+      amountInPence = 100,
+      status = status,
+      createdOn = date,
+      taxType = "tax type"
     )
-    ))
-}
+  )
 
-class PaymentHistoryConnectorMultiple extends PaymentHistoryConnectorInterface {
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier) =
-    Future.successful(Right(List(
-      CtPaymentRecord(
-        reference = "reference number",
-        amountInPence = 150,
-        status = Successful,
-        createdOn = "2018-10-19T08:00:00.000",
-        taxType = "tax type"
-      ),
-      CtPaymentRecord(
-        reference = "reference number",
-        amountInPence = 100,
-        status = Successful,
-        createdOn = "2018-10-13T07:59:00.000",
-        taxType = "tax type"
-      )
-    )))
-}
+  val multiRecordHistory = List(
+    CtPaymentRecord(
+      reference = "reference number",
+      amountInPence = 150,
+      status = Successful,
+      createdOn = "2018-10-19T08:00:00.000",
+      taxType = "tax type"
+    ),
+    CtPaymentRecord(
+      reference = "reference number",
+      amountInPence = 100,
+      status = Successful,
+      createdOn = "2018-10-13T07:59:00.000",
+      taxType = "tax type"
+    )
+  )
 
-class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerTest {
+  val mockConnector = mock[PaymentHistoryConnector]
 
-  class buildService(mockedConnector: PaymentHistoryConnectorInterface) {
+  class buildService() {
     def injector: Injector = app.injector
 
     def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
@@ -91,7 +81,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
 
     def messages: Messages = messagesApi.preferred(fakeRequest)
 
-    lazy val testService = new PaymentHistoryService(mockedConnector, frontendAppConfig)
+    lazy val testService = new PaymentHistoryService(mockConnector, frontendAppConfig)
   }
 
   def fakeRequest = FakeRequest("", "")
@@ -112,11 +102,17 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
 
   val date = new DateTime("2018-10-20T08:00:00.000")
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockConnector)
+  }
+
   "PaymentHistoryServiceSpec" when {
 
     "getPayments is called and getSAPaymentHistory toggle set to false" should {
 
-      "return Nil" in new buildService(new PaymentHistoryConnectorSingleRecord()) {
+      "return Nil" in new buildService() {
+        when(mockConnector.get(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(singleRecordHistory(Successful))))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
@@ -124,7 +120,8 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
 
     "getPayments is called and getSAPaymentHistory toggle set to true" should {
 
-      "return payment history when valid payment history is returned" in new buildService(new PaymentHistoryConnectorSingleRecord()) {
+      "return payment history when valid payment history is returned" in new buildService() {
+        when(mockConnector.get(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(singleRecordHistory(Successful))))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(List(
           PaymentRecord(
             reference = "reference number",
@@ -135,7 +132,8 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
         ))
       }
 
-      "return payment history when payments fall within and outside 7 days" in new buildService(new PaymentHistoryConnectorMultiple()) {
+      "return payment history when payments fall within and outside 7 days" in new buildService() {
+        when(mockConnector.get(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(multiRecordHistory)))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(List(
           PaymentRecord(
             reference = "reference number",
@@ -146,25 +144,30 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
         ))
       }
 
-      "not return payment history when status is not Successful" in new buildService(new PaymentHistoryConnectorSingleRecord(status = Invalid)) {
+      "not return payment history when status is not Successful" in new buildService() {
+        when(mockConnector.get(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(singleRecordHistory(Invalid))))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
       "not return payment history when payment falls outside of 7 days" in new buildService(
-        new PaymentHistoryConnectorSingleRecord("2018-10-13T07:59:00.000")
       ) {
+        when(mockConnector.get(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Right(singleRecordHistory(Successful, date = "2018-10-13T07:59:00.000"))))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
-      "return Nil when date is invalid format" in new buildService(new PaymentHistoryConnectorSingleRecord("invalid-date")) {
+      "return Nil when date is invalid format" in new buildService() {
+        when(mockConnector.get(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(singleRecordHistory(Successful, date = "invalid-date"))))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
-      "return Nil when payment history could not be found" in new buildService(new PaymentHistoryConnectorNotFound) {
+      "return Nil when payment history could not be found" in new buildService() {
+        when(mockConnector.get(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(Nil)))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Right(Nil)
       }
 
-      "return Left(PaymentRecordFailure) when connector fails to parse" in new buildService(new PaymentHistoryParseError) {
+      "return Left(PaymentRecordFailure) when connector fails to parse" in new buildService() {
+        when(mockConnector.get(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Left("unable to parse data from payment api")))
         testService.getPayments(CtEnrolment(CtUtr("utr"), true), date).futureValue mustBe Left(PaymentRecordFailure)
       }
 

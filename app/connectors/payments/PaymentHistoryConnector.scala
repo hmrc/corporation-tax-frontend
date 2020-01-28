@@ -16,7 +16,7 @@
 
 package connectors.payments
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import javax.inject.Singleton
 import models.payments.CtPaymentRecord
@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.Future
 
 @Singleton
-class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) extends PaymentHistoryConnectorInterface {
+class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -51,9 +51,4 @@ class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAp
 
   private def buildUrl(searchTag: String) = s"${config.payApiUrl}/pay-api/payment/search/BTA/$searchTag?taxType=corporation-tax"
 
-}
-
-@ImplementedBy(classOf[PaymentHistoryConnector])
-trait PaymentHistoryConnectorInterface {
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, List[CtPaymentRecord]]]
 }

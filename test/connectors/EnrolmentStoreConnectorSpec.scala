@@ -36,7 +36,7 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
 
   lazy val httpGet: HttpClient = mock[HttpClient]
 
-  val connector = new EnrolmentStoreConnectorImpl(httpGet,frontendAppConfig)
+  val connector = new EnrolmentStoreConnector(httpGet,frontendAppConfig)
   def result = connector.getEnrolments("cred-id")
 
   "EnrolmentStoreConnectorSpec" when {

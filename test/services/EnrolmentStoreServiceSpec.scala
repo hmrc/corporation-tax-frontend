@@ -20,87 +20,26 @@ import base.SpecBase
 import connectors.{EnrolmentStoreConnector, MockHttpClient}
 import models.{CtEnrolment, UserEnrolmentStatus, UserEnrolments}
 import org.joda.time.DateTime
-import org.scalatest.BeforeAndAfter
+import org.mockito.Matchers
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfter with MockHttpClient {
+class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfterEach with MockHttpClient {
   val activeOct13 = UserEnrolmentStatus("IR-CT", Some("active"), Some(new DateTime("2018-10-13T23:59:59.999Z").toLocalDateTime))
   val activeJan01 = UserEnrolmentStatus("IR-CT", Some("active"), Some(new DateTime("2018-01-01T23:59:59.999Z").toLocalDateTime))
   val activeFeb28 = UserEnrolmentStatus("IR-CT", Some("active"), Some(new DateTime("2018-02-28T23:59:59.999Z").toLocalDateTime))
   val noDate = UserEnrolmentStatus("IR-CT", Some("active"), None)
 
-  class TestEnrolmentStoreConnector extends EnrolmentStoreConnector {
+  val mockConnector = mock[EnrolmentStoreConnector]
 
-    override def http: HttpClient = mock[HttpClient]
-
-    override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future.successful(Right(UserEnrolments(List(activeOct13))))
-    }
-  }
-
-  class NoEnrolmentsStatusFound extends EnrolmentStoreConnector {
-
-    override def http: HttpClient = mock[HttpClient]
-
-    override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future.successful(Right(UserEnrolments(Nil)))
-    }
-  }
-
-  class FailedToRetrieveEnrolmentStatus extends EnrolmentStoreConnector {
-
-    override def http: HttpClient = mock[HttpClient]
-
-    override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future.successful(Left("Simulated Failure"))
-    }
-  }
-
-  class TestEnrolmentStoreConnectorWithMultipleEnrolments extends EnrolmentStoreConnector {
-
-    override def http: HttpClient = mock[HttpClient]
-
-    override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future.successful(Right(UserEnrolments(List(activeJan01, activeFeb28))))
-    }
-  }
-
-  class SingleEnrolmentNoDate extends EnrolmentStoreConnector {
-
-    override def http: HttpClient = mock[HttpClient]
-
-    override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future.successful(Right(UserEnrolments(List(noDate))))
-    }
-  }
-
-  class MultipleEnrolmentsNoDate extends EnrolmentStoreConnector {
-
-    override def http: HttpClient = mock[HttpClient]
-
-    override def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] = {
-      Future.successful(Right(UserEnrolments(List(noDate, noDate))))
-    }
-  }
-
-  def service = new EnrolmentStoreService(new TestEnrolmentStoreConnector)
-
-  def noEnrolments = new EnrolmentStoreService(new NoEnrolmentsStatusFound)
-
-  def failedToGetEnrolments = new EnrolmentStoreService(new FailedToRetrieveEnrolmentStatus)
-
-  def serviceWithMultipleEnrolments = new EnrolmentStoreService(new TestEnrolmentStoreConnectorWithMultipleEnrolments)
-
-  def singleEnrolmentNoDate = new EnrolmentStoreService(new SingleEnrolmentNoDate)
-
-  def multipleEnrolmentsNoDate = new EnrolmentStoreService(new MultipleEnrolmentsNoDate)
+  def service = new EnrolmentStoreService(mockConnector)
 
   private val moreThan23DaysFromTokenExpiry = new DateTime("2018-09-15T08:00:00.000")
 
@@ -112,74 +51,79 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockConnector)
+  }
+
   "EnrolmentStoreService" when {
 
     "showActivationLink is called" should {
 
       "return false when enrolment was requested within last 7 days" in {
-
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           moreThan23DaysFromTokenExpiry).futureValue mustBe false
 
       }
 
       "return false when enrolment was requested within last 7 days and tax is activated" in {
-
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = true),
           lessThan23DaysFromTokenExpiry).futureValue mustBe false
 
       }
 
       "return false when multiple records are returned and latest enrolment record is within 7 days of current date" in {
-        serviceWithMultipleEnrolments.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(List(activeJan01, activeFeb28)))))
+        service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           multipleRecords).futureValue mustBe false
       }
 
       "return false when enrolment was requested 7 days ago" in {
-
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           exactly23DaysFromTokenExpiry).futureValue mustBe false
 
       }
 
       "return true when enrolment was requested more than 7 days ago" in {
-
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           lessThan23DaysFromTokenExpiry).futureValue mustBe true
 
       }
 
       "return true if no enrolments were found" in {
-
-        noEnrolments.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(Nil))))
+        service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           exactly23DaysFromTokenExpiry).futureValue mustBe true
 
       }
 
       "return true if enrolments were not able to be retrieved" in {
-
-        failedToGetEnrolments.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Left("Simulated Failure")))
+        service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           exactly23DaysFromTokenExpiry).futureValue mustBe true
 
       }
 
       "return true if for single enrolment with no enrolmentTokenExpiryDate set" in {
-
-        singleEnrolmentNoDate.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(List(noDate)))))
+        service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           exactly23DaysFromTokenExpiry).futureValue mustBe true
 
       }
 
       "return true if for multiple enrolments with no enrolmentTokenExpiryDate set" in {
-
-        multipleEnrolmentsNoDate.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(List(noDate, noDate)))))
+        service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           exactly23DaysFromTokenExpiry).futureValue mustBe true
 
       }
 
       "return false if for multiple enrolments with no enrolmentTokenExpiryDate set" in {
-
-        multipleEnrolmentsNoDate.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
+        when(mockConnector.getEnrolments(Matchers.any())(Matchers.any())).thenReturn(Future.successful(Right(UserEnrolments(List(noDate, noDate)))))
+        service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
           exactly23DaysFromTokenExpiry).futureValue mustBe true
 
       }
