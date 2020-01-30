@@ -16,9 +16,8 @@
 
 package controllers.actions
 
-
-import com.google.inject.{ImplementedBy, Inject}
 import connectors.DataCacheConnector
+import javax.inject.Inject
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 import uk.gov.hmrc.play.HeaderCarrierConverter

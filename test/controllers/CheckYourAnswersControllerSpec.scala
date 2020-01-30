@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import play.api.test.Helpers._
 import viewmodels.AnswerSection
 import views.html.check_your_answers
@@ -24,7 +24,7 @@ import views.html.check_your_answers
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new CheckYourAnswersController(frontendAppConfig, messagesApi, mockAuthAction, dataRetrievalAction, new DataRequiredActionImpl)
+    new CheckYourAnswersController(frontendAppConfig, messagesApi, mockAuthAction, dataRetrievalAction, new DataRequiredAction)
 
   "Check Your Answers Controller" must {
     "return 200 and the correct view for a GET" in {
