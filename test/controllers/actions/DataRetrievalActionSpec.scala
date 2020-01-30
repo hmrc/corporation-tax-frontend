@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  class Harness(dataCacheConnector: DataCacheConnector) extends DataRetrievalActionImpl(dataCacheConnector) {
+  class Harness(dataCacheConnector: DataCacheConnector) extends DataRetrievalAction(dataCacheConnector) {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 

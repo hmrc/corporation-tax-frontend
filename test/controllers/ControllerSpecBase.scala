@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import config.{CorporationTaxHeaderCarrierForPartialsConverter, FrontendAppConfig}
-import connectors.ServiceInfoPartialConnector
+import connectors.{DataCacheConnector, ServiceInfoPartialConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction, ServiceInfoAction}
 import models.CtEnrolment
 import models.requests.AuthenticatedRequest
@@ -56,8 +56,6 @@ trait ControllerSpecBase extends SpecBase with MockitoSugar with BeforeAndAfterE
     ExecutionContext.fromExecutor(ExecutionContext.global)
   )
 
-  val mockDataRetrievalAction = mock[DataRetrievalAction]
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAuthAction)
@@ -80,8 +78,10 @@ trait ControllerSpecBase extends SpecBase with MockitoSugar with BeforeAndAfterE
   val cacheMapId = "id"
 
   def emptyCacheMap = CacheMap(cacheMapId, Map())
+  //the tests at present do not need this to be exercised, it just exists to satisfy the interface
+  val mockDataCacheConnector = mock[DataCacheConnector]
 
-  def getEmptyCacheMap = new FakeDataRetrievalAction(Some(emptyCacheMap))
+  def getEmptyCacheMap = new FakeDataRetrievalAction(mockDataCacheConnector)(Some(emptyCacheMap))
 
-  def dontGetAnyData = new FakeDataRetrievalAction(None)
+  def dontGetAnyData = new FakeDataRetrievalAction(mockDataCacheConnector)(None)
 }
