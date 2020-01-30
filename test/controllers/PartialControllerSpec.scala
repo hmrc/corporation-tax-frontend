@@ -33,13 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class PartialControllerSpec extends ControllerSpecBase with MockitoSugar with BeforeAndAfterEach {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockAuthAction)
-    reset(mockServiceInfoConnector)
-  }
+class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   trait LocalSetup {
     lazy val accountSummary = Html("Account Summary")

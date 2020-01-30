@@ -16,19 +16,12 @@
 
 package controllers
 
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction}
 import play.api.test.Helpers._
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
-import org.scalatest.BeforeAndAfterEach
 import viewmodels.AnswerSection
 import views.html.check_your_answers
-import org.mockito.Mockito._
 
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach{
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockAuthAction)
-  }
+class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new CheckYourAnswersController(frontendAppConfig, messagesApi, mockAuthAction, dataRetrievalAction, new DataRequiredActionImpl)

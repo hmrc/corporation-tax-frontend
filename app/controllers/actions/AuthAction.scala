@@ -33,8 +33,8 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
-                              (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+class AuthAction @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
+                          (implicit ec: ExecutionContext) extends AuthorisedFunctions with ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest] {
 
   val ctUtr: Retrieval[Option[String]] = OptionalRetrieval("ctUtr", Reads.StringReads)
 
@@ -71,6 +71,3 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
     }
   }
 }
-
-@ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]

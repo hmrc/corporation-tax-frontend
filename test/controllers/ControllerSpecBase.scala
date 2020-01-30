@@ -16,41 +16,40 @@
 
 package controllers
 
-import uk.gov.hmrc.http.cache.client.CacheMap
 import base.SpecBase
 import config.{CorporationTaxHeaderCarrierForPartialsConverter, FrontendAppConfig}
 import connectors.ServiceInfoPartialConnector
-import controllers.actions.{AuthAction, AuthActionImpl, DataRetrievalAction, FakeDataRetrievalAction, ServiceInfoActionImpl}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeDataRetrievalAction, ServiceInfoAction}
 import models.CtEnrolment
 import models.requests.AuthenticatedRequest
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
-import org.mockito.{Answers, Matchers}
 import play.api.mvc.{Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.CtUtr
-import uk.gov.hmrc.play.partials.HeaderCarrierForPartials
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ControllerSpecBase extends SpecBase  with MockitoSugar {
+trait ControllerSpecBase extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  final val mockAuthAction:AuthAction = spy(
-    new AuthActionImpl(
+  final val mockAuthAction: AuthAction = spy(
+    new AuthAction(
       mock[AuthConnector],
       mock[FrontendAppConfig]
-    ) (
+    )(
       ExecutionContext.fromExecutor(ExecutionContext.global)
     )
   )
 
   final val mockServiceInfoConnector = mock[ServiceInfoPartialConnector]
 
-  final lazy val mockedServiceInfoAction = new ServiceInfoActionImpl(
+  final lazy val mockedServiceInfoAction = new ServiceInfoAction(
     mockServiceInfoConnector,
     injector.instanceOf[CorporationTaxHeaderCarrierForPartialsConverter]
   )(
@@ -59,12 +58,18 @@ trait ControllerSpecBase extends SpecBase  with MockitoSugar {
 
   val mockDataRetrievalAction = mock[DataRetrievalAction]
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAuthAction)
+    reset(mockServiceInfoConnector)
+  }
+
   def setupFakeServiceAction(partial: Html) =
     when(mockServiceInfoConnector.getServiceInfoPartial()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(partial))
 
-  def setupFakeAuthAction[A]  = doAnswer(
-    new Answer[Future[Result]]{
-      def answer(var1: InvocationOnMock):Future[Result] = {
+  def setupFakeAuthAction[A] = doAnswer(
+    new Answer[Future[Result]] {
+      def answer(var1: InvocationOnMock): Future[Result] = {
         val request = var1.getArguments()(0).asInstanceOf[Request[A]]
         val block = var1.getArguments()(1).asInstanceOf[AuthenticatedRequest[A] => Future[Result]]
         block(AuthenticatedRequest(request, "id", CtEnrolment(CtUtr("utr"), isActivated = true)))

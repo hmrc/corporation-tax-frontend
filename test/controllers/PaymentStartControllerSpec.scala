@@ -43,7 +43,7 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar wi
 
   val mockCtService = mock[CtService]
 
-  def buildController = new PaymentStartController(frontendAppConfig, mockPayConnector, FakeAuthAction, mockCtService, messagesApi)
+  def buildController = new PaymentStartController(frontendAppConfig, mockPayConnector, mockAuthAction, mockCtService, messagesApi)
 
   def setupMockCtService(testModel: Either[CtAccountFailure, Option[CtData]] = Right(Some(testCtData))): Unit = {
     when(mockCtService.fetchCtModel(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(testModel))
@@ -58,6 +58,7 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar wi
   "Payment Controller" must {
 
     "return See Other and a NextUrl for a GET with the correct user information available" in {
+      setupFakeAuthAction
       setupMockCtService(Right(Some(testCtData)))
       when(mockPayConnector.ctPayLink(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(NextUrl(testPayUrl)))
       val result: Future[Result] = buildController.makeAPayment(fakeRequest)
@@ -66,6 +67,7 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar wi
     }
 
     "return Bad Request and the error page when the user has no account balance" in {
+      setupFakeAuthAction
       setupMockCtService(Right(Some(testCtDataNoAccountBalance)))
       val result: Future[Result] = buildController.makeAPayment(fakeRequest)
       contentType(result) mustBe Some("text/html")
@@ -73,6 +75,7 @@ class PaymentStartControllerSpec extends ControllerSpecBase with MockitoSugar wi
     }
 
     "return Bad Request and the error page when CtGenericError is returned " in {
+      setupFakeAuthAction
       setupMockCtService(Left(CtGenericError))
       val result: Future[Result] = buildController.makeAPayment(fakeRequest)
       contentType(result) mustBe Some("text/html")

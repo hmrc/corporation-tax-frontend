@@ -28,10 +28,10 @@ import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class ServiceInfoActionImpl @Inject()(
+class ServiceInfoAction @Inject()(
                                        serviceInfoPartialConnector: ServiceInfoPartialConnector,
                                        corporationTaxHeaderCarrierForPartialsConverter: CorporationTaxHeaderCarrierForPartialsConverter
-                                     )(implicit ec: ExecutionContext) extends ServiceInfoAction {
+                                     )(implicit ec: ExecutionContext) extends ActionTransformer[AuthenticatedRequest, ServiceInfoRequest] {
 
   import corporationTaxHeaderCarrierForPartialsConverter._
 
@@ -43,6 +43,3 @@ class ServiceInfoActionImpl @Inject()(
   }
 
 }
-
-@ImplementedBy(classOf[ServiceInfoActionImpl])
-trait ServiceInfoAction extends ActionTransformer[AuthenticatedRequest, ServiceInfoRequest]

@@ -17,13 +17,14 @@
 package controllers
 
 import connectors.FakeDataCacheConnector
-import controllers.actions.{FakeServiceInfoAction, _}
+import controllers.actions._
 import forms.StopFormProvider
 import models.Stop
 import play.api.data.Form
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import utils.FakeNavigator
+import repositories.SessionRepository
+import utils.{CascadeUpsert, FakeNavigator}
 import views.html.stop
 
 class StopControllerSpec extends ControllerSpecBase {
@@ -32,16 +33,26 @@ class StopControllerSpec extends ControllerSpecBase {
 
   val formProvider = new StopFormProvider()
   val form = formProvider()
+  val mockSessionRepository = mock[SessionRepository]
+  val mockCascadeUpsert = mock[CascadeUpsert]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new StopController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeAuthAction,
-      FakeServiceInfoAction, formProvider)
+    new StopController(
+      frontendAppConfig,
+      messagesApi,
+      new FakeDataCacheConnector(mockSessionRepository, mockCascadeUpsert),
+      new FakeNavigator(desiredRoute = onwardRoute), mockAuthAction,
+      mockedServiceInfoAction,
+      formProvider
+    )
 
   def viewAsString(form: Form[_] = form) = stop(frontendAppConfig, form)(HtmlFormat.empty)(fakeRequest, messages).toString
 
   "Stop Controller" must {
 
     "return OK and the correct view for a GET" in {
+      setupFakeAuthAction
+      setupFakeServiceAction(HtmlFormat.empty)
       val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
@@ -49,6 +60,8 @@ class StopControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
+      setupFakeAuthAction
+      setupFakeServiceAction(HtmlFormat.empty)
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", Stop.options.head.value))
 
       val result = controller().onSubmit()(postRequest)
@@ -58,6 +71,8 @@ class StopControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
+      setupFakeAuthAction
+      setupFakeServiceAction(HtmlFormat.empty)
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
@@ -68,12 +83,16 @@ class StopControllerSpec extends ControllerSpecBase {
     }
 
     "return OK if no existing data is found" in {
+      setupFakeAuthAction
+      setupFakeServiceAction(HtmlFormat.empty)
       val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
     }
 
     "redirect to next page when valid data is submitted and no existing data is found" in {
+      setupFakeAuthAction
+      setupFakeServiceAction(HtmlFormat.empty)
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", (Stop.options.head.value)))
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 

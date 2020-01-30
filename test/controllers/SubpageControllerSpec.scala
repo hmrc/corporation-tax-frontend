@@ -38,13 +38,12 @@ import scala.concurrent.Future
 
 class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with ViewSpecBase {
 
-
   val accountSummary = Html("Account Summary")
   val mockAccountSummaryHelper = mock[AccountSummaryHelper]
   when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(accountSummary))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new SubpageController(frontendAppConfig, messagesApi, FakeAuthAction, FakeServiceInfoAction, mockAccountSummaryHelper)
+    new SubpageController(frontendAppConfig, messagesApi, mockAuthAction, mockedServiceInfoAction, mockAccountSummaryHelper)
 
   def ctEnrolment(activated: Boolean = true) =  CtEnrolment(CtUtr("utr"), isActivated = true)
   def requestWithEnrolment(activated: Boolean): ServiceInfoRequest[AnyContent] = {
@@ -58,6 +57,8 @@ class SubpageControllerSpec extends ControllerSpecBase with MockitoSugar with Sc
 
   "Subpage Controller" must {
     "return OK and the correct view for a GET" in {
+      setupFakeAuthAction
+      setupFakeServiceAction(HtmlFormat.empty)
       val result = controller().onPageLoad(fakeRequestWithEnrolments)
 
       status(result) mustBe OK
