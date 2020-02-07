@@ -6,6 +6,7 @@ error.boolean = Please give an answer
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
+error.message.prefix = Error:
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
