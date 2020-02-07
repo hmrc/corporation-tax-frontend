@@ -6,6 +6,7 @@ error.boolean = Please give an answer
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = Mae problem wedi codi
+error.message.prefix = Gwall:
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
