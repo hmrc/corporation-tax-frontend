@@ -26,13 +26,12 @@
     title = messages("stop.title"),
     appConfig = appConfig,
     bodyClasses = None,
-    serviceInfoContent = serviceInfoContent) {
+    serviceInfoContent = serviceInfoContent,
+    form = Some(form)) {
 
     @helpers.form(action = StopController.onSubmit(), 'autoComplete -> "off") {
 
         @components.error_summary(form.errors)
-
-
 
         @components.input_radio(
             field = form("value"),

@@ -31,9 +31,13 @@ class StopViewSpec extends ViewBehaviours {
 
   val serviceInfoContent = HtmlFormat.empty
 
-  def createView = () => stop(frontendAppConfig, form)(serviceInfoContent)(fakeRequest, messages)
+  def createView =
+    () =>
+      stop(frontendAppConfig, form)(serviceInfoContent)(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => stop(frontendAppConfig, form)(serviceInfoContent)(fakeRequest, messages)
+  def createViewUsingForm =
+    (form: Form[_]) =>
+      stop(frontendAppConfig, form)(serviceInfoContent)(fakeRequest, messages)
 
   "Stop view" must {
     behave like normalPage(createView, messageKeyPrefix, "hint.text")
@@ -59,7 +63,13 @@ class StopViewSpec extends ViewBehaviours {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
         for (option <- Stop.options) {
-          assertContainsRadioButton(doc, option.id, "value", option.value, false)
+          assertContainsRadioButton(
+            doc,
+            option.id,
+            "value",
+            option.value,
+            false
+          )
         }
       }
     }
@@ -67,14 +77,33 @@ class StopViewSpec extends ViewBehaviours {
     for (option <- Stop.options) {
       s"rendered with a value of '${option.value}'" must {
         s"have the '${option.value}' radio button selected" in {
-          val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
+          val doc = asDocument(
+            createViewUsingForm(form.bind(Map("value" -> s"${option.value}")))
+          )
           assertContainsRadioButton(doc, option.id, "value", option.value, true)
 
           for (unselectedOption <- Stop.options.filterNot(o => o == option)) {
-            assertContainsRadioButton(doc, unselectedOption.id, "value", unselectedOption.value, false)
+            assertContainsRadioButton(
+              doc,
+              unselectedOption.id,
+              "value",
+              unselectedOption.value,
+              false
+            )
           }
         }
       }
+    }
+
+    "have page title with Error: apended for form error" in {
+
+      val doc = asDocument(createViewUsingForm(form.bind(Map("" -> ""))))
+
+      doc
+        .select("title")
+        .text() must include(
+        "Error: Do you want to make the company dormant, or close it down? - Business tax account - GOV.UK"
+      )
     }
   }
 }
