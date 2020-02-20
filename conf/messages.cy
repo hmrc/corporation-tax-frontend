@@ -60,6 +60,7 @@ subpage.sidebar.partnership = Sefydlu partneriaeth neu ychwanegu partner (yn ago
 subpage.sidebar.help_and_contact = Cymorth a chysylltu
 subpage.sidebar.more = Rhagor (yn agor mewn ffenestr neu dab newydd)
 subpage.sidebar.help_with_tax= Cynorthwyo
+subpage.sidebar.navigation = Is-fordwyo Treth Gorfforaeth
 
 subpage.more_options.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
 subpage.more_options.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
