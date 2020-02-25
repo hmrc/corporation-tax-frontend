@@ -76,6 +76,13 @@ class SubpageViewSpec extends ViewBehaviours {
         .text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR): this-is-a-utr"
     }
 
+    "have aria-label" in {
+      val doc = asDocument(createView())
+      doc
+        .getElementById("ct-sub-navigation")
+        .attr("aria-label") mustBe "Corporation Tax sub navigation"
+    }
+
     "contain the more options links" in {
       val doc = asDocument(createView())
       doc
