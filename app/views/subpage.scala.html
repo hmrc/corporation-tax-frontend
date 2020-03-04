@@ -21,7 +21,6 @@
 @(appConfig: FrontendAppConfig, ctEnrolment: CtEnrolment, partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = {
-    <aside class="section--blue-top">
         <nav role="navigation" id="ct-sub-navigation" aria-label='@messages("subpage.sidebar.navigation")'>
             <div id="ct-utr" class="subsection flush--top">
                 <p class="heading-small">@Messages("subpage.utr")</p>
@@ -41,7 +40,6 @@
                 </ul>
             </div>
         </nav>
-    </aside>
 }
 
 
