@@ -30,6 +30,7 @@
     <a id="ct-file-return-cato"
         href='@appConfig.getUrl("fileAReturn")'
         class="button"
+        role="button"
         data-journey-click="link - click:CTSubpage:Complete Corporation Tax return">
         @Html(Messages("account.summary.file_a_return"))
     </a>
@@ -50,6 +51,7 @@
         href="@appConfig.getUrl("mainPage")/make-a-payment"
         data-sso="false"
         class="button button--payment"
+        role = "button"
         data-journey-click="link - click:CTSubpage:Make a Corporation Tax payment">
         @Html(Messages("account.summary.make_a_payment"))
     </a>

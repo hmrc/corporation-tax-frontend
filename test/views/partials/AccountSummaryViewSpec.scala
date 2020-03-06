@@ -32,34 +32,57 @@ class AccountSummaryViewSpec extends ViewSpecBase {
     createdOn = new DateTime("2018-10-21T08:00:00.000"),
     taxType = "tax type"
   )
-  val testPaymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(List(testPaymentRecord))
+  val testPaymentHistory
+    : Either[PaymentRecordFailure.type, List[PaymentRecord]] = Right(
+    List(testPaymentRecord)
+  )
 
-  def view: () => Html = () => account_summary("hello world", frontendAppConfig, shouldShowCreditCardMessage = true, maybePaymentHistory = testPaymentHistory)(fakeRequest, messages)
+  def view: () => Html =
+    () =>
+      account_summary(
+        "hello world",
+        frontendAppConfig,
+        shouldShowCreditCardMessage = true,
+        maybePaymentHistory = testPaymentHistory
+      )(fakeRequest, messages)
 
   "Account summary" when {
     "there is a user" should {
       "display the link to file a return (cato)" in {
-        assertLinkById(asDocument(view()),
-          "ct-file-return-cato", "Complete Corporation Tax return", "http://localhost:9030/cato",
-          "link - click:CTSubpage:Complete Corporation Tax return")
+        assertLinkById(
+          asDocument(view()),
+          "ct-file-return-cato",
+          "Complete Corporation Tax return",
+          "http://localhost:9030/cato",
+          "link - click:CTSubpage:Complete Corporation Tax return",
+          expectedRole = "button"
+        )
       }
 
       "display the heading and link to make a payment" in {
-        assertLinkById(asDocument(view()),
-          "ct-make-payment-link", "Make a Corporation Tax payment", "http://localhost:9731/business-account/corporation-tax/make-a-payment",
-          "link - click:CTSubpage:Make a Corporation Tax payment")
+        assertLinkById(
+          asDocument(view()),
+          "ct-make-payment-link",
+          "Make a Corporation Tax payment",
+          "http://localhost:9731/business-account/corporation-tax/make-a-payment",
+          "link - click:CTSubpage:Make a Corporation Tax payment",
+          expectedRole = "button"
+        )
       }
 
       "render the provided balance information" in {
-        asDocument(view()).getElementsByTag("p").text() must include("hello world")
+        asDocument(view()).getElementsByTag("p").text() must include(
+          "hello world"
+        )
       }
     }
 
     "must include the payment_history section" in {
       implicit val implicitMessages: Messages = messages
-      view().toString() must include(payment_history(testPaymentHistory).toString)
+      view().toString() must include(
+        payment_history(testPaymentHistory).toString
+      )
     }
   }
 
 }
-
