@@ -35,11 +35,6 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   appConfig: FrontendAppConfig,
                                   ctCardBuilderService: CtCardBuilderService
                                  )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
-  def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
-    accountSummaryHelper.getAccountSummaryView(showCreditCardMessage = false).map { accountSummaryView =>
-      Ok(views.html.partial(request.ctEnrolment.ctUtr, accountSummaryView, appConfig, request.ctEnrolment.isActivated))
-    }
-  }
 
   def getCard: Action[AnyContent] = authenticate.async { implicit request =>
     ctCardBuilderService.buildCtCard().map(card => {

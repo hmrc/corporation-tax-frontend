@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
 import play.api.data.Form
 import play.api.libs.json.JsString
 import uk.gov.hmrc.http.cache.client.CacheMap
