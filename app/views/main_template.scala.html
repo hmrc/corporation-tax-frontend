@@ -44,19 +44,19 @@
 
 @scriptElem = {
 
-  <!--initializes gov uk js for components like details summary and button-->
-  window.GOVUK.initAll();
+  <!--initializes gov uk js for  detail-summary and link withn role button-->
+    window.GOVUK.details.init()
+    window.GOVUK.shimLinksWithButtonRole.init()
 
-
-<script>
-    window.GOVUK.timeoutDialog({
-      timeout: @appConfig.sessionTimeoutInSeconds,
-      countdown: @appConfig.sessionCountdownInSeconds,
-      keepAliveUrl: '/business-account/keep-alive',
-      signOutUrl: '/business-account/timeout',
-    });
-    var dialogOpen;
-  </script>
+    <script>
+        window.GOVUK.timeoutDialog({
+          timeout: @appConfig.sessionTimeoutInSeconds,
+          countdown: @appConfig.sessionCountdownInSeconds,
+          keepAliveUrl: '/business-account/keep-alive',
+          signOutUrl: '/business-account/timeout',
+        });
+        var dialogOpen;
+      </script>
 }
 
 @govuk_wrapper(appConfig = appConfig,
