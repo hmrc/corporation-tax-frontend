@@ -16,9 +16,10 @@
 
 package connectors.payments
 
-import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{Format, Json, OFormat}
+
+import config.FrontendAppConfig
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -27,9 +28,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
   private def payApiBaseUrl: String = config.payApiUrl
+
   private def paymentsFrontendBaseUrl: String = config.getUrl("paymentsFrontendBase")
 
-   def ctPayLink(spjRequest: SpjRequestBtaCt)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[NextUrl] = {
+  def ctPayLink(spjRequest: SpjRequestBtaCt)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[NextUrl] = {
     http.POST[SpjRequestBtaCt, NextUrl](s"$payApiBaseUrl/pay-api/bta/ct/journey/start", spjRequest)
       .recover({
         case _: Exception =>
@@ -39,11 +41,11 @@ class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 }
 
 final case class SpjRequestBtaCt(
-                                   amountInPence: Long,
-                                   returnUrl:     String,
-                                   backUrl:       String,
-                                   utr:           String
-                                 )
+                                  amountInPence: Long,
+                                  returnUrl: String,
+                                  backUrl: String,
+                                  utr: String
+                                )
 
 object SpjRequestBtaCt {
   implicit val format: Format[SpjRequestBtaCt] = Json.format[SpjRequestBtaCt]

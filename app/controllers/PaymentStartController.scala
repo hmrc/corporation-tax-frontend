@@ -16,12 +16,13 @@
 
 package controllers
 
+import javax.inject.Inject
+
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import connectors.payments.{PaymentConnector, SpjRequestBtaCt}
 import controllers.PaymentStartController.toAmountInPence
 import controllers.actions._
-import javax.inject.Inject
 import models.CtData
 import org.joda.time.LocalDate
 import play.api.i18n.{I18nSupport, MessagesApi}

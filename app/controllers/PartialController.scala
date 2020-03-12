@@ -16,13 +16,13 @@
 
 package controllers
 
+import javax.inject.Inject
+
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json.toJson
 import play.api.mvc.{Action, AnyContent}
-import play.api.mvc.AnyContent
 import services.CtCardBuilderService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -37,7 +37,7 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
                                  )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   def getCard: Action[AnyContent] = authenticate.async { implicit request =>
-    ctCardBuilderService.buildCtCard().map( card => {
+    ctCardBuilderService.buildCtCard().map(card => {
       Ok(toJson(card))
     }).recover {
       case _: Exception => InternalServerError("Failed to get data from backend")

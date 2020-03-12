@@ -16,9 +16,10 @@
 
 package connectors.payments
 
+import javax.inject.Singleton
+
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import javax.inject.Singleton
 import models.payments.CtPaymentRecord
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess

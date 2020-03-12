@@ -12,7 +12,7 @@ import forms.$className$FormProvider
 import identifiers.$className$Id
 import models.Mode
 import models.$className$
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Enumerable, Navigator}
 import views.html.$className;format="decap"$
 
 import scala.concurrent.Future
