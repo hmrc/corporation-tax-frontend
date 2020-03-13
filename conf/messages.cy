@@ -35,17 +35,6 @@ unauthorised.correct_id = Gwnewch yn siŵr eich bod wedi mewngofnodi gyda’r Dy
 links.opens_in_portal = (yn agor CThEM ar-lein)
 
 #######################################################
-##  Stop
-#######################################################
-stop.title = A ydych eisiau troi’r cwmni’n segur, neu ei gau?
-stop.heading = A ydych eisiau troi’r cwmni’n segur, neu ei gau?
-dormant-button = Troi’r cwmni’n segur
-close-button = Cau’r cwmni
-stop.error.required = Dewiswch un o’r opsiynau
-stop.hint.text = Os byddwch yn gwneud y cwmni’n segur, bydd yn gallu masnachu eto yn y dyfodol. Os byddwch yn cau’r cwmni, ni fydd yn gallu masnachu eto.
-stop.back = Nid wyf eisiau gwneud hyn ar hyn o bryd
-
-#######################################################
 ##  Subpage
 #######################################################
 subpage.title = Manylion Treth Gorfforaeth

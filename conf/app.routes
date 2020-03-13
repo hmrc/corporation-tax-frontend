@@ -10,9 +10,6 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /                                            controllers.SubpageController.onPageLoad()
 
-GET        /stop                                        controllers.StopController.onPageLoad()
-POST       /stop                                        controllers.StopController.onSubmit()
-
 GET        /get-card                                    controllers.PartialController.getCard()
 
 GET        /make-a-payment                              controllers.PaymentStartController.makeAPayment()
