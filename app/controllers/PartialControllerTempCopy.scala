@@ -28,15 +28,15 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
-class PartialController @Inject()(override val messagesApi: MessagesApi,
-                                  authenticate: AuthAction,
-                                  serviceInfo: ServiceInfoAction,
-                                  accountSummaryHelper: AccountSummaryHelper,
-                                  appConfig: FrontendAppConfig,
-                                  ctCardBuilderService: CtCardBuilderService
+class PartialControllerTempCopy @Inject()(override val messagesApi: MessagesApi,
+                                          authenticate: AuthAction,
+                                          serviceInfo: ServiceInfoAction,
+                                          accountSummaryHelper: AccountSummaryHelper,
+                                          appConfig: FrontendAppConfig,
+                                          ctCardBuilderService: CtCardBuilderService
                                  )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def getCard: Action[AnyContent] = authenticate.async { implicit request =>
+  def getCardTempAlternate: Action[AnyContent] = authenticate.async { implicit request =>
     ctCardBuilderService.buildCtCard().map(card => {
       Ok(toJson(card))
     }).recover {
