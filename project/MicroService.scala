@@ -7,6 +7,7 @@ import com.typesafe.sbt.web.Import._
 import net.ground5hark.sbt.concat.Import._
 import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.digest.Import._
+import play.routes.compiler.InjectedRoutesGenerator
 import play.sbt.PlayImport.PlayKeys
 import play.sbt.routes.RoutesKeys
 import uk.gov.hmrc.versioning.SbtGitVersioning._
@@ -44,6 +45,7 @@ trait MicroService {
         ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*DataCacheConnector;" +
         ".*ControllerConfiguration;.*LanguageSwitchController",
       PlayKeys.playDefaultPort := 9731,
+      routesGenerator := InjectedRoutesGenerator,
       ScoverageKeys.coverageMinimum := 90.25,
       ScoverageKeys.coverageFailOnMinimum := true,
       ScoverageKeys.coverageHighlighting := true,
