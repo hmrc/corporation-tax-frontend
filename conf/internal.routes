@@ -1,0 +1,1 @@
+GET        /get-card                                    controllers.PartialController.getCard()
