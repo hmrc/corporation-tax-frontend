@@ -8,7 +8,7 @@ GET        /corporation-tax/this-service-has-been-reset        controllers.Sessi
 
 GET        /corporation-tax/unauthorised                       controllers.UnauthorisedController.onPageLoad
 
-GET        /corporation-tax/                                   controllers.SubpageController.onPageLoad()
+GET        /corporation-tax                                    controllers.SubpageController.onPageLoad()
 
 GET        /corporation-tax/get-card                           controllers.PartialControllerTempCopy.getCardTempAlternate()
 
