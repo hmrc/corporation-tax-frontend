@@ -1,15 +1,17 @@
 # microservice specific routes
 
-GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET        /corporation-tax/assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET        /corporation-tax/language/:lang                     controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
+GET        /corporation-tax/this-service-has-been-reset        controllers.SessionExpiredController.onPageLoad
 
-GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET        /corporation-tax/unauthorised                       controllers.UnauthorisedController.onPageLoad
 
-GET        /                                            controllers.SubpageController.onPageLoad()
+GET        /corporation-tax/                                   controllers.SubpageController.onPageLoad()
 
-GET        /get-card                                    controllers.PartialControllerTempCopy.getCardTempAlternate()
+GET        /corporation-tax/get-card                           controllers.PartialControllerTempCopy.getCardTempAlternate()
 
-GET        /make-a-payment                              controllers.PaymentStartController.makeAPayment()
+GET        /corporation-tax/make-a-payment                     controllers.PaymentStartController.makeAPayment()
+
+GET        /internal/get-card                                  controllers.PartialController.getCard()
