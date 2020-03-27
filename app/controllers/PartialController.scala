@@ -36,7 +36,13 @@ class PartialController @Inject()(override val messagesApi: MessagesApi,
                                   ctCardBuilderService: CtCardBuilderService
                                  )(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  def getCardTempAlternate: Action[AnyContent] = getCard
+  def getCardTempAlternate: Action[AnyContent] = authenticate.async { implicit request =>
+    ctCardBuilderService.buildCtCard().map(card => {
+      Ok(toJson(card))
+    }).recover {
+      case _: Exception => InternalServerError("Failed to get data from backend")
+    }
+  }
 
   def getCard: Action[AnyContent] = authenticate.async { implicit request =>
     ctCardBuilderService.buildCtCard().map(card => {
