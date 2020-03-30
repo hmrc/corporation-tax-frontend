@@ -10,8 +10,6 @@ GET        /corporation-tax/unauthorised                       controllers.Unaut
 
 GET        /corporation-tax                                    controllers.SubpageController.onPageLoad()
 
-GET        /corporation-tax/get-card                           controllers.PartialControllerTempCopy.getCardTempAlternate()
-
 GET        /corporation-tax/make-a-payment                     controllers.PaymentStartController.makeAPayment()
 
 GET        /internal/get-card                                  controllers.PartialController.getCard()
