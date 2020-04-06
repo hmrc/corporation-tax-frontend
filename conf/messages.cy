@@ -26,6 +26,7 @@ site.text_area.char_limit = (Limit is {0} characters)
 site.sign_out = Allgofnodi
 site.service_title = {0} - Cyfrif treth busnes - GOV.UK
 site.language_switcher = switcher iaith
+site.importantinfo = Gwybodaeth bwysig
 
 unauthorised.title = Ni allwch weld y dudalen hon
 unauthorised.heading = Ni allwch weld y dudalen hon
@@ -53,6 +54,9 @@ subpage.sidebar.navigation = Is-fordwyo Treth Gorfforaeth
 
 subpage.more_options.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
 subpage.more_options.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
+
+subpage.find_support_for_business.link.text = Dod o hyd i gymorth i fusnesau mewn perthynas â choronafeirws (COVID-19) (yn agor ffenestr neu dab newydd)
+subpage.contact_hmrc.link.text = Cysylltwch â CThEM os oes angen rhagor o wybodaeth arnoch
 
 subpage.payments_notice = Bydd yn cymryd hyd at 7 diwrnod gwaith i daliadau ymddangos, yn dibynnu ar sut rydych yn talu. Ar ôl i chi lenwi’ch Ffurflen Dreth, bydd eich cyfrifiad treth yn cymryd hyd at 2 ddiwrnod.
 

@@ -26,6 +26,7 @@ site.text_area.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
 site.service_title = {0} - Business tax account - GOV.UK
 site.language_switcher = language-switcher
+site.importantinfo = Important information
 
 unauthorised.title = You can’t see this page
 unauthorised.heading = You can’t see this page
@@ -53,6 +54,9 @@ subpage.sidebar.navigation = Corporation Tax sub navigation
 
 subpage.more_options.dormant = Make your company dormant (opens in a new window or tab)
 subpage.more_options.close = Close your company (opens in a new window or tab)
+
+subpage.find_support_for_business.link.text = Find Support for businesses about coronavirus (COVID19) (Opens in a new tab or window)
+subpage.contact_hmrc.link.text = Contact HMRC if you need more information
 
 subpage.payments_notice = Payments will take up to 7 working days to show, depending on how you pay. After you complete your return your tax calculation will take up to 2 days.
 

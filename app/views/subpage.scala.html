@@ -16,15 +16,16 @@
 
 @import config.FrontendAppConfig
 @import models.CtEnrolment
-@import views.html.includes.corporation_tax_links
 
 @(appConfig: FrontendAppConfig, ctEnrolment: CtEnrolment, partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
-@sidebarLinks = {
+    @sidebarLinks = {
         <nav role="navigation" id="ct-sub-navigation" aria-label='@messages("subpage.sidebar.navigation")'>
             <div id="ct-utr" class="subsection flush--top">
                 <p class="heading-small">@Messages("subpage.utr")</p>
-                <p>@{ctEnrolment.ctUtr}</p>
+                <p>@{
+                    ctEnrolment.ctUtr
+                }</p>
             </div>
             <div id="help-with-tax" class="subsection">
                 <h2 class="heading-small">@Messages("subpage.sidebar.help_with_tax")</h2>
@@ -40,25 +41,25 @@
                 </ul>
             </div>
         </nav>
-}
+    }
 
 
+    @main_template(
+        title = messages("subpage.title"),
+        appConfig = appConfig,
+        bodyClasses = Some("business-tax"),
+        sidebarLinks = Some(sidebarLinks),
+        serviceInfoContent = serviceInfoContent) {
 
-@main_template(
-    title = messages("subpage.title"),
-    appConfig = appConfig,
-    bodyClasses = Some("business-tax"),
-    sidebarLinks = Some(sidebarLinks),
-    serviceInfoContent = serviceInfoContent) {
-
-    @components.heading("ct-details", "subpage.heading", "heading-xlarge flush--top")
-    <div class="panel panel-border-wide" id="payments-notice">
-        <p>
-            <strong>
-                @Messages("subpage.payments_notice")
-            </strong>
-        </p>
-    </div>
-    @partialContent
-    @includes.corporation_tax_links(appConfig)
-}
+        @components.heading("ct-details", "subpage.heading", "heading-xlarge flush--top")
+        @covid.covid_link_section(appConfig)
+        <div class="panel panel-border-wide" id="payments-notice">
+            <p>
+                <strong>
+                    @Messages("subpage.payments_notice")
+                </strong>
+            </p>
+        </div>
+        @partialContent
+        @includes.corporation_tax_links(appConfig)
+    }
