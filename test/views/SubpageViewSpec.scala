@@ -57,6 +57,29 @@ class SubpageViewSpec extends ViewBehaviours {
       ).mkString(" ")
     }
 
+    "contain a link for guidance on covid" in {
+      val doc = asDocument(createView())
+
+      assertLinkById(doc,
+        "covid-guidelines",
+        "Find Support for businesses about coronavirus (COVID19) (Opens in a new tab or window)",
+        "https://www.gov.uk/government/publications/guidance-to-employers-and-businesses-about-covid-19",
+        "link - click:CT:Coronavirus guildlines for business",
+        expectedIsExternal = true,
+        expectedOpensInNewTab = true)
+    }
+
+    "contain a link for support with covid" in {
+
+      val doc = asDocument(createView())
+
+      assertLinkById(doc,
+        "covid-support",
+        "Contact HMRC if you need more information",
+        "http://localhost:9020/business-account/covid-support/corporation-tax",
+        "link - click:CT:Coronavirus contact HMRC")
+    }
+
     "render the provided partial content" in {
       val doc = asDocument(createView())
         .getElementById("partial-content")
