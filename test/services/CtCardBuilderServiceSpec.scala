@@ -112,7 +112,8 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
             title = "Make a Corporation Tax payment"
           )
         )
-      )
+      ),
+      accountBalance = Some(999.99)
     )
 
     lazy val testCardNoData: Card = Card(
@@ -147,7 +148,8 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
             title = "Make a Corporation Tax payment"
           )
         )
-      )
+      ),
+      accountBalance = None
     )
 
     def authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =

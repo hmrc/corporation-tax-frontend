@@ -44,12 +44,14 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
         case Right(None) => buildCtCardData(
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(None).toString()),
           returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString()),
-          paymentHistory = history
+          paymentHistory = history,
+          ctAccountBalance = None
         )
         case Right(Some(data)) => buildCtCardData(
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(Some(data)).toString()),
           returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString()),
-          paymentHistory = history
+          paymentHistory = history,
+          ctAccountBalance = data.accountSummary.accountBalance.flatMap(_.amount)
         )
         case _ => throw new Exception
       }
@@ -58,7 +60,8 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
   private def buildCtCardData(
                                paymentsContent: Option[String] = None,
                                returnsContent: Option[String] = None,
-                               paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]]
+                               paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]],
+                               ctAccountBalance: Option[BigDecimal]
                              )(
                                implicit request: AuthenticatedRequest[_],
                                messages: Messages,
@@ -95,7 +98,8 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
             title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
           )
         )
-      )
+      ),
+      accountBalance = ctAccountBalance
     )
   }
 }
