@@ -17,7 +17,6 @@
 package services
 
 import javax.inject.Inject
-import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import models._
 import models.payments.PaymentRecord
@@ -28,12 +27,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
-                                         appConfig: FrontendAppConfig,
-                                         ctService: CtServiceInterface,
-                                         ctPartialBuilder: CtPartialBuilder,
-                                         paymentHistoryService: PaymentHistoryServiceInterface
-                                        )(implicit ec: ExecutionContext) extends CtCardBuilderService {
+class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
+                                     appConfig: FrontendAppConfig,
+                                     ctService: CtService,
+                                     ctPartialBuilder: CtPartialBuilder,
+                                     paymentHistoryService: PaymentHistoryService)(implicit ec: ExecutionContext) {
 
   def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] =
     for {
@@ -57,18 +55,13 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
       }
     }
 
-  private def buildCtCardData(
-                               paymentsContent: Option[String] = None,
-                               returnsContent: Option[String] = None,
-                               paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]],
-                               ctAccountBalance: Option[BigDecimal]
-                             )(
-                               implicit request: AuthenticatedRequest[_],
-                               messages: Messages,
-                               hc: HeaderCarrier
-                             ): Card = {
+  private def buildCtCardData(paymentsContent: Option[String] = None,
+                              returnsContent: Option[String] = None,
+                              paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]],
+                              ctAccountBalance: Option[BigDecimal])
+                             (implicit request: AuthenticatedRequest[_], messages: Messages): Card = {
     Card(
-      title = messagesApi.preferred(request)("partial.heading"),
+      title = messages("partial.heading"),
       description = "",
       referenceNumber = request.ctEnrolment.ctUtr.utr,
       primaryLink = Some(
@@ -76,7 +69,7 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
           href = appConfig.getUrl("mainPage"),
           ga = "link - click:CT cards:More CT details",
           id = "ct-account-details-card-link",
-          title = messagesApi.preferred(request)("partial.heading")
+          title = messages("partial.heading")
         )
       ),
       messageReferenceKey = Some("card.ct.utr"),
@@ -89,22 +82,17 @@ class CtCardBuilderServiceImpl @Inject()(val messagesApi: MessagesApi,
             href = appConfig.getPortalUrl("balance")(request.ctEnrolment),
             ga = "link - click:CT cards:View your CT statement",
             id = "view-ct-statement",
-            title = messagesApi.preferred(request)("card.view_your_corporation_tax_statement")
+            title = messages("card.view_your_corporation_tax_statement")
           ),
           Link(
             href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
             ga = "link - click:CT cards:Make a CT payment",
             id = "make-ct-payment",
-            title = messagesApi.preferred(request)("card.make_a_corporation_tax_payment")
+            title = messages("card.make_a_corporation_tax_payment")
           )
         )
       ),
       accountBalance = ctAccountBalance
     )
   }
-}
-
-@ImplementedBy(classOf[CtCardBuilderServiceImpl])
-trait CtCardBuilderService {
-  def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card]
 }

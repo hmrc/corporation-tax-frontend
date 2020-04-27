@@ -22,7 +22,7 @@ import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 

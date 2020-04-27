@@ -16,25 +16,29 @@
 
 package controllers.actions
 
-import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import controllers.routes
+import javax.inject.Inject
 import models.CtEnrolment
 import models.requests.AuthenticatedRequest
 import play.api.libs.json.Reads
 import play.api.mvc.Results._
-import play.api.mvc.{ActionBuilder, ActionFunction, Request, Result}
+import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.AlternatePredicate
-import uk.gov.hmrc.auth.core.retrieve.{OptionalRetrieval, Retrieval, Retrievals, ~}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.{OptionalRetrieval, Retrieval, ~}
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
-                              (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(val authConnector: AuthConnector, config: FrontendAppConfig, defaultParser: PlayBodyParsers)
+                              (implicit val executionContext: ExecutionContext)
+  extends AuthAction with AuthorisedFunctions {
+
+  val parser: BodyParser[AnyContent] = defaultParser.defaultBodyParser
 
   val ctUtr: Retrieval[Option[String]] = OptionalRetrieval("ctUtr", Reads.StringReads)
 
@@ -44,10 +48,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
       .getOrElse(throw new UnauthorizedException("unable to retrieve ct enrolment"))
   }
 
-  val activatedEnrolment = Enrolment("IR-CT")
-  val notYetActivatedEnrolment = Enrolment("IR-CT", Seq(), "NotYetActivated")
+  val activatedEnrolment: Enrolment = Enrolment("IR-CT")
+  val notYetActivatedEnrolment: Enrolment = Enrolment("IR-CT", Seq(), "NotYetActivated")
 
-  override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] = {
+  def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised(AlternatePredicate(activatedEnrolment, notYetActivatedEnrolment)).retrieve(Retrievals.externalId and Retrievals.authorisedEnrolments) {
@@ -56,21 +60,20 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
           externalId => block(AuthenticatedRequest(request, externalId, getEnrolment(enrolments)))
         }.getOrElse(throw new UnauthorizedException("Unable to retrieve external Id"))
     } recover {
-      case ex: NoActiveSession =>
+      case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case ex: InsufficientEnrolments =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: InsufficientConfidenceLevel =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedAuthProvider =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedAffinityGroup =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
-      case ex: UnsupportedCredentialRole =>
-        Redirect(routes.UnauthorisedController.onPageLoad)
+      case _: InsufficientEnrolments =>
+        Redirect(routes.UnauthorisedController.onPageLoad())
+      case _: InsufficientConfidenceLevel =>
+        Redirect(routes.UnauthorisedController.onPageLoad())
+      case _: UnsupportedAuthProvider =>
+        Redirect(routes.UnauthorisedController.onPageLoad())
+      case _: UnsupportedAffinityGroup =>
+        Redirect(routes.UnauthorisedController.onPageLoad())
+      case _: UnsupportedCredentialRole =>
+        Redirect(routes.UnauthorisedController.onPageLoad())
     }
   }
 }
 
-@ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]

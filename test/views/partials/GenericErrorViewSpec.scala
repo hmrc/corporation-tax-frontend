@@ -16,11 +16,12 @@
 
 package views.partials
 
+import play.twirl.api.HtmlFormat
 import views.ViewSpecBase
 import views.html.partials.generic_error
 
 class GenericErrorViewSpec extends ViewSpecBase {
-  def view = () => generic_error("http://portal.url")(fakeRequest, messages)
+  def view: () => HtmlFormat.Appendable = () => generic_error("http://portal.url")(fakeRequest, messages)
 
   "Generic error" should {
     "display the correct content" in {

@@ -16,4 +16,15 @@
 
 package viewmodels
 
-trait Section
+
+sealed trait Section
+
+case class AnswerSection(headingKey: Option[String],
+                         rows: Seq[AnswerRow]) extends Section
+
+case class RepeaterAnswerSection(headingKey: String,
+                                 relevanceRow: AnswerRow,
+                                 rows: Seq[RepeaterAnswerRow],
+                                 addLinkKey: String,
+                                 addLinkUrl: String) extends Section
+

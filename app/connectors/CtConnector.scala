@@ -16,10 +16,9 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
-
 import config.FrontendAppConfig
 import connectors.models.{CtAccountSummaryData, CtDesignatoryDetailsCollection, MicroServiceException}
+import javax.inject.{Inject, Singleton}
 import play.api.http.Status._
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}

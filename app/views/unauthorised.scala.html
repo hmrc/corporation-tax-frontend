@@ -16,6 +16,10 @@
 
 @import config.FrontendAppConfig
 
+@this(
+    main_template: main_template
+)
+
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -24,6 +28,6 @@
     bodyClasses = None) {
 
     <h1 id="unauthorised" class="heading-large">@messages("unauthorised.heading")</h1>
-    <p>@Messages("unauthorised.no_corp_tax")</p>
-    <p>@Messages("unauthorised.correct_id")</p>
+    <p>@messages("unauthorised.no_corp_tax")</p>
+    <p>@messages("unauthorised.correct_id")</p>
 }

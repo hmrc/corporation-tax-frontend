@@ -16,32 +16,42 @@
 
 package controllers
 
-import controllers.actions._
+import base.{FakeAuthAction, FakeServiceInfoAction, SpecBase}
+import controllers.actions.ServiceInfoAction
 import models._
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
-import play.api.mvc.Result
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.mvc.{MessagesControllerComponents, PlayBodyParsers, Result}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.CtCardBuilderService
-import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.Upstream5xxResponse
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
+class PartialControllerSpec extends SpecBase with MockitoSugar with GuiceOneAppPerSuite {
 
-class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
+  val fakeAuth = new FakeAuthAction(app.injector.instanceOf[PlayBodyParsers])
+  val fakeServiceInfo: ServiceInfoAction = FakeServiceInfoAction
 
   trait LocalSetup {
-    lazy val accountSummary = Html("Account Summary")
-    lazy val mockCtCardBuilderService: CtCardBuilderService = mock[CtCardBuilderService]
-    lazy val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
-    lazy val c: PartialController = new PartialController(messagesApi, FakeAuthAction, FakeServiceInfoAction,
-      mockAccountSummaryHelper, frontendAppConfig, mockCtCardBuilderService)
+    val accountSummary: Html = Html("Account Summary")
+    val mockCtCardBuilderService: CtCardBuilderService = mock[CtCardBuilderService]
+    val mockAccountSummaryHelper: AccountSummaryHelper = mock[AccountSummaryHelper]
+    val c: PartialController =
+      new PartialController(
+        app.injector.instanceOf[MessagesControllerComponents],
+        fakeAuth,
+        fakeServiceInfo,
+        mockAccountSummaryHelper,
+        frontendAppConfig,
+        mockCtCardBuilderService
+      )
 
-    lazy val testCard: Card = Card(
+    val testCard: Card = Card(
       title = "CT",
       description = "CT Card",
       referenceNumber = "123456789",
@@ -58,13 +68,14 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
       returnsPartial = Some("")
     )
 
-    when(mockAccountSummaryHelper.getAccountSummaryView(Matchers.any())(Matchers.any(), Matchers.any()))
+    when(mockAccountSummaryHelper.getAccountSummaryView(any())(any(), any()))
         .thenReturn(Future.successful(accountSummary))
   }
 
   "Calling PartialController.getCard" must {
     "return 200 in json format when asked to get a card and the call to the backend succeeds" in new LocalSetup {
-      when(mockCtCardBuilderService.buildCtCard()(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(testCard))
+      when(mockCtCardBuilderService.buildCtCard()(any(), any(), any()))
+        .thenReturn(Future.successful(testCard))
 
       val result: Future[Result] = c.getCard(fakeRequest)
 
@@ -73,7 +84,8 @@ class PartialControllerSpec extends ControllerSpecBase with MockitoSugar {
     }
 
     "return an error status when asked to get a card and the call to the backend fails" in new LocalSetup {
-      when(mockCtCardBuilderService.buildCtCard()(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.failed(Upstream5xxResponse("", 500, 500)))
+      when(mockCtCardBuilderService.buildCtCard()(any(), any(), any()))
+        .thenReturn(Future.failed(Upstream5xxResponse("", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
 
       val result: Future[Result] = c.getCard(fakeRequest)
 

@@ -16,7 +16,6 @@
 
 package services
 
-import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.{Inject, Singleton}
@@ -28,12 +27,12 @@ import play.twirl.api.Html
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) extends CtPartialBuilder {
+class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
 
-  override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
+  def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
     views.html.partials.card.returns.potential_returns(appConfig)
 
-  override def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = {
+  def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = {
     ctData match {
       case Some(CtData(accountSummaryData)) => accountSummaryData match {
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
@@ -52,11 +51,4 @@ class CtPartialBuilderImpl @Inject() (appConfig: FrontendAppConfig)(implicit ec:
     }
   }
 
-}
-
-
-@ImplementedBy(classOf[CtPartialBuilderImpl])
-trait CtPartialBuilder {
-  def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html
-  def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html
 }

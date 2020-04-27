@@ -17,19 +17,19 @@
 @import config.FrontendAppConfig
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 <div id="more-options" class="subsection">
-  <h3>@Messages("subpage.sidebar.more_options")</h3>
+  <h3>@messages("subpage.sidebar.more_options")</h3>
   <ul class="list">
     <li>
-      <a id="make-dormant" href="@appConfig.getGovUrl("makeCompanyDormant")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Make your company dormant">@Messages("subpage.more_options.dormant")</a>
+      <a id="make-dormant" href="@appConfig.getGovUrl("makeCompanyDormant")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Make your company dormant">@messages("subpage.more_options.dormant")</a>
     </li>
     <li>
-      <a id="close-company" href="@appConfig.getGovUrl("closeCompany")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Close your company">@Messages("subpage.more_options.close")</a>
+      <a id="close-company" href="@appConfig.getGovUrl("closeCompany")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Close your company">@messages("subpage.more_options.close")</a>
     </li>
     <li>
-      <a id="cert-of-residence" href="@appConfig.getGovUrl("certOfResidence")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Get a certificate of residence">@Messages("subpage.sidebar.cert_of_residence")</a>
+      <a id="cert-of-residence" href="@appConfig.getGovUrl("certOfResidence")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Get a certificate of residence">@messages("subpage.sidebar.cert_of_residence")</a>
     </li>
     <li>
-      <a id="setup-partnership" href="@appConfig.getFormsUrl("setupPartnership")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Set up a partnership or add a partner">@Messages("subpage.sidebar.partnership")</a>
+      <a id="setup-partnership" href="@appConfig.getFormsUrl("setupPartnership")" target="_blank" rel="external noopener" data-journey-click="link - click:CTMoreOptions:Set up a partnership or add a partner">@messages("subpage.sidebar.partnership")</a>
     </li>
   </ul>
 </div>

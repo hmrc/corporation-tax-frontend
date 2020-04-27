@@ -16,9 +16,8 @@
 
 package connectors.payments
 
-import javax.inject.{Inject, Singleton}
-
 import config.FrontendAppConfig
+import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

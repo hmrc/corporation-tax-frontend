@@ -13,7 +13,7 @@ import models.NormalMode
 import models.$className$
 import views.html.$className;format="decap"$
 
-class $className$ControllerSpec extends ControllerSpecBase {
+class $className$ControllerSpec extends SpecBase {
 
   def onwardRoute = routes.IndexController.onPageLoad()
 

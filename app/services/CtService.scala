@@ -16,7 +16,6 @@
 
 package services
 
-import com.google.inject.ImplementedBy
 import connectors.CtConnector
 import connectors.models.CtAccountSummaryData
 import javax.inject.{Inject, Singleton}
@@ -26,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
+class CtService @Inject()(ctConnector: CtConnector) {
 
   def fetchCtModel(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier,
                                              ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
@@ -44,7 +43,3 @@ class CtService @Inject()(ctConnector: CtConnector) extends CtServiceInterface {
 
 }
 
-@ImplementedBy(classOf[CtService])
-trait CtServiceInterface {
-  def fetchCtModel(ctEnrolmentOpt: CtEnrolment)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]]
-}

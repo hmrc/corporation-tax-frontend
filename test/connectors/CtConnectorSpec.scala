@@ -18,28 +18,27 @@ package connectors
 
 import base.SpecBase
 import connectors.models._
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.CtUtr
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, Upstream5xxResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with MockHttpClient {
+class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
   
+  val mockHttp: HttpClient = mock[HttpClient]
 
-  def ctConnector[A](mockedResponse: HttpResponse, httpWrapper: HttpWrapper = mock[HttpWrapper]): CtConnector = {
-    when(httpWrapper.getF[A](Matchers.any())).
-      thenReturn(mockedResponse)
-    new CtConnector(http(httpWrapper), frontendAppConfig)
-  }
+  val connector = new CtConnector(mockHttp, frontendAppConfig)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  val ctUtr = CtUtr("utr")
+  val ctUtr: CtUtr = CtUtr("utr")
 
   "CtConnector account summary" should {
 
@@ -47,9 +46,10 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
 
       val ctAccountSummary = CtAccountSummaryData(Some(CtAccountBalance(Some(4.0))))
 
-      val response = ctConnector(
-        mockedResponse = HttpResponse(OK, Some(Json.toJson(ctAccountSummary)
-        ))).accountSummary(ctUtr)
+      when(mockHttp.GET[Option[CtAccountSummaryData]](any())(any(),any(),any()))
+        .thenReturn(Future.successful(Some(ctAccountSummary)))
+
+      val response = connector.accountSummary(ctUtr)
 
       whenReady(response) { r =>
         r mustBe Some(ctAccountSummary)
@@ -58,10 +58,10 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
     }
 
     "call the micro service with the correct uri and return no contents if there are none" in {
+      when(mockHttp.GET[Option[CtAccountSummaryData]](any())(any(),any(),any()))
+        .thenReturn(Future.successful(None))
 
-      val response = ctConnector(
-        mockedResponse = HttpResponse(NOT_FOUND, None)
-      ).accountSummary(ctUtr)
+      val response = connector.accountSummary(ctUtr)
 
       whenReady(response) { r =>
         r mustBe None
@@ -69,23 +69,18 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
     }
 
     "call the micro service and return 500" in {
-      val ctAccountSummaryUri = "http://localhost:8647/ct/utr/account-summary"
-      val httpWrapper = mock[HttpWrapper]
+      when(mockHttp.GET[Option[CtAccountSummaryData]](any())(any(),any(),any()))
+        .thenReturn(Future.failed(Upstream5xxResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
 
-      val response = ctConnector(
-        mockedResponse = HttpResponse(INTERNAL_SERVER_ERROR, None),
-        httpWrapper
-      ).accountSummary(ctUtr)
+      val response = connector.accountSummary(ctUtr)
 
       whenReady(response.failed) { mse =>
-        mse mustBe a[MicroServiceException]
-        verify(httpWrapper).getF[CtAccountSummaryData](ctAccountSummaryUri)
+        mse mustBe an[Upstream5xxResponse]
       }
-
     }
   }
 
-  val sampleDesignatoryDetails =
+  val sampleDesignatoryDetails: JsValue = Json.parse(
     """{
       |  "company": {
       |    "name": {
@@ -117,15 +112,14 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
       |      "foreignCountry": "France"
       |    }
       |  }
-      |}""".stripMargin
+      |}""".stripMargin)
 
   "CtConnector designatory details" should {
-
     "Return the correct response for an example with designatory details information" in {
+      when(mockHttp.GET[Option[CtDesignatoryDetailsCollection]](any())(any(),any(),any()))
+        .thenReturn(Future.successful(Some(sampleDesignatoryDetails.as[CtDesignatoryDetailsCollection])))
 
-      val response = ctConnector(
-        mockedResponse = HttpResponse(OK, Some(Json.parse(sampleDesignatoryDetails)))
-      ).designatoryDetails(ctUtr)
+      val response = connector.designatoryDetails(ctUtr)
 
       val expectedDetails = Some(DesignatoryDetails(
         DesignatoryDetailsName(Some("A B"), Some("xyz")),
@@ -148,16 +142,15 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with 
     }
 
     "call the micro service and return 500" in {
+      when(mockHttp.GET[Option[CtDesignatoryDetailsCollection]](any())(any(),any(),any()))
+        .thenReturn(Future.failed(Upstream5xxResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
 
-      val response = ctConnector(
-        mockedResponse = HttpResponse(INTERNAL_SERVER_ERROR, None)
-      ).designatoryDetails(ctUtr)
+      val response = connector.designatoryDetails(ctUtr)
 
       whenReady(response.failed) { mse =>
-        mse mustBe a[MicroServiceException]
+        mse mustBe an[Upstream5xxResponse]
       }
     }
-
   }
 
 

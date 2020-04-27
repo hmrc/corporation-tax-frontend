@@ -18,10 +18,9 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
+
 case class UserEnrolments(enrolments: List[UserEnrolmentStatus])
 
 object UserEnrolments {
-
   implicit val formats: OFormat[UserEnrolments] = Json.format[UserEnrolments]
-
 }

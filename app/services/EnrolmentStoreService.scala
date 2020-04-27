@@ -18,7 +18,6 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import com.google.inject.ImplementedBy
 import connectors.EnrolmentStoreConnector
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
@@ -28,15 +27,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentStoreServiceImpl @Inject()(connector: EnrolmentStoreConnector)(implicit val ec:ExecutionContext) extends EnrolmentsStoreService {
+class EnrolmentStoreService @Inject()(connector: EnrolmentStoreConnector)(implicit val ec:ExecutionContext) {
 
-  val daysBetweenExpectedArrivalAndExpiry = 23
+  final val daysBetweenExpectedArrivalAndExpiry = 23
 
-  override def showNewPinLink(enrolment: CtEnrolment, currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Boolean] = enrolment match {
-    case CtEnrolment(CtUtr(utr), false) => {
+  def showNewPinLink(enrolment: CtEnrolment, currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Boolean] = enrolment match {
+    case CtEnrolment(CtUtr(utr), false) =>
       val enrolmentDetailsList: Future[Either[String, UserEnrolments]] = connector.getEnrolments(utr)
-      enrolmentDetailsList.map({
-        case Right(UserEnrolments(enrolmentDataList)) if enrolmentDataList.nonEmpty => {
+      enrolmentDetailsList.map{
+        case Right(UserEnrolments(enrolmentDataList)) if enrolmentDataList.nonEmpty =>
 
           val enrolmentStatus: Seq[UserEnrolmentStatus] = enrolmentDataList.filter(_.enrolmentTokenExpiryDate.isDefined).sortWith { (left, right) =>
             left.enrolmentTokenExpiryDate.get.isAfter(right.enrolmentTokenExpiryDate.get)
@@ -49,17 +48,10 @@ class EnrolmentStoreServiceImpl @Inject()(connector: EnrolmentStoreConnector)(im
                 enrolmentStatus.head.enrolmentTokenExpiryDate.get.minusDays(daysBetweenExpectedArrivalAndExpiry).toDateTime(DateTimeZone.UTC).getMillis
               currentDate.isAfter(expectedArrivalDate)
           }
-        }
         case _ => true
-      })
-    }
+      }
     case CtEnrolment(_,true) => Future.successful(false)
     case _ => Future.successful(true)
   }
-}
-
-@ImplementedBy(classOf[EnrolmentStoreServiceImpl])
-trait EnrolmentsStoreService {
-  def showNewPinLink(enrolment: CtEnrolment, currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Boolean]
 }
 

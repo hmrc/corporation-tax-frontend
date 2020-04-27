@@ -16,11 +16,9 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
-
 import _root_.models.UserEnrolments
-import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
+import javax.inject.{Inject, Singleton}
 import play.api.http.Status
 import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -30,8 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class EnrolmentStoreConnectorImpl @Inject()(override val http: HttpClient, config: FrontendAppConfig)
-                                           (implicit val ec: ExecutionContext) extends EnrolmentStoreConnector {
+class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAppConfig)
+                                       (implicit val ec: ExecutionContext) {
 
   def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] =
     http.GET[HttpResponse](buildURL(credId)).map { response =>
@@ -59,11 +57,4 @@ class EnrolmentStoreConnectorImpl @Inject()(override val http: HttpClient, confi
 
   private def buildURL(credId: String): String = s"${config.enrolmentStoreUrl}/enrolment-store/users/$credId/enrolments?service=IR-CT"
 
-}
-
-@ImplementedBy(classOf[EnrolmentStoreConnectorImpl])
-trait EnrolmentStoreConnector {
-  def http: HttpClient
-
-  def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]]
 }

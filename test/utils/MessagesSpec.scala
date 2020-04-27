@@ -64,7 +64,7 @@ class MessagesSpec extends SpecBase {
     }
 
     "have 46 default play messages" in {
-      messagesApi.messages("default.play").size mustBe 46
+      messagesApi.messages("default.play").size mustBe 44
     }
 
     "have the same number of message keys in English and Welsh" in {

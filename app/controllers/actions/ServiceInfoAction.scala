@@ -17,25 +17,22 @@
 package controllers.actions
 
 
-import javax.inject.Inject
-
-import com.google.inject.ImplementedBy
 import config.CorporationTaxHeaderCarrierForPartialsConverter
 import connectors.ServiceInfoPartialConnector
+import javax.inject.Inject
 import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class ServiceInfoActionImpl @Inject()(
-                                       serviceInfoPartialConnector: ServiceInfoPartialConnector,
-                                       corporationTaxHeaderCarrierForPartialsConverter: CorporationTaxHeaderCarrierForPartialsConverter
-                                     )(implicit ec: ExecutionContext) extends ServiceInfoAction {
+class ServiceInfoActionImpl @Inject()(serviceInfoPartialConnector: ServiceInfoPartialConnector,
+                                      corporationTaxHeaderCarrierForPartialsConverter: CorporationTaxHeaderCarrierForPartialsConverter)
+                                     (implicit val executionContext: ExecutionContext) extends ServiceInfoAction {
 
   import corporationTaxHeaderCarrierForPartialsConverter._
 
-  override protected def transform[A](request: AuthenticatedRequest[A]): Future[ServiceInfoRequest[A]] = {
+  override def transform[A](request: AuthenticatedRequest[A]): Future[ServiceInfoRequest[A]] = {
     implicit val r: Request[A] = request
     serviceInfoPartialConnector.getServiceInfoPartial().map { serviceInfoContent =>
       ServiceInfoRequest(request, serviceInfoContent)
@@ -44,5 +41,4 @@ class ServiceInfoActionImpl @Inject()(
 
 }
 
-@ImplementedBy(classOf[ServiceInfoActionImpl])
 trait ServiceInfoAction extends ActionTransformer[AuthenticatedRequest, ServiceInfoRequest]

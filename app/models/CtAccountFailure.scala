@@ -18,12 +18,11 @@ package models
 
 import connectors.models.CtAccountSummaryData
 
-case class CtData(accountSummary: CtAccountSummaryData)
-
 sealed trait CtAccountFailure
 
 case object CtUnactivated extends CtAccountFailure
-
 case object CtEmpty extends CtAccountFailure
-
 case object CtGenericError extends CtAccountFailure
+
+
+case class CtData(accountSummary: CtAccountSummaryData)

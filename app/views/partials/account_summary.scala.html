@@ -26,7 +26,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 <section>
-    <h2 style="margin-top: 1.875em !important">@Messages("account.summary.your_returns")</h2>
+    <h2 style="margin-top: 1.875em !important">@messages("account.summary.your_returns")</h2>
     <a id="ct-file-return-cato"
         href='@appConfig.getUrl("fileAReturn")'
         class="button"
@@ -36,9 +36,9 @@
     </a>
 </section>
 <section>
-    <h2 style="margin-top: 1.875em !important">@Messages("account.summary.your_payments")</h2>
+    <h2 style="margin-top: 1.875em !important">@messages("account.summary.your_payments")</h2>
     @if(shouldShowCreditCardMessage) {
-      <p>@Messages("subpage.no_longer_use_personal_credit_card")</p>
+      <p>@messages("subpage.no_longer_use_personal_credit_card")</p>
     }
     <p>@Html(balanceInformation)</p>
     <p>@breakdownLink.map { link =>

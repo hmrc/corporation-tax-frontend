@@ -16,9 +16,9 @@
 
 package services
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import javax.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.payments.PaymentHistoryConnectorInterface
+import connectors.payments.PaymentHistoryConnector
 import models.payments.{CtPaymentRecord, PaymentRecord}
 import models.{CtEnrolment, PaymentRecordFailure}
 import org.joda.time.DateTime
@@ -28,11 +28,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterface, config: FrontendAppConfig)
-                                     (implicit ec: ExecutionContext) extends PaymentHistoryServiceInterface {
+class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config: FrontendAppConfig)
+                                     (implicit ec: ExecutionContext) {
 
-  def getPayments(ctEnrolment: CtEnrolment,
-                  currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+  def getPayments(ctEnrolment: CtEnrolment, currentDate: DateTime)
+                 (implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
     if (config.getCTPaymentHistoryToggle) {
       connector.get(ctEnrolment.ctUtr.utr).map {
         case Right(payments) => Right(filterPaymentHistory(payments, currentDate))
@@ -50,10 +50,4 @@ class PaymentHistoryService @Inject()(connector: PaymentHistoryConnectorInterfac
   private def filterPaymentHistory(payments: List[CtPaymentRecord], currentDate: DateTime): List[PaymentRecord] =
     payments.flatMap(PaymentRecord.from(_, currentDate))
 
-}
-
-@ImplementedBy(classOf[PaymentHistoryService])
-trait PaymentHistoryServiceInterface {
-  def getPayments(enrolment: CtEnrolment,
-                  currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]]
 }

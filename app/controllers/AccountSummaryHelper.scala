@@ -16,34 +16,32 @@
 
 package controllers
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
+import javax.inject.Inject
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import models.{CtAccountFailure, CtData, CtUnactivated, PaymentRecordFailure}
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.RequestHeader
+import play.api.mvc.{MessagesControllerComponents, RequestHeader}
 import play.twirl.api.HtmlFormat
-import services.{CtServiceInterface, EnrolmentsStoreService, PaymentHistoryServiceInterface}
+import services.{CtService, EnrolmentStoreService, PaymentHistoryService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.play.views.formatting.Money.pounds
 import views.html.partials.{account_summary, generic_error, not_activated}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AccountSummaryHelper @Inject()(
-                                      appConfig: FrontendAppConfig,
-                                      ctService: CtServiceInterface,
-                                      enrolmentsStoreService: EnrolmentsStoreService,
-                                      paymentHistoryService: PaymentHistoryServiceInterface,
-                                      override val messagesApi: MessagesApi
-                                    ) extends I18nSupport {
+class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
+                                     ctService: CtService,
+                                     EnrolmentStoreService: EnrolmentStoreService,
+                                     paymentHistoryService: PaymentHistoryService,
+                                     mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
-  implicit def hc(implicit rh: RequestHeader): HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
+//  implicit def hc(implicit rh: RequestHeader): HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
 
   private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit request: AuthenticatedRequest[_],
                                                                                         ec: ExecutionContext): Future[HtmlFormat.Appendable] = {
@@ -59,14 +57,15 @@ class AccountSummaryHelper @Inject()(
       case (Right(None), _) =>
         Future.successful(account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage))
       case (Left(CtUnactivated), _) =>
-        enrolmentsStoreService
+        EnrolmentStoreService
           .showNewPinLink(request.ctEnrolment, DateTime.now())
           .map(showLink => not_activated(
             activateUrl = appConfig.getUrl("enrolment-management-access"),
             resetCodeUrl = appConfig.getUrl("enrolment-management-new-code"),
             showNewPinLink = showLink
           ))
-      case _ => Future.successful(generic_error(appConfig.getPortalUrl("home")(request.ctEnrolment)))
+      case _ =>
+        Future.successful(generic_error(appConfig.getPortalUrl("home")(request.ctEnrolment)))
     }
   }
 
