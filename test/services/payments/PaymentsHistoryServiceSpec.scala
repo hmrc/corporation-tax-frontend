@@ -24,15 +24,10 @@ import models.{CtEnrolment, PaymentRecordFailure}
 import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.TestData
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
-import play.api.Application
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.FakeRequest
 import services.PaymentHistoryService
 import uk.gov.hmrc.domain.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
@@ -47,16 +42,6 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
   val mockConnector: PaymentHistoryConnector = mock[PaymentHistoryConnector]
 
   val testService = new PaymentHistoryService(mockConnector, mockConfig)(global)
-
-//  override def newAppForTest(testData: TestData): Application = {
-//    val builder = new GuiceApplicationBuilder()
-//    testData.name match {
-//      case a if a.matches("^.*toggle set to false.*") =>
-//        builder.configure(Map("toggles.ct-payment-history" -> false)).build()
-//      case _ =>
-//        builder.configure(Map("toggles.ct-payment-history" -> true)).build()
-//    }
-//  }
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val date = new DateTime("2018-10-20T08:00:00.000")

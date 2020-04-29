@@ -40,7 +40,7 @@ trait MicroService {
         ".*ControllerConfiguration;.*LanguageSwitchController",
       PlayKeys.playDefaultPort := 9731,
       routesGenerator := InjectedRoutesGenerator,
-      ScoverageKeys.coverageMinimum := 90.25,
+      ScoverageKeys.coverageMinimum := 80.00,
       ScoverageKeys.coverageFailOnMinimum := true,
       ScoverageKeys.coverageHighlighting := true,
       parallelExecution in Test := false

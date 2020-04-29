@@ -23,12 +23,10 @@ import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import models.{CtAccountFailure, CtData, CtUnactivated, PaymentRecordFailure}
 import org.joda.time.DateTime
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{MessagesControllerComponents, RequestHeader}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import services.{CtService, EnrolmentStoreService, PaymentHistoryService}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import uk.gov.hmrc.play.views.formatting.Money.pounds
 import views.html.partials.{account_summary, generic_error, not_activated}
@@ -37,11 +35,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
                                      ctService: CtService,
-                                     EnrolmentStoreService: EnrolmentStoreService,
+                                     enrolmentStoreService: EnrolmentStoreService,
                                      paymentHistoryService: PaymentHistoryService,
                                      mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
-
-//  implicit def hc(implicit rh: RequestHeader): HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
 
   private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit request: AuthenticatedRequest[_],
                                                                                         ec: ExecutionContext): Future[HtmlFormat.Appendable] = {
@@ -57,7 +53,7 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
       case (Right(None), _) =>
         Future.successful(account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage))
       case (Left(CtUnactivated), _) =>
-        EnrolmentStoreService
+        enrolmentStoreService
           .showNewPinLink(request.ctEnrolment, DateTime.now())
           .map(showLink => not_activated(
             activateUrl = appConfig.getUrl("enrolment-management-access"),
@@ -69,8 +65,11 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
     }
   }
 
-  private def buildCtAccountSummaryForKnownBalance(amount: BigDecimal, showCreditCardMessage: Boolean,
-                                                   breakdownLink: Option[String], maybeHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]])(implicit r: AuthenticatedRequest[_]): HtmlFormat.Appendable = {
+  private def buildCtAccountSummaryForKnownBalance(amount: BigDecimal,
+                                                   showCreditCardMessage: Boolean,
+                                                   breakdownLink: Option[String],
+                                                   maybeHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]])
+                                                  (implicit r: AuthenticatedRequest[_]): HtmlFormat.Appendable = {
     if (amount < 0) {
       account_summary(
         Messages("account.summary.in_credit", pounds(amount.abs, 2)),

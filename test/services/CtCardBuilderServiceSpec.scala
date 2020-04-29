@@ -21,12 +21,12 @@ import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models._
 import models.requests.AuthenticatedRequest
-import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.{AnyContent, AnyContentAsEmpty}
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.domain.CtUtr
@@ -36,32 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-//object TestCtPartialBuilder extends CtPartialBuilder {
-//  override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Returns partial")
-//
-//  override def buildPaymentsPartial(accSummaryData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Payments partial")
-//}
-//
-//object TestCtPartialBuilderNoData extends CtPartialBuilder {
-//  override def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("Returns partial")
-//
-//  override def buildPaymentsPartial(accSummaryData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = Html("There is no balance information to display.")
-//}
-
 class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSugar with BeforeAndAfterEach {
-
-//  class CtCardBuilderServiceTest(messagesApi: MessagesApi,
-//                                 appConfig: FrontendAppConfig,
-//                                 ctServiceInterface: CtService,
-//                                 ctPartialBuilder: CtPartialBuilder,
-//                                 paymentHistoryService: PaymentHistoryService
-//                                ) extends CtCardBuilderService(messagesApi, appConfig, ctServiceInterface, ctPartialBuilder, paymentHistoryService)
-//
-//  case class TestHistoryService(history: List[PaymentRecord]) extends PaymentHistoryService {
-//    override def getPayments(enrolment: CtEnrolment, currentDate: DateTime
-//                            )(implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]]
-//    = Future.successful(Right(history))
-//  }
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
