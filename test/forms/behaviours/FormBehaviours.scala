@@ -26,14 +26,14 @@ trait FormBehaviours extends FormSpec {
 
   val form: Form[_]
 
-  def questionForm[A](expectedResult: A) = {
+  def questionForm[A](expectedResult: A): Unit = {
     "bind valid values correctly" in {
       val boundForm = form.bind(validData)
       boundForm.get shouldBe expectedResult
     }
   }
 
-  def formWithOptionField(field: Field, validValues: String*) = {
+  def formWithOptionField(field: Field, validValues: String*): Unit = {
     for (validValue <- validValues) {
       s"bind when ${field.name} is set to $validValue" in {
         val data = validData + (field.name -> validValue)

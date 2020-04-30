@@ -17,11 +17,11 @@
 package connectors
 
 import base.SpecBase
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.mvc.Http.Status
 import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -34,60 +34,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
 class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
-
-  "The ServiceInfoPartialConnector.getServiceInfoPartial() method" when {
-    lazy val btaUrl: String = TestServiceInfoPartialConnector.btaUrl
-
-    def result: Future[Html] = TestServiceInfoPartialConnector.getServiceInfoPartial()
-
-    "a valid HtmlPartial is received" should {
-      "retrieve the correct HTML" in {
-
-        when(mockHttpGet.GET[HtmlPartial](Matchers.eq(btaUrl))(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(successResponse))
-
-        whenReady(result) { response =>
-          response mustBe serviceInfoPartialSuccess
-        }
-      }
-    }
-
-    "a BadRequest(400) exception occurs" should {
-      "fail and return empty content" in {
-        when(mockHttpGet.GET[HtmlPartial](Matchers.eq(btaUrl))(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(badRequestResponse))
-
-        whenReady(result) { response =>
-          response mustBe Html("")
-        }
-      }
-    }
-
-    "a GatewayTimeout(504) exception occurs" should {
-      "fail and return empty content" in {
-        when(mockHttpGet.GET[HtmlPartial](Matchers.eq(btaUrl))(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.successful(gatewayTimeoutResponse))
-
-        whenReady(result) { response =>
-          response mustBe Html("")
-        }
-      }
-    }
-
-    "an unexpected future failed occurs" should {
-      "return empty" in {
-        val badResponse = HttpResponse(Status.BAD_REQUEST, responseString = Some("Error Message"))
-
-        when(mockHttpGet.GET[HtmlPartial](Matchers.eq(btaUrl))(Matchers.any(), Matchers.any(), Matchers.any()))
-          .thenReturn(Future.failed(new Exception))
-
-
-        whenReady(result) { response =>
-          response mustBe Html("")
-        }
-      }
-    }
-  }
 
   val mockHttpGet: HttpClient = mock[HttpClient]
 
@@ -125,10 +71,64 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
     </ul>
   """.stripMargin.trim)
 
-  val successResponse = Success(None, serviceInfoPartialSuccess)
-  val badRequestResponse = Failure(Some(Status.BAD_REQUEST))
-  val gatewayTimeoutResponse = Failure(Some(Status.GATEWAY_TIMEOUT))
-  val badResponse = HttpResponse(Status.BAD_REQUEST, responseString = Some("Error Message"))
+  val successResponse: Success = Success(None, serviceInfoPartialSuccess)
+  val badRequestResponse: Failure = Failure(Some(Status.BAD_REQUEST))
+  val gatewayTimeoutResponse: Failure = Failure(Some(Status.GATEWAY_TIMEOUT))
+  val badResponse: HttpResponse = HttpResponse(Status.BAD_REQUEST, responseString = Some("Error Message"))
   implicit val hcwc: HeaderCarrierForPartials = HeaderCarrierForPartials(HeaderCarrier(), "")
+
+  "The ServiceInfoPartialConnector.getServiceInfoPartial() method" when {
+    lazy val btaUrl: String = TestServiceInfoPartialConnector.btaUrl
+
+    def result: Future[Html] = TestServiceInfoPartialConnector.getServiceInfoPartial()
+
+    "a valid HtmlPartial is received" should {
+      "retrieve the correct HTML" in {
+
+        when(mockHttpGet.GET[HtmlPartial](eqTo(btaUrl))(any(), any(), any()))
+          .thenReturn(Future.successful(successResponse))
+
+        whenReady(result) { response =>
+          response mustBe serviceInfoPartialSuccess
+        }
+      }
+    }
+
+    "a BadRequest(400) exception occurs" should {
+      "fail and return empty content" in {
+        when(mockHttpGet.GET[HtmlPartial](eqTo(btaUrl))(any(), any(), any()))
+          .thenReturn(Future.successful(badRequestResponse))
+
+        whenReady(result) { response =>
+          response mustBe Html("")
+        }
+      }
+    }
+
+    "a GatewayTimeout(504) exception occurs" should {
+      "fail and return empty content" in {
+        when(mockHttpGet.GET[HtmlPartial](eqTo(btaUrl))(any(), any(), any()))
+          .thenReturn(Future.successful(gatewayTimeoutResponse))
+
+        whenReady(result) { response =>
+          response mustBe Html("")
+        }
+      }
+    }
+
+    "an unexpected future failed occurs" should {
+      "return empty" in {
+        val badResponse = HttpResponse(Status.BAD_REQUEST, responseString = Some("Error Message"))
+
+        when(mockHttpGet.GET[HtmlPartial](eqTo(btaUrl))(any(), any(), any()))
+          .thenReturn(Future.failed(new Exception))
+
+
+        whenReady(result) { response =>
+          response mustBe Html("")
+        }
+      }
+    }
+  }
 
 }

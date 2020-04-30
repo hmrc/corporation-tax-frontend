@@ -16,33 +16,33 @@
 
 package controllers
 
-import javax.inject.Inject
-
 import config.FrontendAppConfig
 import controllers.actions._
-import models.requests.ServiceInfoRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.AnyContent
+import javax.inject.Inject
+import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.subpage
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SubpageController @Inject()(appConfig: FrontendAppConfig,
-                                  override val messagesApi: MessagesApi,
+                                  mcc: MessagesControllerComponents,
                                   authenticate: AuthAction,
                                   serviceInfo: ServiceInfoAction,
+                                  subpage: subpage,
                                   accountSummaryHelper: AccountSummaryHelper)
-                                 (implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                 (implicit ec: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
 
-  def onPageLoad = (authenticate andThen serviceInfo).async {
-    implicit request => getAccountSummaryView(request)
-
+  def onPageLoad: Action[AnyContent] = (authenticate andThen serviceInfo).async { implicit request =>
+    getAccountSummaryView(request)
   }
 
-  private def getAccountSummaryView(request: ServiceInfoRequest[AnyContent]) = {
-    implicit val requestToUse = request.request
+  private def getAccountSummaryView(request: ServiceInfoRequest[AnyContent]): Future[Result] = {
+    implicit val requestToUse: AuthenticatedRequest[AnyContent] = request.request
+
     accountSummaryHelper.getAccountSummaryView().map { accountSummaryView =>
       Ok(subpage(appConfig, request.request.ctEnrolment, accountSummaryView)(request.serviceInfoContent))
     }

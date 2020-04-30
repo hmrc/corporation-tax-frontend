@@ -17,26 +17,28 @@
 @import config.FrontendAppConfig
 @import models.CtEnrolment
 
+@this(
+    main_template: main_template
+)
+
 @(appConfig: FrontendAppConfig, ctEnrolment: CtEnrolment, partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
     @sidebarLinks = {
         <nav role="navigation" id="ct-sub-navigation" aria-label='@messages("subpage.sidebar.navigation")'>
             <div id="ct-utr" class="subsection flush--top">
-                <p class="heading-small">@Messages("subpage.utr")</p>
-                <p>@{
-                    ctEnrolment.ctUtr
-                }</p>
+                <p class="heading-small">@messages("subpage.utr")</p>
+                <p>@{ctEnrolment.ctUtr}</p>
             </div>
             <div id="help-with-tax" class="subsection">
-                <h2 class="heading-small">@Messages("subpage.sidebar.help_with_tax")</h2>
+                <h2 class="heading-small">@messages("subpage.sidebar.help_with_tax")</h2>
                 <ul class="list">
                     <li>
                         <a id="help-and-contact" href="@appConfig.getHelpAndContactUrl("home")"
-                        data-journey-click="link - click:CTSidebar:Help and contact">@Messages("subpage.sidebar.help_and_contact")</a>
+                        data-journey-click="link - click:CTSidebar:Help and contact">@messages("subpage.sidebar.help_and_contact")</a>
                     </li>
                     <li>
                         <a id="more" href="@appConfig.getPortalUrl("more")(ctEnrolment)(request)" target="_blank" rel="external noopener"
-                        data-journey-click="link - click:CTSidebar:More">@Messages("subpage.sidebar.more")</a>
+                        data-journey-click="link - click:CTSidebar:More">@messages("subpage.sidebar.more")</a>
                     </li>
                 </ul>
             </div>
@@ -56,7 +58,7 @@
         <div class="panel panel-border-wide" id="payments-notice">
             <p>
                 <strong>
-                    @Messages("subpage.payments_notice")
+                    @messages("subpage.payments_notice")
                 </strong>
             </p>
         </div>

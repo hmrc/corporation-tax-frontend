@@ -16,18 +16,18 @@
 
 package controllers
 
-import javax.inject.Inject
+import java.time.LocalDate
 
 import config.FrontendAppConfig
 import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import connectors.payments.{PaymentConnector, SpjRequestBtaCt}
 import controllers.PaymentStartController.toAmountInPence
 import controllers.actions._
+import javax.inject.Inject
 import models.CtData
-import org.joda.time.LocalDate
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import services.CtServiceInterface
+import play.api.i18n.{I18nSupport, Lang}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.CtService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import views.html.partials.generic_error
 
@@ -44,11 +44,13 @@ object PaymentStartController {
 class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
                                        payConnector: PaymentConnector,
                                        authenticate: AuthAction,
-                                       ctService: CtServiceInterface,
-                                       override val messagesApi: MessagesApi)(implicit ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                       ctService: CtService,
+                                       mcc: MessagesControllerComponents)(implicit ec: ExecutionContext)
+  extends FrontendController(mcc) with I18nSupport {
 
-  def makeAPayment: Action[AnyContent] = authenticate.async {
-    implicit request =>
+  def makeAPayment: Action[AnyContent] = authenticate.async { implicit request =>
+      implicit val lang: Lang = mcc.messagesApi.preferred(request).lang
+
       ctService.fetchCtModel(request.ctEnrolment).flatMap {
         case Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))))))) =>
           val spjRequestBtaVat = SpjRequestBtaCt(

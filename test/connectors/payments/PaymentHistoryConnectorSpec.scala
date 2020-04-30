@@ -17,30 +17,28 @@
 package connectors.payments
 
 import base.SpecBase
-import connectors.MockHttpClient
-import models.payments.PaymentStatus.{Successful, Invalid}
+import models.payments.PaymentStatus.{Invalid, Successful}
 import models.payments._
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import uk.gov.hmrc.domain.CtUtr
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import play.api.http.Status._
 
-class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with MockHttpClient {
+import scala.concurrent.Future
 
-  def testConnector[A](mockedResponse: HttpResponse, httpWrapper: HttpWrapper = mock[HttpWrapper]): PaymentHistoryConnector = {
-    when(httpWrapper.getF[A](Matchers.any())).thenReturn(mockedResponse)
-    val httpClient: HttpClient = http(httpWrapper)
-    new PaymentHistoryConnector(httpClient, frontendAppConfig)
-  }
+class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
+
+  val mockHttp: HttpClient = mock[HttpClient]
+  val connector = new PaymentHistoryConnector(mockHttp, frontendAppConfig)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val ctUtr = CtUtr("utr")
+  val ctUtr: CtUtr = CtUtr("utr")
 
   "The Payment History connector" when {
 
@@ -49,15 +47,18 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         val hodData = Json.parse(
           """
             |{
-            |"searchScope": "bta",
-            |"searchTag":"search-tag",
-            |"payments": []
+            |  "searchScope": "bta",
+            |  "searchTag":"search-tag",
+            |  "payments": []
             |}
           """.stripMargin
         )
-        val hodResponse = HttpResponse(OK, Some(hodData))
-        val connector = testConnector(hodResponse)
+
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.successful(HttpResponse(OK, Some(hodData))))
+
         val result = connector.get("")
+
         whenReady(result) {
           _ mustBe Right(Nil)
         }
@@ -70,28 +71,31 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
             Json.parse(
               """
                 |{
-                |"searchScope": "bta",
-                |"searchTag":"search-tag",
-                |"payments": [
-                | {
-                |"reference" : "reference number",
-                |"amountInPence" : 100,
-                |"status": "Successful",
-                |"createdOn": "data string",
-                |"taxType" : "tax type"
-                | }
-                |]
+                |  "searchScope": "bta",
+                |  "searchTag":"search-tag",
+                |  "payments": [
+                |    {
+                |      "reference" : "reference number",
+                |      "amountInPence" : 3,
+                |      "status": "Successful",
+                |      "createdOn": "data string",
+                |      "taxType" : "tax type"
+                |    }
+                |  ]
                 |}
               """.stripMargin
             )
           )
         )
-        val connector = testConnector(hodResponse)
+
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.successful(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
           _ mustBe Right(
-            List(CtPaymentRecord("reference number", 100, Successful, "data string", "tax type"))
+            List(CtPaymentRecord("reference number", 3, Successful, "data string", "tax type"))
           )
         }
       }
@@ -102,37 +106,39 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
             Json.parse(
               """
                 |{
-                |"searchScope": "bta",
-                |"searchTag":"search-tag",
-                |"payments": [
-                | {
-                |"reference" : "reference number",
-                |"amountInPence" : 100,
-                |"status": "Successful",
-                |"createdOn": "data string",
-                |"taxType" : "tax type"
-                | },
-                | {
-                |"reference" : "reference number 2",
-                |"amountInPence" : 2000000000,
-                |"status": "Successful",
-                |"createdOn": "data string",
-                |"taxType" : "tax type"
-                | }
-                |]
+                | "searchScope": "bta",
+                | "searchTag":"search-tag",
+                | "payments": [
+                |   {
+                |     "reference" : "reference number",
+                |     "amountInPence" : 3,
+                |     "status": "Successful",
+                |     "createdOn": "data string",
+                |     "taxType" : "tax type"
+                |   },
+                |   {
+                |     "reference" : "reference number 2",
+                |     "amountInPence" : 2,
+                |     "status": "Successful",
+                |     "createdOn": "data string",
+                |     "taxType" : "tax type"
+                |   }
+                | ]
                 |}
               """.stripMargin
             )
           )
         )
 
-        val connector = testConnector(hodResponse)
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.successful(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
           _ mustBe Right(List(
-            CtPaymentRecord("reference number", 100, Successful, "data string", "tax type"),
-            CtPaymentRecord("reference number 2", 2000000000, Successful, "data string", "tax type")
+            CtPaymentRecord("reference number", 3, Successful, "data string", "tax type"),
+            CtPaymentRecord("reference number 2", 2, Successful, "data string", "tax type")
           ))
         }
       }
@@ -143,36 +149,39 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
             Json.parse(
               """
                 |{
-                |"searchScope": "bta",
-                |"searchTag":"search-tag",
-                |"payments": [
-                | {
-                |"reference" : "reference number",
-                |"amountInPence" : 100,
-                |"status": "not-supported",
-                |"createdOn": "data string",
-                |"taxType" : "tax type"
-                | },
-                | {
-                |"reference" : "reference number 2",
-                |"amountInPence" : 2000000000,
-                |"status": "Successful",
-                |"createdOn": "data string",
-                |"taxType" : "tax type"
-                | }
-                |]
+                |  "searchScope": "bta",
+                |  "searchTag":"search-tag",
+                |  "payments": [
+                |    {
+                |      "reference" : "reference number",
+                |      "amountInPence" : 1,
+                |      "status": "not-supported",
+                |      "createdOn": "data string",
+                |      "taxType" : "tax type"
+                |    },
+                |    {
+                |      "reference" : "reference number 2",
+                |      "amountInPence" : 2,
+                |      "status": "Successful",
+                |      "createdOn": "data string",
+                |      "taxType" : "tax type"
+                |    }
+                |  ]
                 |}
               """.stripMargin
             )
           )
         )
-        val connector = testConnector(hodResponse)
+
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.successful(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
           _ mustBe Right(List(
-            CtPaymentRecord("reference number", 100, Invalid, "data string", "tax type"),
-            CtPaymentRecord("reference number 2", 2000000000, Successful, "data string", "tax type")
+            CtPaymentRecord("reference number", 1, Invalid, "data string", "tax type"),
+            CtPaymentRecord("reference number 2", 2, Successful, "data string", "tax type")
           ))
         }
       }
@@ -185,7 +194,10 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
             )
           )
         )
-        val connector = testConnector(hodResponse)
+
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.successful(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
@@ -202,7 +214,10 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
           )
         )
 
-        val connector = testConnector(hodResponse)
+
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.successful(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
@@ -211,9 +226,11 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       }
 
       "handle 400 response" in {
-        val hodResponse = HttpResponse(BAD_REQUEST, Some(Json.obj()))
+        val hodResponse = new BadRequestException("oops")
 
-        val connector = testConnector(hodResponse)
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.failed(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
@@ -222,9 +239,11 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       }
 
       "handle 404 response" in {
-        val hodResponse = HttpResponse(NOT_FOUND, Some(Json.obj()))
+        val hodResponse = new NotFoundException("oops")
 
-        val connector = testConnector(hodResponse)
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.failed(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
@@ -232,10 +251,25 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         }
       }
 
+      "handle other 4xx response" in {
+        val hodResponse = new Upstream4xxResponse("403", FORBIDDEN, FORBIDDEN)
+
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.failed(hodResponse))
+
+        val result = connector.get("")
+
+        whenReady(result) {
+          _ mustBe Left("exception thrown from payment api")
+        }
+      }
+
       "handle invalid response code" in {
         val hodResponse = HttpResponse(CREATED, Some(Json.obj()))
 
-        val connector = testConnector(hodResponse)
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.successful(hodResponse))
+
         val result = connector.get("")
 
         whenReady(result) {
@@ -244,9 +278,10 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       }
 
       "handle 5xx response" in {
-        val hodResponse = HttpResponse(INTERNAL_SERVER_ERROR, Some(Json.obj()))
+        val hodResponse = Upstream5xxResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
 
-        val connector = testConnector(hodResponse)
+        when(mockHttp.GET[HttpResponse](any())(any(), any(), any()))
+          .thenReturn(Future.failed(hodResponse))
 
         val result = connector.get("")
 

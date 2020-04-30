@@ -17,55 +17,51 @@
 package connectors.payments
 
 import base.SpecBase
-import connectors.MockHttpClient
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
-import play.api.http.Status._
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures with MockHttpClient {
+class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
- private val testAmount = 1000
+  private val testAmount = 1000
   private val testBackReturnUrl = "https://www.tax.service.gov.uk/business-account"
   private val testSpjRequest = SpjRequestBtaCt(testAmount, testBackReturnUrl, testBackReturnUrl, "123456789")
 
-   def payConnector[A](mockedResponse: HttpResponse, httpWrapper: HttpWrapper = mock[HttpWrapper]): PaymentConnector = {
-    when(httpWrapper.postF[A](Matchers.any())).
-        thenReturn(mockedResponse)
-    new PaymentConnector(http(httpWrapper), frontendAppConfig)
-  }
+  val mockHttp: HttpClient = mock[HttpClient]
+  val connector = new PaymentConnector(mockHttp, frontendAppConfig)
 
-   implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
-   "PaymentConnector" when {
-
+  "PaymentConnector" when {
      "ctPayLink is called" should {
-
        "return a NextUrl if the external service is responsive" in {
-        val nextUrl = NextUrl("https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay")
+         val nextUrl = NextUrl("https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay")
 
-         val response = payConnector(
-          mockedResponse = HttpResponse(CREATED, Some(Json.toJson(nextUrl)
-          ))).ctPayLink(testSpjRequest)
+        when(mockHttp.POST[SpjRequestBtaCt, NextUrl](any(), any(), any())(any(), any(), any(), any()))
+          .thenReturn(Future.successful(nextUrl))
+
+         val response = connector.ctPayLink(testSpjRequest)
 
          whenReady(response) { r =>
           r mustBe nextUrl
         }
       }
 
-       "return the service-unavailable page if there is a problem" in {
+      "return the service-unavailable page if there is a problem" in {
         val nextUrl = NextUrl("http://localhost:9050/pay-online/service-unavailable")
 
-         val response = payConnector(
-          mockedResponse = HttpResponse(INTERNAL_SERVER_ERROR, None)
-        ).ctPayLink(testSpjRequest)
+       when(mockHttp.POST[SpjRequestBtaCt, NextUrl](any(), any(), any())(any(), any(), any(), any()))
+         .thenReturn(Future.failed(new RuntimeException("oops")))
 
-         whenReady(response) { r =>
+        val response = connector.ctPayLink(testSpjRequest)
+
+        whenReady(response) { r =>
           r mustBe nextUrl
         }
       }

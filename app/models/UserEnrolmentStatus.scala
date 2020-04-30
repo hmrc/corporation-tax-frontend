@@ -22,10 +22,10 @@ import play.api.libs.json._
 
 import scala.util.Try
 
+
 case class UserEnrolmentStatus(service: String, state: Option[String], enrolmentTokenExpiryDate: Option[LocalDateTime])
 
 object UserEnrolmentStatus {
-
   val dateFormat: String = "yyyy-MM-dd HH:mm:ss.SSS"
   val formatter: DateTimeFormatter = DateTimeFormat.forPattern(dateFormat)
 
@@ -39,5 +39,4 @@ object UserEnrolmentStatus {
   }
 
   implicit val format: OFormat[UserEnrolmentStatus] = Json.format[UserEnrolmentStatus]
-
 }

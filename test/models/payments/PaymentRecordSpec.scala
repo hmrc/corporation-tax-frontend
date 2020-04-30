@@ -36,7 +36,7 @@ class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPe
   val testCreatedOn: String = currentDateTime.toString
   val testTaxType: String = "testTaxType"
 
-  val testPaymentRecord = PaymentRecord(
+  val testPaymentRecord: PaymentRecord = PaymentRecord(
     reference = testReference,
     amountInPence = testAmountInPence,
     createdOn = currentDateTime,

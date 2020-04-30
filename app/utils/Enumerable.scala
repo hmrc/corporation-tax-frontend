@@ -19,12 +19,10 @@ package utils
 import play.api.libs.json._
 
 trait Enumerable[A] {
-
   def withName(str: String): Option[A]
 }
 
 object Enumerable {
-
   def apply[A](entries: (String, A)*): Enumerable[A] =
     new Enumerable[A] {
       override def withName(str: String): Option[A] =
@@ -32,7 +30,6 @@ object Enumerable {
      }
 
   trait Implicits {
-
     implicit def reads[A](implicit ev: Enumerable[A]): Reads[A] = {
       Reads {
         case JsString(str) =>

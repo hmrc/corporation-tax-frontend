@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package filters
+package config
 
-import com.google.inject.Inject
-import play.api.http.DefaultHttpFilters
-import uk.gov.hmrc.play.bootstrap.filters.FrontendFilters
+import controllers.actions.{AuthAction, AuthActionImpl, ServiceInfoAction, ServiceInfoActionImpl}
+import play.api.inject.{Binding, Module}
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.bootstrap.http.{DefaultHttpClient, HttpClient}
 
-class Filters @Inject()(
-                         sessionIdFilter: SessionIdFilter,
-                         frontendFilters: FrontendFilters
-                       ) extends DefaultHttpFilters(frontendFilters.filters :+ sessionIdFilter: _*)
+class Modules extends Module {
+
+  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
+    bind(classOf[HttpClient]) to classOf[DefaultHttpClient],
+    bind(classOf[AuthAction]) to classOf[AuthActionImpl],
+    bind(classOf[ServiceInfoAction]) to classOf[ServiceInfoActionImpl]
+  )
+
+}

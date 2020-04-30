@@ -21,23 +21,24 @@ import views.html.unauthorised
 
 class UnauthorisedViewSpec extends ViewBehaviours {
 
-  def view = () => unauthorised(frontendAppConfig)(fakeRequest, messages)
+//  def view = () => unauthorised(frontendAppConfig)(fakeRequest, messages)
 
   "Unauthorised view" must {
 
-    behave like normalPage(view, "unauthorised")
+    //TODO move to ITs
+//    behave like normalPage(view, "unauthorised")
 
-    "contain heading ID" in {
-      val doc = asDocument(view())
-      doc.getElementsByTag("h1").attr("id") mustBe "unauthorised"
-    }
-
-    "have the correct content" in {
-      val doc = asDocument(view())
-      doc.text() must include ("You can’t see this page")
-      doc.text() must include ("You haven’t added Corporation Tax to this account.")
-      doc.text() must include ("Make sure you’re signed in with the correct user ID.")
-    }
+//    "contain heading ID" in {
+//      val doc = asDocument(view())
+//      doc.getElementsByTag("h1").attr("id") mustBe "unauthorised"
+//    }
+//
+//    "have the correct content" in {
+//      val doc = asDocument(view())
+//      doc.text() must include ("You can’t see this page")
+//      doc.text() must include ("You haven’t added Corporation Tax to this account.")
+//      doc.text() must include ("Make sure you’re signed in with the correct user ID.")
+//    }
 
   }
 }

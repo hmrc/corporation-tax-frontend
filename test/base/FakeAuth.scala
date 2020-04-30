@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package base
 
+
+import controllers.actions.{AuthAction, ServiceInfoAction}
+import models.CtEnrolment
 import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
-import play.api.mvc._
+import play.api.mvc.{AnyContent, BodyParser, PlayBodyParsers, Request, Result}
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.domain.CtUtr
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
+class FakeAuthAction(bodyParsers: PlayBodyParsers)(implicit val executionContext: ExecutionContext) extends AuthAction {
+  val parser: BodyParser[AnyContent] = bodyParsers.default
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+    block(AuthenticatedRequest(request, "id", CtEnrolment(CtUtr("utr"), isActivated = true)))
+}
 
 object FakeServiceInfoAction extends ServiceInfoAction {
+  val executionContext: ExecutionContext = global
+
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[ServiceInfoRequest[A]] = {
     implicit val r: Request[A] = request
     Future.successful(ServiceInfoRequest(request, HtmlFormat.empty))
