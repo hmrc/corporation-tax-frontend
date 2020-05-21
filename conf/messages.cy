@@ -46,7 +46,6 @@ subpage.sidebar.dormant_close = Caewch eich cwmni neu gwnewch yn segur
 
 subpage.sidebar.more_options = Rhagor o opsiynau
 subpage.sidebar.cert_of_residence = Cael tystysgrif preswylio (yn agor mewn ffenestr neu dab newydd)
-subpage.sidebar.partnership = Sefydlu partneriaeth neu ychwanegu partner (yn agor mewn ffenestr neu dab newydd)
 subpage.sidebar.help_and_contact = Cymorth a chysylltu
 subpage.sidebar.more = Rhagor (yn agor mewn ffenestr neu dab newydd)
 subpage.sidebar.help_with_tax= Cynorthwyo
