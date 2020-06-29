@@ -39,7 +39,7 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
 
   object TestServiceInfoPartialConnector extends ServiceInfoPartialConnector(mockHttpGet, frontendAppConfig)
 
-  val serviceInfoPartialSuccess =
+  val serviceInfoPartialSuccess: Html =
     Html(
       """
     <a id="service-info-home-link"
@@ -118,11 +118,8 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
 
     "an unexpected future failed occurs" should {
       "return empty" in {
-        val badResponse = HttpResponse(Status.BAD_REQUEST, responseString = Some("Error Message"))
-
         when(mockHttpGet.GET[HtmlPartial](eqTo(btaUrl))(any(), any(), any()))
           .thenReturn(Future.failed(new Exception))
-
 
         whenReady(result) { response =>
           response mustBe Html("")

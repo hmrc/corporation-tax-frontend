@@ -24,10 +24,8 @@ import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
 import play.twirl.api.Html
 
-import scala.concurrent.ExecutionContext
-
 @Singleton
-class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig)(implicit ec: ExecutionContext) {
+class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig) {
 
   def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
     views.html.partials.card.returns.potential_returns(appConfig)

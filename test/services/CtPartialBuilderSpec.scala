@@ -32,8 +32,6 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 
 class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MustMatchers {
 
