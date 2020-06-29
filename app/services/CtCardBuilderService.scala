@@ -55,8 +55,8 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
       }
     }
 
-  private def buildCtCardData(paymentsContent: Option[String] = None,
-                              returnsContent: Option[String] = None,
+  private def buildCtCardData(paymentsContent: Option[String],
+                              returnsContent: Option[String],
                               paymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]],
                               ctAccountBalance: Option[BigDecimal])
                              (implicit request: AuthenticatedRequest[_], messages: Messages): Card = {

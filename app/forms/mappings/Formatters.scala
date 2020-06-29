@@ -20,8 +20,6 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 import utils.Enumerable
 
-import scala.util.control.Exception.nonFatalCatch
-
 trait Formatters {
 
   private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {

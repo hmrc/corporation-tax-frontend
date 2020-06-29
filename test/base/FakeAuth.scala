@@ -37,7 +37,6 @@ object FakeServiceInfoAction extends ServiceInfoAction {
   val executionContext: ExecutionContext = global
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[ServiceInfoRequest[A]] = {
-    implicit val r: Request[A] = request
     Future.successful(ServiceInfoRequest(request, HtmlFormat.empty))
   }
 }

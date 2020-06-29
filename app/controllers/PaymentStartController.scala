@@ -25,7 +25,7 @@ import controllers.PaymentStartController.toAmountInPence
 import controllers.actions._
 import javax.inject.Inject
 import models.CtData
-import play.api.i18n.{I18nSupport, Lang}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CtService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -49,8 +49,6 @@ class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
   extends FrontendController(mcc) with I18nSupport {
 
   def makeAPayment: Action[AnyContent] = authenticate.async { implicit request =>
-      implicit val lang: Lang = mcc.messagesApi.preferred(request).lang
-
       ctService.fetchCtModel(request.ctEnrolment).flatMap {
         case Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))))))) =>
           val spjRequestBtaVat = SpjRequestBtaCt(

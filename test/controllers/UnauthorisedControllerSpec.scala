@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import play.api.test.Helpers._
 
 class UnauthorisedControllerSpec extends SpecBase {
 
