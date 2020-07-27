@@ -19,9 +19,7 @@ package models.payments
 import java.util.UUID
 
 import models.PaymentRecordFailure
-import java.time.LocalDateTime
-import java.time.format.TextStyle
-import java.util.Locale
+import org.joda.time.DateTime
 import org.scalatest.{MustMatchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Messages, MessagesApi}
@@ -32,11 +30,11 @@ import scala.util.Random
 
 class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPerSuite {
 
-  val testReference: String          = UUID.randomUUID().toString
-  val testAmountInPence: Long        = Random.nextLong()
-  val currentDateTime: LocalDateTime = LocalDateTime.now()
-  val testCreatedOn: String          = currentDateTime.toString
-  val testTaxType: String            = "testTaxType"
+  val testReference: String = UUID.randomUUID().toString
+  val testAmountInPence: Long = Random.nextLong()
+  val currentDateTime: DateTime = DateTime.now()
+  val testCreatedOn: String = currentDateTime.toString
+  val testTaxType: String = "testTaxType"
 
   val testPaymentRecord: PaymentRecord = PaymentRecord(
     reference = testReference,
@@ -45,7 +43,7 @@ class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPe
     taxType = testTaxType
   )
 
-  val messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = messagesApi.preferred(FakeRequest())
 
   def testJson(createOn: String): String =
@@ -72,14 +70,12 @@ class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPe
     }
     "return Some(PaymentRecord)" in {
       val validCtPaymentRecordData = CtPaymentRecord(testReference, testAmountInPence, PaymentStatus.Successful, testCreatedOn, testTaxType)
-      val expected = Some(
-        PaymentRecord(
-          reference = testReference,
-          amountInPence = testAmountInPence,
-          createdOn = currentDateTime,
-          taxType = testTaxType
-        )
-      )
+      val expected = Some(PaymentRecord(
+        reference = testReference,
+        amountInPence = testAmountInPence,
+        createdOn = currentDateTime,
+        taxType = testTaxType
+      ))
       PaymentRecord.from(validCtPaymentRecordData, currentDateTime) mustBe expected
     }
   }
@@ -95,7 +91,7 @@ class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPe
 
     "output of the writer should be readable by its own reader" in {
       val init: PaymentRecord = testPaymentRecord
-      val writtenJson         = Json.toJson(init)
+      val writtenJson = Json.toJson(init)
       Json.fromJson[PaymentRecord](writtenJson) mustBe JsSuccess(init)
     }
   }
@@ -103,14 +99,12 @@ class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPe
   "eitherPaymentHistoryFormatter" should {
     type TestE = Either[PaymentRecordFailure.type, List[PaymentRecord]]
 
-    def testJsonString(paymentHistory: TestE): JsValue = {
+    def testJsonString(paymentHistory: TestE): JsValue =
       paymentHistory.right.map(Json.toJson[List[PaymentRecord]](_)).left.map(_ => JsString("Bad Gateway")).merge
-    }
 
     "parse JsArray of PaymentRecord as right" in {
       val altTestReference = "anotherReference"
       val json: JsValue = testJsonString(Right(List(testPaymentRecord, testPaymentRecord.copy(reference = altTestReference))))
-
       Json.fromJson[TestE](json).get mustBe Right(List(testPaymentRecord, testPaymentRecord.copy(reference = altTestReference)))
     }
     "parse JsArray of any other type(s) asLeft" in {
@@ -133,10 +127,9 @@ class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPe
 
   "PaymentRecord.dateFormatted" should {
     "display the date in d MMMM yyyy format" in {
-      val testDate: LocalDateTime = currentDateTime
-      val testRecord              = testPaymentRecord.copy(createdOn = testDate)
-      testRecord.dateFormatted mustBe
-        s"${testDate.getDayOfMonth.toString} ${testDate.getMonth.getDisplayName(TextStyle.FULL, Locale.UK)} ${testDate.getYear.toString}"
+      val testDate: DateTime = currentDateTime
+      val testRecord = testPaymentRecord.copy(createdOn = testDate)
+      testRecord.dateFormatted mustBe s"${testDate.dayOfMonth().get()} ${testDate.monthOfYear().getAsText} ${testDate.year().get()}"
     }
   }
 

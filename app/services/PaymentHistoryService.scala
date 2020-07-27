@@ -21,9 +21,9 @@ import config.FrontendAppConfig
 import connectors.payments.PaymentHistoryConnector
 import models.payments.{CtPaymentRecord, PaymentRecord}
 import models.{CtEnrolment, PaymentRecordFailure}
+import org.joda.time.DateTime
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
-import java.time.LocalDateTime
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config: FrontendAppConfig)
                                      (implicit ec: ExecutionContext) {
 
-  def getPayments(ctEnrolment: CtEnrolment, currentDate: LocalDateTime)
+  def getPayments(ctEnrolment: CtEnrolment, currentDate: DateTime)
                  (implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
     if (config.getCTPaymentHistoryToggle) {
       connector.get(ctEnrolment.ctUtr.utr).map {
@@ -47,7 +47,7 @@ class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config
     Left(PaymentRecordFailure)
   }
 
-  private def filterPaymentHistory(payments: List[CtPaymentRecord], currentDate: LocalDateTime): List[PaymentRecord] =
+  private def filterPaymentHistory(payments: List[CtPaymentRecord], currentDate: DateTime): List[PaymentRecord] =
     payments.flatMap(PaymentRecord.from(_, currentDate))
 
 }
