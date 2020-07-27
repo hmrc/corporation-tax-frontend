@@ -16,20 +16,22 @@
 
 package models.payments
 
+import java.time.{LocalDate, LocalDateTime, ZoneId}
+
 import com.ibm.icu.text.SimpleDateFormat
 import com.ibm.icu.util.{TimeZone, ULocale}
 import models.PaymentRecordFailure
 import models.payments.PaymentRecord._
-import org.joda.time.{DateTime, LocalDate}
 import play.api.i18n.Messages
 import play.api.libs.json._
 import utils.CurrencyFormatter
 
 import scala.util.{Failure, Success, Try}
 
+
 case class PaymentRecord(reference: String,
                          amountInPence: Long,
-                         createdOn: DateTime,
+                         createdOn: LocalDateTime,
                          taxType: String) {
 
   def dateFormatted(implicit messages: Messages): String =
@@ -42,74 +44,97 @@ case class PaymentRecord(reference: String,
 
 object PaymentRecord {
 
-  private[payments] object DateFormatting {
-    def formatFull(date: LocalDate)(implicit messages: Messages): String =
-      createDateFormatForPattern("d MMMM yyyy", messages).format(date.toDate)
+  private val zone   = "Europe/London"
+  val zoneId: ZoneId = ZoneId.of(zone)
 
-    private def createDateFormatForPattern(pattern: String, messages: Messages): SimpleDateFormat = {
+  private[payments] object DateFormatting {
+
+    def formatFull(localDate: LocalDate, dateFormatPattern: String = "d MMMM yyyy")(implicit messages: Messages): String = {
+      val date = java.util.Date.from(localDate.atStartOfDay(zoneId).toInstant)
+      createDateFormatForPattern(dateFormatPattern, messages).format(date)
+    }
+
+    def createDateFormatForPattern(pattern: String, messages: Messages): SimpleDateFormat = {
       val langCode = messages.lang.code
-      val uk = TimeZone.getTimeZone("Europe/London")
       val validLang: Boolean = ULocale.getAvailableLocales.contains(new ULocale(langCode))
       val locale: ULocale = if (validLang) new ULocale(langCode) else ULocale.getDefault
+
       val sdf = new SimpleDateFormat(pattern, locale)
-      sdf.setTimeZone(uk)
+
+      sdf.setTimeZone(TimeZone.getTimeZone(zone))
       sdf
     }
   }
 
-  def from(paymentRecordData: CtPaymentRecord, currentDateTime: DateTime): Option[PaymentRecord] =
+  def from(paymentRecordData: CtPaymentRecord, currentDateTime: LocalDateTime): Option[PaymentRecord] = {
     if (paymentRecordData.isValid(currentDateTime) && paymentRecordData.isSuccessful) {
-      Some(PaymentRecord(
-        reference = paymentRecordData.reference,
-        amountInPence = paymentRecordData.amountInPence,
-        createdOn = new DateTime(paymentRecordData.createdOn),
-        taxType = paymentRecordData.taxType
-      ))
+      Some(
+        PaymentRecord(
+          reference = paymentRecordData.reference,
+          amountInPence = paymentRecordData.amountInPence,
+          createdOn = LocalDateTime.parse(paymentRecordData.createdOn),
+          taxType = paymentRecordData.taxType
+        )
+      )
     } else {
       None
     }
+  }
 
-  private def dateTimeReads: Reads[DateTime] = new Reads[DateTime] {
-    override def reads(json: JsValue): JsResult[DateTime] = json.validate[String] match {
-      case JsSuccess(string, jsPath) => Try(new DateTime(string)) match {
-        case Success(value) => JsSuccess(value, jsPath)
-        case Failure(exception) => JsError("not a valid date " + exception)
+  private def dateTimeReads: Reads[LocalDateTime] = new Reads[LocalDateTime] {
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] =
+      json.validate[String] match {
+        case JsSuccess(string, jsPath) =>
+          Try(LocalDateTime.parse(string)) match {
+            case Success(value)     => JsSuccess(value, jsPath)
+            case Failure(exception) => JsError("not a valid date " + exception)
+          }
+        case JsError(err) => JsError(err)
       }
-      case JsError(err) => JsError(err)
+  }
+
+  private def dateTimeWrites: Writes[LocalDateTime] =
+    new Writes[LocalDateTime] {
+
+      override def writes(dateTime: LocalDateTime): JsValue =
+        JsString(dateTime.toString)
     }
-  }
 
-  private def dateTimeWrites: Writes[DateTime] = new Writes[DateTime] {
-    override def writes(dateTime: DateTime): JsValue = JsString(dateTime.toString)
-  }
-
-  private implicit lazy val dateTimeFormat: Format[DateTime] = Format(dateTimeReads, dateTimeWrites)
+  implicit private lazy val dateTimeFormat: Format[LocalDateTime] =
+    Format(dateTimeReads, dateTimeWrites)
 
   implicit lazy val format: OFormat[PaymentRecord] = Json.format[PaymentRecord]
 
   private[models] val paymentRecordFailureString = "Bad Gateway"
 
-  private def eitherPaymentHistoryReader: Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+  private def eitherPaymentHistoryReader: Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
     new Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] {
       override def reads(json: JsValue): JsResult[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
         json.validate[List[PaymentRecord]] match {
           case JsSuccess(validList, jsPath) => JsSuccess(Right(validList), jsPath)
-          case _ => JsSuccess(Left(PaymentRecordFailure))
+          case _                            => JsSuccess(Left(PaymentRecordFailure))
         }
     }
+  }
 
-  private def eitherPaymentHistoryWriter: Writes[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+  private def eitherPaymentHistoryWriter: Writes[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
     new Writes[Either[PaymentRecordFailure.type, List[PaymentRecord]]] {
-      override def writes(eitherPaymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]]): JsValue = eitherPaymentHistory match {
-        case Right(list) => Json.toJson(list)
-        case _ => JsString(paymentRecordFailureString)
+      override def writes(eitherPaymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]]): JsValue = {
+        eitherPaymentHistory match {
+          case Right(list) => Json.toJson(list)
+          case _           => JsString(paymentRecordFailureString)
+        }
       }
     }
+  }
 
-  implicit lazy val eitherPaymentHistoryFormatter: Format[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+  implicit lazy val eitherPaymentHistoryFormatter: Format[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
     Format(eitherPaymentHistoryReader, eitherPaymentHistoryWriter)
+  }
 
 }
+
 
 case class CtPaymentRecord(reference: String,
                            amountInPence: Long,
@@ -117,8 +142,13 @@ case class CtPaymentRecord(reference: String,
                            createdOn: String,
                            taxType: String) {
 
-  def isValid(currentDateTime: DateTime): Boolean =
-    Try(new DateTime(createdOn).plusDays(7).isAfter(currentDateTime)).getOrElse(false)
+  val validDays: Int = 7
+
+  def isValid(currentDateTime: LocalDateTime): Boolean = {
+    Try(
+      LocalDateTime.parse(createdOn).plusDays(validDays).isAfter(currentDateTime)
+    ).getOrElse(false)
+  }
 
   def isSuccessful: Boolean = status == PaymentStatus.Successful
 

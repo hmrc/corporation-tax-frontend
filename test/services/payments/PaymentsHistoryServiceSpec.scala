@@ -21,7 +21,7 @@ import connectors.payments.PaymentHistoryConnector
 import models.payments.PaymentStatus._
 import models.payments._
 import models.{CtEnrolment, PaymentRecordFailure}
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -44,7 +44,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
   val testService = new PaymentHistoryService(mockConnector, mockConfig)(global)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  val date = new DateTime("2018-10-20T08:00:00.000")
+  val date = LocalDateTime.parse("2018-10-20T08:00:00.000")
 
   "PaymentHistoryServiceSpec" when {
     "getPayments is called and getSAPaymentHistory toggle set to false" should {
@@ -89,7 +89,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
           PaymentRecord(
             reference = "reference number",
             amountInPence = 1,
-            createdOn = new DateTime("2018-10-20T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-20T08:00:00.000"),
             taxType = "tax type"
           )
         ))
@@ -118,7 +118,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
           PaymentRecord(
             reference = "reference number",
             amountInPence = 3,
-            createdOn = new DateTime("2018-10-19T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-19T08:00:00.000"),
             taxType = "tax type"
           )
         ))

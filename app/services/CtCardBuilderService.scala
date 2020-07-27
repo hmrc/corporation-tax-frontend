@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -36,7 +36,7 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
   def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] =
     for {
       model <- ctService.fetchCtModel(request.ctEnrolment)
-      history <- paymentHistoryService.getPayments(request.ctEnrolment, DateTime.now())
+      history <- paymentHistoryService.getPayments(request.ctEnrolment, LocalDateTime.now())
     } yield {
       model match {
         case Right(None) => buildCtCardData(

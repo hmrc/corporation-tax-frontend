@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
 import models.{CtAccountFailure, CtData, CtUnactivated, PaymentRecordFailure}
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
@@ -44,7 +44,7 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
     val modelHistory: Future[(Either[CtAccountFailure, Option[CtData]], Either[PaymentRecordFailure.type, List[PaymentRecord]])] =
       for {
         model <- ctService.fetchCtModel(request.ctEnrolment)
-        maybeHistory <- paymentHistoryService.getPayments(request.ctEnrolment, DateTime.now())
+        maybeHistory <- paymentHistoryService.getPayments(request.ctEnrolment, LocalDateTime.now())
       } yield (model, maybeHistory)
 
     modelHistory flatMap {
@@ -54,7 +54,7 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
         Future.successful(account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage))
       case (Left(CtUnactivated), _) =>
         enrolmentStoreService
-          .showNewPinLink(request.ctEnrolment, DateTime.now())
+          .showNewPinLink(request.ctEnrolment, LocalDateTime.now())
           .map(showLink => not_activated(
             activateUrl = appConfig.getUrl("enrolment-management-access"),
             resetCodeUrl = appConfig.getUrl("enrolment-management-new-code"),

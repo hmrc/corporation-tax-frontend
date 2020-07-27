@@ -21,7 +21,7 @@ import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -334,7 +334,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 1,
-            createdOn = new DateTime("2018-10-21T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-21T08:00:00.000"),
             taxType = "tax type"
           )
         )
@@ -359,13 +359,13 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 1,
-            createdOn = new DateTime("2018-10-21T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-21T08:00:00.000"),
             taxType = "tax type"
           ),
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 3,
-            createdOn = new DateTime("2018-10-22T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-22T08:00:00.000"),
             taxType = "tax type"
           )
         )
