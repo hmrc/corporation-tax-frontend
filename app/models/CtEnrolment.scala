@@ -16,6 +16,4 @@
 
 package models
 
-import uk.gov.hmrc.domain.CtUtr
-
 case class CtEnrolment(ctUtr: CtUtr, isActivated: Boolean)

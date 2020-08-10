@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import connectors.EnrolmentStoreConnector
 import models._
 import org.joda.time.{DateTime, DateTimeZone}
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package connectors.models
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class DesignatoryDetailsTelephone(daytime: Option[String] = None, fax: Option[String] = None, evening: Option[String] = None, mobile: Option[String] = None, telephoneNumber: Option[String] = None)
+case class DesignatoryDetails(name: DesignatoryDetailsName, address: Option[DesignatoryDetailsAddress] = None,
+                              contact: Option[DesignatoryDetailsContact] = None)
 
-object DesignatoryDetailsTelephone {
-  implicit val formats: OFormat[DesignatoryDetailsTelephone] = Json.format[DesignatoryDetailsTelephone]
+object DesignatoryDetails {
+  implicit val formats: OFormat[DesignatoryDetails] = Json.format[DesignatoryDetails]
 }

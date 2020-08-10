@@ -25,7 +25,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.mvc.Http.Status
 import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.partials.HtmlPartial.{Failure, Success}
 import uk.gov.hmrc.play.partials.{HeaderCarrierForPartials, HtmlPartial}
 

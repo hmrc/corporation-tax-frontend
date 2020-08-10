@@ -28,7 +28,7 @@ import play.api.mvc.{AnyContent, MessagesControllerComponents, PlayBodyParsers}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import views.ViewSpecBase
 import views.html.subpage
 

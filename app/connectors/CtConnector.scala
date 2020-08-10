@@ -17,14 +17,13 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.models.{CtAccountSummaryData, CtDesignatoryDetailsCollection, MicroServiceException}
 import javax.inject.{Inject, Singleton}
 import play.api.http.Status._
-import uk.gov.hmrc.domain.CtUtr
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import models._
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HttpReads.Implicits._
+
 
 @Singleton
 class CtConnector @Inject()(val http: HttpClient,

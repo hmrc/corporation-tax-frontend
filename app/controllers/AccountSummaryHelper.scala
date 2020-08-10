@@ -17,17 +17,16 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.Inject
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
-import models.{CtAccountFailure, CtData, CtUnactivated, PaymentRecordFailure}
+import models.{CtAccountBalance, CtAccountFailure, CtAccountSummaryData, CtData, CtUnactivated, PaymentRecordFailure}
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{MessagesControllerComponents}
+import play.api.mvc.MessagesControllerComponents
 import play.twirl.api.HtmlFormat
 import services.{CtService, EnrolmentStoreService, PaymentHistoryService}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.views.formatting.Money.pounds
 import views.html.partials.{account_summary, generic_error, not_activated}
 

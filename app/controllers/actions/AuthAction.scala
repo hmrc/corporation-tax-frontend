@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.AlternatePredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{OptionalRetrieval, Retrieval, ~}
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 

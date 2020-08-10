@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package connectors.models
+package models
 
-import uk.gov.hmrc.http.HttpResponse
+import play.api.libs.json.{Json, OFormat}
 
-case class MicroServiceException(message: String, response: HttpResponse) extends Exception(message)
+case class CtAccountSummaryData(accountBalance: Option[CtAccountBalance])
+
+object CtAccountSummaryData {
+  implicit val formats: OFormat[CtAccountSummaryData] = Json.format[CtAccountSummaryData]
+}

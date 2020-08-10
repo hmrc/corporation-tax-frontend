@@ -17,7 +17,6 @@
 package controllers
 
 import base.{FakeAuthAction, SpecBase}
-import connectors.models._
 import connectors.payments.{NextUrl, PaymentConnector}
 import models._
 import org.mockito.ArgumentMatchers.any
