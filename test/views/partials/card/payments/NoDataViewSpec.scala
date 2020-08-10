@@ -23,7 +23,7 @@ import views.ViewSpecBase
 import views.html.partials.card.payments.no_data
 import models.CtEnrolment
 import org.jsoup.nodes.Document
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 
 class NoDataViewSpec extends ViewSpecBase {
 

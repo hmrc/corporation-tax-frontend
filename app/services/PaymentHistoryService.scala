@@ -22,14 +22,14 @@ import connectors.payments.PaymentHistoryConnector
 import models.payments.{CtPaymentRecord, PaymentRecord}
 import models.{CtEnrolment, PaymentRecordFailure}
 import org.joda.time.DateTime
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config: FrontendAppConfig)
-                                     (implicit ec: ExecutionContext) {
+                                     (implicit ec: ExecutionContext) extends Logging {
 
   def getPayments(ctEnrolment: CtEnrolment, currentDate: DateTime)
                  (implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
@@ -43,7 +43,7 @@ class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config
     }
 
   private def log(errorMessage: String): Either[PaymentRecordFailure.type, List[PaymentRecord]] = {
-    Logger.warn(s"[PaymentHistoryService][getPayments] $errorMessage")
+    logger.warn(s"[PaymentHistoryService][getPayments] $errorMessage")
     Left(PaymentRecordFailure)
   }
 

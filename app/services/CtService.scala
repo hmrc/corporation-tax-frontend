@@ -17,9 +17,8 @@
 package services
 
 import connectors.CtConnector
-import connectors.models.CtAccountSummaryData
 import javax.inject.{Inject, Singleton}
-import models._
+import models.{CtAccountSummaryData, _}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

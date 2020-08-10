@@ -22,7 +22,7 @@ import models.CtEnrolment
 import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import play.api.mvc.{AnyContent, BodyParser, PlayBodyParsers, Request, Result}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global

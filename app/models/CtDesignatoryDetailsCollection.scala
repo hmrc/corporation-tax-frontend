@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package connectors.models
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class CtAccountBalance(amount: Option[BigDecimal])
+case class CtDesignatoryDetailsCollection(company: Option[DesignatoryDetails] = None, communication: Option[DesignatoryDetails] = None)
 
-object CtAccountBalance {
-  implicit val formats: OFormat[CtAccountBalance] = Json.format[CtAccountBalance]
+object CtDesignatoryDetailsCollection {
+  implicit val formats: OFormat[CtDesignatoryDetailsCollection] = Json.format[CtDesignatoryDetailsCollection]
 }

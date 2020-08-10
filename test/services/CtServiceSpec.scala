@@ -18,12 +18,11 @@ package services
 
 import base.SpecBase
 import connectors.CtConnector
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global

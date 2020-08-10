@@ -17,9 +17,8 @@
 package services
 
 import config.FrontendAppConfig
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import javax.inject.{Inject, Singleton}
-import models.CtData
+import models.{CtAccountBalance, CtAccountSummaryData, CtData}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
 import play.twirl.api.Html

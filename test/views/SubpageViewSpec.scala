@@ -18,7 +18,7 @@ package views
 
 import models.CtEnrolment
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import views.behaviours.ViewBehaviours
 import views.html.subpage
 

@@ -17,9 +17,8 @@
 package services
 
 import config.FrontendAppConfig
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import models.requests.AuthenticatedRequest
-import models.{Card, CtData, CtEnrolment, Link}
+import models.{Card, CtAccountBalance, CtAccountSummaryData, CtData, CtEnrolment, CtUtr, Link}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
@@ -29,7 +28,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.domain.CtUtr
 import views.ViewSpecBase
 
 

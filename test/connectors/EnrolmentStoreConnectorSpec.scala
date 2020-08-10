@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, Upstream5xxResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,7 +43,7 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
     "getEnrolments is called" should {
       "handle a 200 response with a single enrolment" in {
         when(httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
-          Future.successful(HttpResponse(OK, Some(Json.parse(
+          Future.successful(result = HttpResponse(status = OK, json = Json.parse(
             """
               |{
               |"enrolments":[
@@ -53,7 +53,7 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
               |"enrolmentTokenExpiryDate":"2018-10-13 17:36:00.000"
               |}]
               |}
-            """.stripMargin))))
+            """.stripMargin), headers = Map.empty))
         )
         val expected = Right(
           UserEnrolments(
@@ -67,7 +67,7 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
       }
       "handle a 200 response with multiple enrolments" in {
         when(httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
-          Future.successful(HttpResponse(OK, Some(Json.parse(
+          Future.successful(HttpResponse(status = OK, json = Json.parse(
             """
               |{
               |"enrolments":[
@@ -86,7 +86,7 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
               |}
               |]
               |}
-            """.stripMargin))))
+            """.stripMargin), headers = Map.empty))
         )
         result.futureValue mustBe Right(
           UserEnrolments(

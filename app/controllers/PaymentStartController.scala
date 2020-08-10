@@ -19,16 +19,15 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
 import connectors.payments.{PaymentConnector, SpjRequestBtaCt}
 import controllers.PaymentStartController.toAmountInPence
 import controllers.actions._
 import javax.inject.Inject
-import models.CtData
+import models.{CtAccountBalance, CtAccountSummaryData, CtData}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CtService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.partials.generic_error
 
 import scala.concurrent.{ExecutionContext, Future}

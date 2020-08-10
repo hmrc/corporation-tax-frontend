@@ -17,16 +17,16 @@
 package connectors
 
 import base.SpecBase
-import connectors.models._
+import models.{CtAccountBalance, CtAccountSummaryData, CtDesignatoryDetailsCollection, CtUtr, DesignatoryDetails, DesignatoryDetailsAddress, DesignatoryDetailsName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

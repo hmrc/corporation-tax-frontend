@@ -18,8 +18,6 @@ package services
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.models.{CtAccountBalance, CtAccountSummaryData}
-import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import uk.gov.hmrc.domain.CtUtr
+import models.{Card, CtAccountBalance, CtAccountSummaryData, CtData, CtEmpty, CtEnrolment, CtGenericError, CtUnactivated, CtUtr, Link}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global

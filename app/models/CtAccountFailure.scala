@@ -16,8 +16,6 @@
 
 package models
 
-import connectors.models.CtAccountSummaryData
-
 sealed trait CtAccountFailure
 
 case object CtUnactivated extends CtAccountFailure

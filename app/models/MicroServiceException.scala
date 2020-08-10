@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package connectors.models
+package models
 
-import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.http.HttpResponse
 
-case class DesignatoryDetailsName(nameLine1: Option[String] = None, nameLine2: Option[String] = None)
-
-object DesignatoryDetailsName {
-  implicit val formats: OFormat[DesignatoryDetailsName] = Json.format[DesignatoryDetailsName]
-}
+case class MicroServiceException(message: String, response: HttpResponse) extends Exception(message)

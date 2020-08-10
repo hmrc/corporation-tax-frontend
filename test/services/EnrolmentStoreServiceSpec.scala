@@ -25,7 +25,7 @@ import org.joda.time.{DateTime, LocalDateTime}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

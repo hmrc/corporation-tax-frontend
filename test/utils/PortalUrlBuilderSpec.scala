@@ -20,7 +20,7 @@ import base.SpecBase
 import models.CtEnrolment
 import play.api.mvc.{AnyContent, Cookie}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.domain.CtUtr
+import models.CtUtr
 import uk.gov.hmrc.play.language.LanguageUtils
 
 class PortalUrlBuilderSpec extends SpecBase {

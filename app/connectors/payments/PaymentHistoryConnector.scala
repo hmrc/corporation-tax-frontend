@@ -21,8 +21,8 @@ import javax.inject.{Inject, Singleton}
 import models.payments.CtPaymentRecord
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, NotFoundException}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.Future
 
