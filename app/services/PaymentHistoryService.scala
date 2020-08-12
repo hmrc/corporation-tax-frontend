@@ -33,14 +33,10 @@ class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config
 
   def getPayments(ctEnrolment: CtEnrolment, currentDate: DateTime)
                  (implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
-    if (config.getCTPaymentHistoryToggle) {
       connector.get(ctEnrolment.ctUtr.utr).map {
         case Right(payments) => Right(filterPaymentHistory(payments, currentDate))
         case Left(message) => log(message)
       }
-    } else {
-      Future.successful(Right(Nil))
-    }
 
   private def log(errorMessage: String): Either[PaymentRecordFailure.type, List[PaymentRecord]] = {
     logger.warn(s"[PaymentHistoryService][getPayments] $errorMessage")

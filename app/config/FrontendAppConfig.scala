@@ -81,6 +81,4 @@ class FrontendAppConfig @Inject()(config: ServicesConfig,
   val sessionTimeoutInSeconds: Long = 900
   val sessionCountdownInSeconds: Int = 60
 
-  lazy val getCTPaymentHistoryToggle: Boolean = config.getBoolean("toggles.ct-payment-history")
-
 }
