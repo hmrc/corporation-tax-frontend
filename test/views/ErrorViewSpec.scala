@@ -16,24 +16,25 @@
 
 package views
 
+import play.api.test.Injecting
+import play.twirl.api.{Html, HtmlFormat}
 import views.html.error_template
 
-class ErrorViewSpec extends ViewSpecBase {
+class ErrorViewSpec extends ViewSpecBase with Injecting {
 
-//  def view = () => error_template("pageTitle","heading","message",frontendAppConfig)(fakeRequest, messages)
+  def view(): Html = inject[error_template].apply("pageTitle","heading","message",frontendAppConfig)(fakeRequest, messages)
 
   "Index view" must {
     "show the messages passed in" in {
 
-      //TODO move to ITs
-//      val doc = asDocument(view())
-//      val headers = doc.getElementsByTag("h1")
-//      headers.size mustBe 1
-//      headers.first.text mustBe "heading"
-//
-//      doc.text() must include("message")
-//
-//      doc.getElementsByTag("title").first.text mustBe "pageTitle"
+      val doc = asDocument(view())
+      val headers = doc.getElementsByTag("h1")
+      headers.size mustBe 1
+      headers.first.text mustBe "heading"
+
+      doc.text() must include("message")
+
+      doc.getElementsByTag("title").first.text mustBe "pageTitle"
     }
   }
 }
