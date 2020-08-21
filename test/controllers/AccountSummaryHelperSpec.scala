@@ -238,7 +238,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString must include("You have nothing to pay")
-          view.toString must include("View statement (opens in a new window or tab)")
+          view.toString must include("View statement (opens in a new tab)")
         }
       }
     }
@@ -254,7 +254,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString must include("You have nothing to pay")
-          view.toString must include("View statement (opens in a new window or tab)")
+          view.toString must include("View statement (opens in a new tab)")
         }
       }
     }
@@ -270,7 +270,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString() must include("You are &pound;123.45 in credit")
-          view.toString() must include("How we worked this out (opens in a new window or tab)")
+          view.toString() must include("How we worked this out (opens in a new tab)")
         }
       }
     }
@@ -286,7 +286,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString() must include("You owe &pound;999.99")
-          view.toString() must include("How we worked this out (opens in a new window or tab)")
+          view.toString() must include("How we worked this out (opens in a new tab)")
         }
       }
     }
@@ -301,9 +301,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString() must include("How we worked this out (opens in a new window or tab)")
+          view.toString() must include("How we worked this out (opens in a new tab)")
           view.toString() must include("You owe &pound;999.99")
-          view.toString() must include("How we worked this out (opens in a new window or tab)")
+          view.toString() must include("How we worked this out (opens in a new tab)")
           view.toString() must include("http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
           view.toString() must include("link - click:CTSubpage:How we worked this out")
           view.toString() must include("""target="_blank"""")
