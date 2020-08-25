@@ -45,14 +45,14 @@ subpage.utr = Cyfeirnod Unigryw y Trethdalwr (UTR) Treth Gorfforaeth
 subpage.sidebar.dormant_close = Caewch eich cwmni neu gwnewch yn segur
 
 subpage.sidebar.more_options = Rhagor o opsiynau
-subpage.sidebar.cert_of_residence = Cael tystysgrif preswylio (yn agor mewn ffenestr neu dab newydd)
+subpage.sidebar.cert_of_residence = Cael tystysgrif preswylio (yn agor tab newydd)
 subpage.sidebar.help_and_contact = Cymorth a chysylltu
-subpage.sidebar.more = Rhagor (yn agor mewn ffenestr neu dab newydd)
+subpage.sidebar.more = Rhagor (yn agor tab newydd)
 subpage.sidebar.help_with_tax= Cynorthwyo
 subpage.sidebar.navigation = Is-fordwyo Treth Gorfforaeth
 
-subpage.more_options.dormant = Gwneud eich cwmni’n segur (yn agor mewn ffenestr neu dab newydd)
-subpage.more_options.close = Cau’ch cwmni (yn agor mewn ffenestr neu dab newydd)
+subpage.more_options.dormant = Gwneud eich cwmni’n segur (yn agor tab newydd)
+subpage.more_options.close = Cau’ch cwmni (yn agor tab newydd)
         
 subpage.payments_notice = Bydd yn cymryd hyd at 7 diwrnod gwaith i daliadau ymddangos, yn dibynnu ar sut rydych yn talu. Ar ôl i chi lenwi’ch Ffurflen Dreth, bydd eich cyfrifiad treth yn cymryd hyd at 2 ddiwrnod.
 
@@ -69,8 +69,8 @@ account.summary.your_payments = Eich taliadau
 account.summary.in_debit = Mae arnoch {0} -
 account.summary.in_credit = Rydych {0} mewn credyd -
 account.summary.nothing_to_pay = Does dim byd gennych i’w dalu -
-account.summary.worked_out = Sut y gwnaethom gyfrifo hyn (yn agor mewn ffenestr neu dab newydd)
-account.summary.view_statement = Gweld y datganiad (yn agor mewn ffenestr neu dab newydd)
+account.summary.worked_out = Sut y gwnaethom gyfrifo hyn (yn agor tab newydd)
+account.summary.view_statement = Gweld y datganiad (yn agor tab newydd)
 account.summary.no_balance = Dim gwybodaeth am weddill i’w dangos
 account.summary.generic_error = Ni allwn ddangos eich gwybodaeth Treth Gorfforaeth ar hyn o bryd.
 account.summary.generic_error.portal = Rhowch gynnig ar adnewyddu’r dudalen mewn ychydig o funudau neu defnyddiwch {0}hen wefan CThEM{1}.
