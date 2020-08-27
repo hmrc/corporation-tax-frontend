@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.componants
+package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -35,7 +35,7 @@ class ErrorSummarySpec
 
   val view: Html = error_summary(Seq(FormError("test", "test")))
 
-  "error summary componant" must {
+  "error summary component" must {
 
     "summary div must have role=alert and aria-labelledby" in {
       val doc: Document = Jsoup.parse(view.toString)
