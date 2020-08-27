@@ -47,31 +47,8 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
   val date = new DateTime("2018-10-20T08:00:00.000")
 
   "PaymentHistoryServiceSpec" when {
-    "getPayments is called and getSAPaymentHistory toggle set to false" should {
-      "return Nil" in {
-        when(mockConfig.getCTPaymentHistoryToggle)
-            .thenReturn(false)
-        when(mockConnector.get(any())(any()))
-          .thenReturn(Future.successful(
-              Right(List(
-                CtPaymentRecord(
-                  reference = "reference number",
-                  amountInPence = 1,
-                  status = Successful,
-                  createdOn = "2018-10-20T08:00:00.000",
-                  taxType = "tax type")
-                )
-              )))
-
-        testService.getPayments(CtEnrolment(CtUtr("utr"), isActivated = true), date).futureValue mustBe Right(Nil)
-      }
-    }
-
     "getPayments is called and getSAPaymentHistory toggle set to true" should {
       "return payment history when valid payment history is returned" in {
-        when(mockConfig.getCTPaymentHistoryToggle)
-          .thenReturn(true)
-
         when(mockConnector.get(any())(any()))
           .thenReturn(Future.successful(
             Right(
