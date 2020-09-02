@@ -87,7 +87,9 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
       assertLinkById(
         doc,
         "cert-of-residence",
+
         "Get a certificate of residence (opens in a new tab)",
+
         "https://www.gov.uk/guidance/get-a-certificate-of-residence",
         expectedGAEvent =
           "link - click:CTMoreOptions:Get a certificate of residence",
@@ -104,7 +106,9 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
       assertLinkById(
         doc,
         "more",
+
         "More (opens in a new tab)",
+
         s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
         expectedGAEvent = "link - click:CTSidebar:More",
         expectedIsExternal = true,
