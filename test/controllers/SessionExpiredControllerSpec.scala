@@ -17,20 +17,25 @@
 package controllers
 
 import base.SpecBase
+import controllers.Assets.OK
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
+import play.api.test.Injecting
+import views.behaviours.ViewBehaviours
+import views.html.session_expired
 
-class SessionExpiredControllerSpec extends SpecBase {
+class SessionExpiredControllerSpec extends ViewBehaviours with Injecting {
+
+  lazy val SUT: SessionExpiredController = inject[SessionExpiredController]
 
   "SessionExpired Controller" must {
     "return 200 for a GET" in {
-      //TODO move to ITs
-//      val result = new SessionExpiredController(frontendAppConfig, messagesApi).onPageLoad()(fakeRequest)
-//      status(result) mustBe OK
+      val result = SUT.onPageLoad()(fakeRequest)
+      status(result) mustBe OK
     }
 
     "return the correct view for a GET" in {
-      //TODO move to ITs
-//      val result = new SessionExpiredController(frontendAppConfig, messagesApi).onPageLoad()(fakeRequest)
-//      contentAsString(result) mustBe session_expired(frontendAppConfig)(fakeRequest, messages).toString
+      val result = SUT.onPageLoad()(fakeRequest)
+      contentAsString(result) mustBe inject[session_expired].apply(frontendAppConfig)(fakeRequest, messages).toString
     }
   }
 }
