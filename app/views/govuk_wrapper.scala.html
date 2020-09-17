@@ -93,6 +93,10 @@
 
 @footerTop = {}
 
+@footerLinks = {
+    @uiFooterLinks(euExitLinks = Some(uiEuExitLinks()))
+}
+
 @serviceInfo = {
     @uiServiceInfo(
       betaBanner = HtmlFormat.empty,
@@ -137,4 +141,4 @@
   </div>
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiFooterLinks(None, Some(uiEuExitLinks()))), true)(content)
+@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(footerLinks), true)(content)
