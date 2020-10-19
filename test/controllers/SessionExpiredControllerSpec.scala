@@ -16,7 +16,6 @@
 
 package controllers
 
-import base.SpecBase
 import controllers.Assets.OK
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import play.api.test.Injecting

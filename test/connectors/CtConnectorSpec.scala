@@ -17,16 +17,14 @@
 package connectors
 
 import base.SpecBase
-import models.{CtAccountBalance, CtAccountSummaryData, CtDesignatoryDetailsCollection, CtUtr, DesignatoryDetails, DesignatoryDetailsAddress, DesignatoryDetailsName}
+import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import models.CtUtr
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -70,12 +68,12 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
     "call the micro service and return 500" in {
       when(mockHttp.GET[Option[CtAccountSummaryData]](any())(any(),any(),any()))
-        .thenReturn(Future.failed(Upstream5xxResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
 
       val response = connector.accountSummary(ctUtr)
 
       whenReady(response.failed) { mse =>
-        mse mustBe an[Upstream5xxResponse]
+        mse mustBe an[UpstreamErrorResponse]
       }
     }
   }
@@ -143,12 +141,12 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
     "call the micro service and return 500" in {
       when(mockHttp.GET[Option[CtDesignatoryDetailsCollection]](any())(any(),any(),any()))
-        .thenReturn(Future.failed(Upstream5xxResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
 
       val response = connector.designatoryDetails(ctUtr)
 
       whenReady(response.failed) { mse =>
-        mse mustBe an[Upstream5xxResponse]
+        mse mustBe an[UpstreamErrorResponse]
       }
     }
   }

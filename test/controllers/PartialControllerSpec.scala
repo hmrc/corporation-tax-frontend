@@ -27,10 +27,10 @@ import play.api.mvc.{MessagesControllerComponents, PlayBodyParsers, Result}
 import play.api.test.Helpers._
 import play.twirl.api.Html
 import services.CtCardBuilderService
-import uk.gov.hmrc.http.Upstream5xxResponse
+import uk.gov.hmrc.http.UpstreamErrorResponse
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class PartialControllerSpec extends SpecBase with MockitoSugar with GuiceOneAppPerSuite {
 
@@ -85,7 +85,7 @@ class PartialControllerSpec extends SpecBase with MockitoSugar with GuiceOneAppP
 
     "return an error status when asked to get a card and the call to the backend fails" in new LocalSetup {
       when(mockCtCardBuilderService.buildCtCard()(any(), any(), any()))
-        .thenReturn(Future.failed(Upstream5xxResponse("", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
 
       val result: Future[Result] = c.getCard(fakeRequest)
 
