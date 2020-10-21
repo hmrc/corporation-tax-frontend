@@ -18,7 +18,7 @@ package config
 
 import controllers.actions.{AuthAction, AuthActionImpl, ServiceInfoAction, ServiceInfoActionImpl}
 import play.api.inject.{Binding, Module}
-import play.api.{Configuration, Environment, inject}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
