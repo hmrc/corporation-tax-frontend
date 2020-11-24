@@ -88,7 +88,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         doc,
         "cert-of-residence",
 
-        "Get a certificate of residence (opens in a new tab)",
+        "Get a certificate of residence (opens in new tab)",
 
         "https://www.gov.uk/guidance/get-a-certificate-of-residence",
         expectedGAEvent =
@@ -107,7 +107,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         doc,
         "more",
 
-        "More (opens in a new tab)",
+        "More (opens in new tab)",
 
         s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
         expectedGAEvent = "link - click:CTSidebar:More",
