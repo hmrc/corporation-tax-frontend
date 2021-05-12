@@ -18,6 +18,7 @@ package controllers.actions
 
 import config.FrontendAppConfig
 import controllers.routes
+
 import javax.inject.Inject
 import models.CtEnrolment
 import models.requests.AuthenticatedRequest
@@ -30,7 +31,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{OptionalRetrieval, Retrieval, ~}
 import models.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,7 +53,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector, config: Fronten
   val notYetActivatedEnrolment: Enrolment = Enrolment("IR-CT", Seq(), "NotYetActivated")
 
   def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request.withHeaders(request.headers), request.session)
 
     authorised(AlternatePredicate(activatedEnrolment, notYetActivatedEnrolment)).retrieve(Retrievals.externalId and Retrievals.authorisedEnrolments) {
       case externalId ~ enrolments =>
