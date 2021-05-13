@@ -21,5 +21,4 @@ import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 @Singleton
 class CorporationTaxHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter {
-  override def crypto: String => String = identity
 }

@@ -23,13 +23,12 @@ import play.api.http.Status._
 import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
 class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) {
 
-  import scala.concurrent.ExecutionContext.Implicits.global
 
   def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, List[CtPaymentRecord]]] =
     http.GET[HttpResponse](buildUrl(searchTag)).map { response =>
