@@ -31,7 +31,7 @@ class HeadingSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
   implicit lazy val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
-  val view : Html = heading("test-id", "Test heading", "heading-large")
+  val view : Html = heading("test-id", "Test heading")
 
   "Heading component" must {
 
@@ -43,7 +43,7 @@ class HeadingSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
 
       forms.get(0).attr("id") mustBe "test-id"
       forms.get(0).text() mustBe "Test heading"
-      forms.get(0).className() mustBe "heading-large no-top-margin"
+      forms.get(0).className() mustBe "govuk-heading-l govuk-!-margin-top-0"
     }
   }
 }

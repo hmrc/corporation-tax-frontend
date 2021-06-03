@@ -126,6 +126,17 @@ trait ViewSpecBase extends SpecBase {
     }
   }
 
+  def assertRenderedByClass(doc: Document, classes: String) = {
+    assert(doc.getElementsByClass(classes) != null, "\n\nElement " + classes + " was not rendered on the page.\n")
+  }
+
+  def assertLinkByClass(doc: Document, linkClass: String, expectedText: String, expectedUrl: String, expectedIsExternal: Boolean = false, expectedOpensInNewTab: Boolean = false, exactUrl: Boolean = true) {
+    val link = doc.getElementsByClass(linkClass)
+    assert(link.text().contains(expectedText), s"\n\n Link $linkClass does not have text $expectedText")
+    assert(link.eachAttr("href").contains(expectedUrl), s"\n\n Link $linkClass does not contain expectedUrl $expectedUrl")
+    assert(link.attr("rel").contains("external") == expectedIsExternal, s"\n\n Link $linkClass does not meet expectedIsExternal $expectedIsExternal")
+  }
+
   def assertElementHasClass(doc: Document,
                             id: String,
                             expectedClass: String) = {
