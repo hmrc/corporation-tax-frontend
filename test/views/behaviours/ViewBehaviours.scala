@@ -29,9 +29,8 @@ trait ViewBehaviours extends ViewSpecBase {
       "rendered" must {
         "have the correct banner title" in {
           val doc = asDocument(view())
-          val nav = doc.getElementById("proposition-menu")
-          val span = nav.children.first
-          span.text mustBe messages("site.service_name")
+          val nav = doc.getElementsByClass("govuk-header__link govuk-header__link--service-name")
+          nav.text mustBe messages("site.service_name")
         }
 
         "display the correct browser title" in {
@@ -57,26 +56,25 @@ trait ViewBehaviours extends ViewSpecBase {
 
         "display language toggles" in {
           val doc = asDocument(view())
-          assertRenderedById(doc, "cymraeg-switch")
+          assertRenderedByClass(doc, "hmrc-language-select")
         }
 
         "display the sign out link" in {
           val doc = asDocument(view())
-          assertLinkById(
+          assertLinkByClass(
             doc,
-            "logOutNavHref",
+            "govuk-link hmrc-sign-out-nav__link",
             "Sign out",
             "http://localhost:9020/business-account/sso-sign-out",
-            "link - click:CTGovUKHeader:Sign out"
           )
         }
 
         "contain the platform help links section with an link to the accessibility statement" in {
           val doc = asDocument(view())
-          val linkSection = doc.select("ul.platform-help-links")
+          val linkSection = doc.getElementsByClass("govuk-footer__inline-list")
 
           linkSection.size() mustBe 1
-          linkSection.select("li").size mustBe 5
+          linkSection.select("li").size mustBe 7
           linkSection.select("li > a").get(1).attr("href") must include("/accessibility-statement/business-tax-account")
           linkSection.select("li > a").get(1).text mustBe "Accessibility statement"
         }

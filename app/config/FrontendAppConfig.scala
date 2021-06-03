@@ -17,10 +17,12 @@
 package config
 
 import controllers.routes
+
 import javax.inject.{Inject, Singleton}
 import models.CtEnrolment
 import play.api.i18n.Lang
 import play.api.mvc.{Call, Request}
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, Language}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.PortalUrlBuilder
@@ -80,5 +82,14 @@ class FrontendAppConfig @Inject()(config: ServicesConfig,
 
   val sessionTimeoutInSeconds: Long = 900
   val sessionCountdownInSeconds: Int = 60
+
+  lazy val appName: String = loadConfig("appName")
+
+  def languageLinks: Seq[(Language, String)] = {
+    Seq(
+      (En, routes.LanguageSwitchController.switchToLanguage("english").url),
+      (Cy, routes.LanguageSwitchController.switchToLanguage("cymraeg").url)
+    )
+  }
 
 }

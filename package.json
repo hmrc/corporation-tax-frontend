@@ -1,0 +1,25 @@
+{
+  "name": "corporation-tax-frontend",
+  "version": "1.0.0",
+  "description": "This repository contains the Corporation Tax section of the Business Tax Account. It contains the Corporation Tax subpage for Business Tax Account (built using a partial).",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmrc/corporation-tax-frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hmrc/corporation-tax-frontend/issues"
+  },
+  "homepage": "https://github.com/hmrc/corporation-tax-frontend#readme",
+  "dependencies": {
+    "govuk-frontend": "^3.12.0"
+  }
+}
