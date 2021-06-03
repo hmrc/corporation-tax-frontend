@@ -16,6 +16,7 @@
 
 @import config.FrontendAppConfig
 @import models.payments.PaymentRecord
+@import views.html.partials.payment_history
 
 @(balanceInformation: String,
   appConfig: FrontendAppConfig,
@@ -26,8 +27,8 @@
 )(implicit request: Request[_], messages: Messages)
 
 <section>
-    <h2 style="margin-top: 1.875em !important">@messages("account.summary.your_returns")</h2>
-    <a id="ct-file-return-cato"
+    <h2 class="govuk-heading-m">@messages("account.summary.your_returns")</h2>
+    <a class="govuk-link govuk-button" id="ct-file-return-cato"
         href='@appConfig.getUrl("fileAReturn")'
         class="button"
         role="button"
@@ -36,18 +37,18 @@
     </a>
 </section>
 <section>
-    <h2 style="margin-top: 1.875em !important">@messages("account.summary.your_payments")</h2>
+    <h2 class="govuk-heading-m">@messages("account.summary.your_payments")</h2>
     @if(shouldShowCreditCardMessage) {
-      <p>@messages("subpage.no_longer_use_personal_credit_card")</p>
+      <p class="govuk-body">@messages("subpage.no_longer_use_personal_credit_card")</p>
     }
-    <p>@Html(balanceInformation)</p>
-    <p>@breakdownLink.map { link =>
-        <a id="ct-see-breakdown" href="@link" target="_blank" rel="external noopener"
+    <p class="govuk-body">@Html(balanceInformation)</p>
+    <p class="govuk-body">@breakdownLink.map { link =>
+        <a class="govuk-link" id="ct-see-breakdown" href="@link" target="_blank" rel="external noopener"
             data-journey-click="link - click:CTSubpage:How we worked this out">@breakdownText</a>
     }
     </p>
     @payment_history(maybePaymentHistory)
-    <a id="ct-make-payment-link"
+    <a class="govuk-link govuk-button" id="ct-make-payment-link"
         href="@appConfig.getUrl("mainPage")/make-a-payment"
         data-sso="false"
         class="button button--payment"
