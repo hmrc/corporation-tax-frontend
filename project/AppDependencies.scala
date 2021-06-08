@@ -24,9 +24,22 @@ private object AppDependencies {
 
   object Test {
     def apply(): Seq[ModuleID] = new TestDependencies {
+      override lazy val test = Seq("org.mockito" % "mockito-core" % "3.7.7" % scope)
+    }.test
+  }
+
+  object IntegrationTest {
+    def apply(): Seq[ModuleID] = new TestDependencies {
+      override lazy val scope: String = "it"
+      override lazy val test: Seq[ModuleID] = Seq("com.github.tomakehurst" % "wiremock-jre8" % "2.28.0" % scope)
+    }.test
+  }
+
+  object TestCommon {
+    def apply(): Seq[ModuleID] = new TestDependencies {
+      override lazy val scope: String = "test,it"
       override lazy val test = Seq(
         "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % scope,
-        "org.mockito" % "mockito-core" % "3.7.7" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.pegdown" % "pegdown" % "1.6.0" % scope,
         "org.jsoup" % "jsoup" % "1.13.1" % scope
@@ -34,5 +47,5 @@ private object AppDependencies {
     }.test
   }
 
-  def apply(): Seq[ModuleID] = compile ++ Test()
+  def apply(): Seq[ModuleID] = compile ++ Test() ++ IntegrationTest() ++ TestCommon()
 }
