@@ -1,67 +1,86 @@
 package connectors
 
-import play.twirl.api.Html
-import support.IntegrationTest
-import support.TestHtmlObjects.testServiceInfoPartial
-import support.stubs.StubConnector
+import models.requests.{NavContent, NavLinks}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.test.Helpers._
+import support.IntegrationTest
+import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.partials.HeaderCarrierForPartials
-
-import scala.concurrent.Future
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ServiceInfoPartialConnectorISpec extends WordSpec with MustMatchers with IntegrationTest {
 
-  implicit val headerCarrierForPartials: HeaderCarrierForPartials = HeaderCarrierForPartials(hc = HeaderCarrier())
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val connector: ServiceInfoPartialConnector = inject[ServiceInfoPartialConnector]
 
-  val serviceInfoPartialUrl: String = "/business-account/partial/service-info"
+  val testNavLinkJson: String =
+    """
+      |{
+      | "home":{
+      |         "en" : "Home",
+      |         "cy" : "Hafan",
+      |         "url": "http://localhost:9020/business-account"
+      |       },
+      | "account":{
+      |           "en" : "Manage account",
+      |           "cy" : "Rheoli'r cyfrif",
+      |           "url" : "http://localhost:9020/business-account/manage-account"
+      |       },
+      | "messages":{
+      |             "en" : "Messages",
+      |             "cy" : "Negeseuon",
+      |             "url" : "http://localhost:9020/business-account/messages",
+      |             "alerts": 5
+      |       },
+      | "help":{
+      |         "en" : "Help and contact",
+      |         "cy" : "Cymorth a chysylltu",
+      |         "url" : "http://localhost:9733/business-account/help"
+      |       },
+      | "forms":{
+      |          "en" : "Track your forms{0}",
+      |          "cy": "Gwirio cynnydd eich ffurflenni{0}",
+      |          "url":"/track/bta",
+      |          "alerts": 0
+      |       }
+      | }""".stripMargin
 
-  val expectedSuccessHtml: Html = Html(testServiceInfoPartial)
-  val expectedFailureHtml: Html = Html("")
 
   "ServiceInfoPartialConnector" when {
 
-    "handling valid responses" should {
+    "Requesting NavLinks Content" should {
+      "Return the correct json for Navlinks" in {
 
-      "return an instance of Html containing the partial Html from the response" in {
+        val expectedNavlinks = Some(NavContent(
+          home = NavLinks("Home", "Hafan", "http://localhost:9020/business-account"),
+          account = NavLinks("Manage account", "Rheoli'r cyfrif", "http://localhost:9020/business-account/manage-account"),
+          messages = NavLinks("Messages", "Negeseuon", "http://localhost:9020/business-account/messages", Some(5)),
+          help = NavLinks("Help and contact", "Cymorth a chysylltu", "http://localhost:9733/business-account/help"),
+          forms = NavLinks("Track your forms{0}", "Gwirio cynnydd eich ffurflenni{0}", "/track/bta", Some(0))))
 
-        StubConnector.withHtmlPartialResponse(serviceInfoPartialUrl)(OK, Some(testServiceInfoPartial))
+        StubConnector.withResponseForNavLinks()(200, Some(testNavLinkJson))
 
-        val result: Future[Html] = connector.getServiceInfoPartial()
+        val result: Future[Option[NavContent]] = connector.getNavLinks()
 
-        await(result) mustBe expectedSuccessHtml
+        await(result) mustBe expectedNavlinks
 
-        StubConnector.verifyRequest(serviceInfoPartialUrl, count = 1)
-      }
-    }
+        StubConnector.verifyNavlinksContent(1)
 
-    "handling responses with error" should {
-
-      "return an empty instance of Html when an internal server error is raised" in {
-
-        StubConnector.withHtmlPartialResponse(serviceInfoPartialUrl)(INTERNAL_SERVER_ERROR, None)
-
-        val result: Future[Html] = connector.getServiceInfoPartial()
-
-        await(result) mustBe expectedFailureHtml
-
-        StubConnector.verifyRequest(serviceInfoPartialUrl, count = 1)
       }
 
-      "return an empty instance of Html for a corrupted response" in {
+      "Return None with failed status" in {
 
-        StubConnector.withFailedResponse(serviceInfoPartialUrl)
+        StubConnector.withResponseForNavLinks()(500, None)
 
-        val result: Future[Html] = connector.getServiceInfoPartial()
+        val result: Future[Option[NavContent]] = connector.getNavLinks()
 
-        await(result) mustBe expectedFailureHtml
+        await(result) mustBe None
 
-        StubConnector.verifyRequest(serviceInfoPartialUrl, count = maxRetries + 1)
+        StubConnector.verifyNavlinksContent(1)
+
       }
     }
   }
