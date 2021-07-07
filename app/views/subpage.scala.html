@@ -26,12 +26,12 @@
     @sidebarLinks = {
         <nav role="navigation" id="ct-sub-navigation" aria-label='@messages("subpage.sidebar.navigation")'>
             <div id="ct-utr" class="govuk-body govuk-!-margin-top-0">
-                <p class="govuk-heading-s">@messages("subpage.utr")</p>
-                <p class="govuk-body">@{ctEnrolment.ctUtr}</p>
+                <p class="govuk-heading-s govuk-!-margin-bottom-0">@messages("subpage.utr")</p>
+                <p class="govuk-body-s">@{ctEnrolment.ctUtr}</p>
             </div>
             <div id="help-with-tax" class="subsection">
-                <h2 class="govuk-heading-s">@messages("subpage.sidebar.help_with_tax")</h2>
-                <ul class="govuk-list govuk-list--bullet">
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-0">@messages("subpage.sidebar.help_with_tax")</h2>
+                <ul class="govuk-list">
                     <li>
                         <a class="govuk-link" id="help-and-contact" href="@appConfig.getHelpAndContactUrl("home")"
                         data-journey-click="link - click:CTSidebar:Help and contact">@messages("subpage.sidebar.help_and_contact")</a>

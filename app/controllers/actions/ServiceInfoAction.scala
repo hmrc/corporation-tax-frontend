@@ -19,23 +19,28 @@ package controllers.actions
 
 import config.CorporationTaxHeaderCarrierForPartialsConverter
 import connectors.ServiceInfoPartialConnector
+import controllers.ServiceInfoController
 import javax.inject.Inject
 import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import play.api.http.HeaderNames
 import play.api.mvc._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class ServiceInfoActionImpl @Inject()(serviceInfoPartialConnector: ServiceInfoPartialConnector,
-                                      corporationTaxHeaderCarrierForPartialsConverter: CorporationTaxHeaderCarrierForPartialsConverter)
+class ServiceInfoActionImpl @Inject()(serviceInfoController: ServiceInfoController)
                                      (implicit val executionContext: ExecutionContext) extends ServiceInfoAction {
 
-  import corporationTaxHeaderCarrierForPartialsConverter._
-
   override def transform[A](request: AuthenticatedRequest[A]): Future[ServiceInfoRequest[A]] = {
-    implicit val r: Request[A] = request
-    serviceInfoPartialConnector.getServiceInfoPartial().map { serviceInfoContent =>
-      ServiceInfoRequest(request, serviceInfoContent)
+    val header: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    implicit val hc: HeaderCarrier = header.copy(extraHeaders = header.headers(Seq(HeaderNames.COOKIE)))
+
+    for {
+      partial <-  serviceInfoController.serviceInfoPartial(request)
+    } yield {
+      ServiceInfoRequest(request, partial)
     }
   }
 
