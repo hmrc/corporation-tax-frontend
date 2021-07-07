@@ -15,12 +15,9 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html.layouts.Sidebar
 
 @this(
-    govuk_wrapper: govuk_wrapper,
-        uiSidebar: Sidebar,
-
+    govuk_wrapper: govuk_wrapper
 )
 
 @(title: String,
@@ -43,12 +40,12 @@
 
 @sidebar = {
     @if(sidebarLinks.isDefined) {
-        @uiSidebar(sidebarLinks.get, Some("sidebar"))
+        @sidebarLinks.get
     }
 }
 
 @titleWithError = @{
-    if(form.map(_.hasErrors).getOrElse(false)) {
+    if(form.exists(_.hasErrors)) {
         messages("error.browser.title", title)
     } else {
         title

@@ -22,6 +22,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import models.CtUtr
+import play.twirl.api.Html
 import views.ViewSpecBase
 import views.html.partials.card.payments.in_credit
 
@@ -32,9 +33,9 @@ class InCreditViewSpec extends ViewSpecBase {
     AuthenticatedRequest[AnyContent](FakeRequest(), "", ctEnrolment(activated))
   }
 
+  val testHtml = Html("£123.45")
   lazy val fakeRequestWithEnrolments: AuthenticatedRequest[AnyContent] = requestWithEnrolment(activated = true)
-  lazy val inCreditAmount: BigDecimal = BigDecimal(123.45)
-  def view = () => in_credit(inCreditAmount, frontendAppConfig)(fakeRequestWithEnrolments, messages)
+  def view = () => in_credit(testHtml, frontendAppConfig)(fakeRequestWithEnrolments, messages)
 
   lazy val doc: Document = asDocument(view())
 

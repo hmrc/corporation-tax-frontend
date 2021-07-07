@@ -20,7 +20,7 @@
 @(appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 <p class="govuk-body">@messages("card.you_may_have_returns_to_complete")</p>
-<a class="govuk-link" id="ct-complete-return" href="@appConfig.getUrl("fileAReturn")"
+<a class="govuk-body govuk-link" id="ct-complete-return" href="@appConfig.getUrl("fileAReturn")"
   target="_blank" rel="external noopener"
   data-journey-click="link - click:CT cards:Complete CT Return">
 @messages("card.complete_corporation_tax_return")

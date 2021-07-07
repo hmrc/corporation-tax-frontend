@@ -17,6 +17,7 @@
 package services
 
 import config.FrontendAppConfig
+import controllers.AccountSummaryHelper
 import javax.inject.{Inject, Singleton}
 import models.{CtAccountBalance, CtAccountSummaryData, CtData}
 import models.requests.AuthenticatedRequest
@@ -24,7 +25,8 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 @Singleton
-class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig) {
+class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig,
+                                  accountSummaryHelper: AccountSummaryHelper) {
 
   def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
     views.html.partials.card.returns.potential_returns(appConfig)
@@ -34,13 +36,17 @@ class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig) {
       case Some(CtData(accountSummaryData)) => accountSummaryData match {
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
           if (amount > 0) {
-            views.html.partials.card.payments.in_debit(amount.abs, appConfig)
+            views.html.partials.card.payments.in_debit(
+              accountSummaryHelper.renderableMoneyMessage(accountSummaryHelper.MoneyPounds(amount.abs, 2)),
+              appConfig)
           }
           else if (amount == 0) {
             views.html.partials.card.payments.no_balance(appConfig)
           }
           else {
-            views.html.partials.card.payments.in_credit(amount.abs, appConfig)
+            views.html.partials.card.payments.in_credit(
+              accountSummaryHelper.renderableMoneyMessage(accountSummaryHelper.MoneyPounds(amount.abs, 2)),
+              appConfig)
           }
         case _ => Html("")
       }

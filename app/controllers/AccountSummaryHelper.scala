@@ -24,10 +24,9 @@ import models.{CtAccountBalance, CtAccountFailure, CtAccountSummaryData, CtData,
 import org.joda.time.DateTime
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.MessagesControllerComponents
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import services.{CtService, EnrolmentStoreService, PaymentHistoryService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.play.views.formatting.Money.pounds
 import views.html.partials.{account_summary, generic_error, not_activated}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +36,23 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
                                      enrolmentStoreService: EnrolmentStoreService,
                                      paymentHistoryService: PaymentHistoryService,
                                      mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+
+
+  case class MoneyPounds(value: BigDecimal, decimalPlaces: Int = 2, roundUp: Boolean = false) {
+    def isNegative: Boolean = value < 0
+    def quantity: String =
+      s"%,.${decimalPlaces}f".format(
+        value
+          .setScale(decimalPlaces, if (roundUp) BigDecimal.RoundingMode.CEILING else BigDecimal.RoundingMode.FLOOR)
+          .abs
+      )
+  }
+
+  def renderableMoneyMessage(moneyPounds: MoneyPounds): Html = {
+    val maybeMinus: String = if (moneyPounds.isNegative) "&minus;" else ""
+    Html(s"$maybeMinus&pound;${moneyPounds.quantity}")
+  }
+
 
   private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit request: AuthenticatedRequest[_],
                                                                                         ec: ExecutionContext): Future[HtmlFormat.Appendable] = {
@@ -71,7 +87,7 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
                                                   (implicit r: AuthenticatedRequest[_]): HtmlFormat.Appendable = {
     if (amount < 0) {
       account_summary(
-        Messages("account.summary.in_credit", pounds(amount.abs, 2)),
+        Messages("account.summary.in_credit", renderableMoneyMessage(MoneyPounds(amount.abs, 2))),
         appConfig,
         breakdownLink, Messages("account.summary.worked_out"),
         shouldShowCreditCardMessage = showCreditCardMessage,
@@ -87,7 +103,7 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
       )
     } else {
       account_summary(
-        Messages("account.summary.in_debit", pounds(amount.abs, 2)),
+        Messages("account.summary.in_debit", renderableMoneyMessage(MoneyPounds(amount.abs, 2))),
         appConfig,
         breakdownLink, Messages("account.summary.worked_out"),
         shouldShowCreditCardMessage = showCreditCardMessage,

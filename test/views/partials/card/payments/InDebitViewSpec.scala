@@ -22,6 +22,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import models.CtUtr
+import play.twirl.api.Html
 import views.ViewSpecBase
 import views.html.partials.card.payments.in_debit
 
@@ -33,8 +34,9 @@ class InDebitViewSpec extends ViewSpecBase {
   }
 
   lazy val fakeRequestWithEnrolments: AuthenticatedRequest[AnyContent] = requestWithEnrolment(activated = true)
-  lazy val inDebitAmount: BigDecimal = BigDecimal(123.45)
-  def view = () => in_debit(inDebitAmount, frontendAppConfig)(fakeRequestWithEnrolments, messages)
+  val testHtml = Html("£123.45")
+
+  def view = () => in_debit(testHtml, frontendAppConfig)(fakeRequestWithEnrolments, messages)
 
   lazy val doc: Document = asDocument(view())
 
