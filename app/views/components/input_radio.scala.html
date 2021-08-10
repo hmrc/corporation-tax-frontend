@@ -26,22 +26,22 @@
         gaEvent: String = "corporation-tax-frontend"
 )(implicit messages: Messages)
 
-<div class="form-group @if(field.hasErrors){form-group-error} margin-top-medium">
+<div class="govuk-form-group @if(field.hasErrors){govuk-form-group--error} margin-top-medium">
     <fieldset class="inline" id="@{field.id}" aria-describedby="form-hint-text">
         <legend>
-            <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@Html(legend)</span>
+            <span class="govuk-!-font-weight-bold @if(legendClass.nonEmpty){@{legendClass.get}}">@Html(legend)</span>
             @if(hint.nonEmpty){
-                <span id="form-hint-text" class="form-hint padding-bottom-small">@{hint.get}</span>
+                <span id="form-hint-text" class="govuk-hint govuk-!-padding-bottom-1">@{hint.get}</span>
             }
             @field.errors.map { error =>
-                <span class="error-message" id="error-message-@{field.id}-input"><span id="visually-hidden-error-prefix" class="visually-hidden">@messages("error.message.prefix")</span> @messages(error.message, error.args: _*)</span>
+                <span class="govuk-error-message" id="error-message-@{field.id}-input"><span id="visually-hidden-error-prefix" class="govuk-visually-hidden">@messages("error.message.prefix")</span> @messages(error.message, error.args: _*)</span>
             }
         </legend>
         @for(input <- inputs) {
             <div class="multiple-choice">
                 <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value == Some(input.value)){checked="checked"} @if(trackGa){data-journey-click="corporation-tax-frontend:click:@{input.id}"} />
 
-                <label class="block-label selection-button-radio" for="@{input.id}">
+                <label class="govuk-radios__label" for="@{input.id}">
                     @messages(input.messageKey)
                 </label>
             </div>

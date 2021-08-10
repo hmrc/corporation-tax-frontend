@@ -18,6 +18,6 @@
 
 @(portalUrl: String)(implicit request: Request[_], messages: Messages)
 
-<p>@messages("account.summary.generic_error")</p>
-<p>@Html(Messages("account.summary.generic_error.portal",
-    "<a id=\"ct-old-hmrc\" href=\"" + portalUrl + "\" data-journey-click=\"link - click:CT Generic Error:Try refreshing the page in a few minutes or use the old HMRC website\">","</a>"))</p>
+<p class="govuk-body">@messages("account.summary.generic_error")</p>
+<p class="govuk-body">@Html(Messages("account.summary.generic_error.portal",
+    "<a class=\"govuk-link\" id=\"ct-old-hmrc\" href=\"" + portalUrl + "\" data-journey-click=\"link - click:CT Generic Error:Try refreshing the page in a few minutes or use the old HMRC website\">","</a>"))</p>
