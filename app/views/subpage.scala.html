@@ -25,19 +25,19 @@
 
     @sidebarLinks = {
         <nav role="navigation" id="ct-sub-navigation" aria-label='@messages("subpage.sidebar.navigation")'>
-            <div id="ct-utr" class="subsection flush--top">
-                <p class="heading-small">@messages("subpage.utr")</p>
-                <p>@{ctEnrolment.ctUtr}</p>
+            <div id="ct-utr" class="govuk-body govuk-!-margin-top-0">
+                <p class="govuk-heading-s govuk-!-margin-bottom-0">@messages("subpage.utr")</p>
+                <p class="govuk-body-s">@{ctEnrolment.ctUtr}</p>
             </div>
             <div id="help-with-tax" class="subsection">
-                <h2 class="heading-small">@messages("subpage.sidebar.help_with_tax")</h2>
-                <ul class="list">
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-0">@messages("subpage.sidebar.help_with_tax")</h2>
+                <ul class="govuk-list">
                     <li>
-                        <a id="help-and-contact" href="@appConfig.getHelpAndContactUrl("home")"
+                        <a class="govuk-link" id="help-and-contact" href="@appConfig.getHelpAndContactUrl("home")"
                         data-journey-click="link - click:CTSidebar:Help and contact">@messages("subpage.sidebar.help_and_contact")</a>
                     </li>
                     <li>
-                        <a id="more" href="@appConfig.getPortalUrl("more")(ctEnrolment)(request)" target="_blank" rel="external noopener"
+                        <a class="govuk-link" id="more" href="@appConfig.getPortalUrl("more")(ctEnrolment)(request)" target="_blank" rel="external noopener"
                         data-journey-click="link - click:CTSidebar:More">@messages("subpage.sidebar.more")</a>
                     </li>
                 </ul>
@@ -51,14 +51,12 @@
         appConfig = appConfig,
         bodyClasses = Some("business-tax"),
         sidebarLinks = Some(sidebarLinks),
-        serviceInfoContent = serviceInfoContent) {
+        serviceInfoContent = Some(serviceInfoContent)) {
 
-        @components.heading("ct-details", "subpage.heading", "heading-xlarge flush--top")
-        <div class="panel panel-border-wide" id="payments-notice">
-            <p>
-                <strong>
-                    @messages("subpage.payments_notice")
-                </strong>
+        @components.heading("ct-details", "subpage.heading", "govuk-heading-xl")
+        <div class="govuk-inset-text" id="payments-notice">
+            <p class="govuk-body">
+                @messages("subpage.payments_notice")
             </p>
         </div>
         @partialContent

@@ -17,9 +17,9 @@
 @(activateUrl: String, resetCodeUrl: String, showNewPinLink: Boolean)(implicit request: Request[_], messages: Messages)
 
 @if(showNewPinLink){
-  <p>
+  <p class="govuk-body">
     @messages("not_activated.use_the_activation_code_we_posted_")
-    <a id="ir-ct-activate"
+    <a class="govuk-link" id="ir-ct-activate"
        href="@activateUrl"
        data-sso="false"
        class="activate-enrolment-link"
@@ -27,12 +27,12 @@
       @messages("not_activated.access_your_corporation_tax_fynd")</a>.
   </p>
 } else {
-  <p>
+  <p class="govuk-body">
     @messages("not_activated.we_posted_")
   </p>
-  <p>
+  <p class="govuk-body">
     @messages("not_activated.use_the_activation_code_to")
-    <a id="ir-ct-activate"
+    <a class="govuk-link" class="govuk-link" id="ir-ct-activate"
        href="@activateUrl"
        data-sso="false"
        class="activate-enrolment-link"
@@ -41,11 +41,11 @@
   </p>
 }
 
-<p>@messages("not_activated.it_can_take_up_to_")</p>
+<p class="govuk-body">@messages("not_activated.it_can_take_up_to_")</p>
 
 @if(showNewPinLink){
-  <p>@messages("not_activated.you_can")
-    <a id="ir-ct-reset"
+  <p class="govuk-body">@messages("not_activated.you_can")
+    <a class="govuk-link" id="ir-ct-reset"
       href="@resetCodeUrl"
       data-sso="false"
       data-journey-click="link - click:Not Activated:I’ve lost my activation code">

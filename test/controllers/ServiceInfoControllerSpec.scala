@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package connectors
+package controllers
 
 import base.SpecBase
-import controllers.ServiceInfoController
+import connectors.ServiceInfoPartialConnector
 import models.requests.{AuthenticatedRequest, ListLinks, NavContent, NavLinks}
 import models.{CtEnrolment, CtUtr}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.ScalaFutures.whenReady
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.MessagesControllerComponents
@@ -35,7 +34,7 @@ import views.html.service_info
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
+class ServiceInfoControllerSpec extends SpecBase with MockitoSugar {
 
   val mockPartialService: PartialService = mock[PartialService]
   val mockServiceInfoPartialConnector: ServiceInfoPartialConnector = mock[ServiceInfoPartialConnector]
@@ -43,7 +42,6 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
   val mockMcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val ctEnrolment: CtEnrolment = CtEnrolment(CtUtr("utr"), isActivated = true)
-
   val testController = new ServiceInfoController(mockServiceInfoPartialConnector, testView , mockMcc, mockPartialService)
 
 
@@ -96,7 +94,6 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
       }
     }
   }
-
 
 
 }
