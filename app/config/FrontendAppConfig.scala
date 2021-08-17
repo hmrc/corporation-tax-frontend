@@ -80,7 +80,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig,
 
   lazy val googleTagManagerId: String = loadConfig(s"google-tag-manager.id")
 
-  val sessionTimeoutInSeconds: Long = 900
+  val sessionTimeoutInSeconds: Int = 900
   val sessionCountdownInSeconds: Int = 60
 
   lazy val appName: String = loadConfig("appName")

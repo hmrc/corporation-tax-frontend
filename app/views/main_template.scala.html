@@ -57,23 +57,8 @@
 
 @scriptElem = {
 
-    <script>
-        window.GOVUK.timeoutDialog({
-          timeout: @appConfig.sessionTimeoutInSeconds,
-          countdown: @appConfig.sessionCountdownInSeconds,
-          keepAliveUrl: '/business-account/keep-alive',
-          signOutUrl: '/business-account/timeout',
-        });
-        var dialogOpen;
-      </script>
-
-    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script src='@routes.Assets.versioned("javascripts/corporationtaxfrontend.js")'> </script>
     <script src='@routes.Assets.versioned("javascripts/error_summary_focus.js")'> </script>
-    <script src='@routes.Assets.versioned("javascripts/govuk.js")'></script>
-    <script>window.GOVUKFrontend.initAll();</script>
-    <script>window.HMRCFrontend.initAll();</script>
 }
 
 @govuk_wrapper(appConfig = appConfig,

@@ -35,6 +35,11 @@ unauthorised.correct_id = Make sure you’re signed in with the correct user ID.
 
 links.opens_in_portal = (opens in HMRC online)
 
+#timeout dialog
+timeout.title= Your application will time out soon
+timeout.message= We will sign you out if you do not respond in
+timeout.keep-alive-button= Continue application
+
 #######################################################
 ##  Subpage
 #######################################################
