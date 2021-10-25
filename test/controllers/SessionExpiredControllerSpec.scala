@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.Assets.OK
+import play.api.http.Status.OK
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import play.api.test.Injecting
 import views.behaviours.ViewBehaviours

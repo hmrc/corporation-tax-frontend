@@ -16,7 +16,7 @@
 
 @import config.FrontendAppConfig
 @import models.requests.AuthenticatedRequest
-@import uk.gov.hmrc.play.views.formatting.Money.pounds
+@import utils.MoneyPounds
 
 @(amount: BigDecimal, appConfig: FrontendAppConfig)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
@@ -24,4 +24,4 @@
  appConfig.getPortalUrl("balance")(request.ctEnrolment)
 }
 
-<p class="govuk-body">@messages("card.you_are") <span class="govuk-body govuk-!-font-weight-bold">@pounds(amount.abs, 2)</span> @messages("card.in_credit")</p>
+<p class="govuk-body">@messages("card.you_are") <span class="govuk-body govuk-!-font-weight-bold">@MoneyPounds.pounds(amount.abs, 2)</span> @messages("card.in_credit")</p>

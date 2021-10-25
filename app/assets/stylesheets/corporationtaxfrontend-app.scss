@@ -2,3 +2,8 @@ $govuk-assets-path: "/business-account/corporation-tax/assets/lib/govuk-frontend
 $hmrc-assets-path: "/business-account/corporation-tax/assets/lib/hmrc-frontend/hmrc/";;
 @import "lib/govuk-frontend/govuk/all";
 @import "lib/hmrc-frontend/hmrc/all";
+
+
+.blue-top {
+  border-bottom: 10px solid #1D70B8;
+}

@@ -5,7 +5,7 @@ checkYourAnswers.guidance = Guidance for check your answers
 error.boolean = Please give an answer
 error.number = Please enter a valid number
 error.required = Please enter a value
-error.summary.title = There is a problem
+error.summary.titles = There is a problem
 error.message.prefix = Error:
 error.browser.title = Error: {0}
 

@@ -24,6 +24,8 @@
 @(appConfig: FrontendAppConfig, ctEnrolment: CtEnrolment, partialContent: Html)(serviceInfoContent: Html)(implicit request: Request[_], messages: Messages)
 
     @sidebarLinks = {
+        <section>
+        <hr class="govuk-section-break govuk-section-break--visible blue-top govuk-!-margin-bottom-3">
         <nav role="navigation" id="ct-sub-navigation" aria-label='@messages("subpage.sidebar.navigation")'>
             <div id="ct-utr" class="govuk-body govuk-!-margin-top-0">
                 <p class="govuk-heading-s govuk-!-margin-bottom-0">@messages("subpage.utr")</p>
@@ -43,6 +45,7 @@
                 </ul>
             </div>
         </nav>
+        </section>
     }
 
 

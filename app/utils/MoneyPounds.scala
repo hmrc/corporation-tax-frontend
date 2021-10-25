@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package config
+package utils
 
-import javax.inject.Singleton
-import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
+import play.twirl.api.Html
 
-@Singleton
-class CorporationTaxHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter {
+object MoneyPounds {
+
+  def quantity(value: BigDecimal, decimalPlaces: Int = 0, roundUp: Boolean = false) =
+    s"%,.${decimalPlaces}f".format(
+      value
+        .setScale(decimalPlaces, if (roundUp) BigDecimal.RoundingMode.CEILING else BigDecimal.RoundingMode.FLOOR)
+        .abs)
+
+  def pounds(value: BigDecimal, decimalPlaces: Int = 0, roundUp: Boolean = false): Html = {
+    val maybeMinus = if(value < 0) "&minus;" else ""
+    Html(s"$maybeMinus&pound;${quantity(value, decimalPlaces, roundUp)}")
+  }
 }
+
+

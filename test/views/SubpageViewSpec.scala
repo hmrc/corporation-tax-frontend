@@ -62,7 +62,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
   "Subpage sidebar" must {
 
     "exist" in {
-      assertRenderedByTag(asDocument(createView()), "aside")
+      assertRenderedById(asDocument(createView()), "ct-sub-navigation")
     }
 
     "contain the users UTR" in {

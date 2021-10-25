@@ -18,10 +18,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{HmrcLanguageSelect, HmrcReportTechnicalIssue}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, LanguageSelect}
-@import views.html.layouts.GovUkTemplate
 
 @this(
-        govukLayout: GovukLayout,
         govukTemplate: GovukTemplate,
         govukHeader: GovukHeader,
         hmrcHead: HmrcHead,
@@ -30,9 +28,7 @@
         hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
         hmrcLanguageSelect: HmrcLanguageSelect,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-        hmrcScripts: HmrcScripts,
-        hmrcGovUkTemplate: GovUkTemplate
-)
+        hmrcScripts: HmrcScripts)
 
 
 @(appConfig: config.FrontendAppConfig,

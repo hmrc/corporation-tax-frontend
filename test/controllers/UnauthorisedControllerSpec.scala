@@ -16,12 +16,13 @@
 
 package controllers
 
-import controllers.Assets.UNAUTHORIZED
+import play.api.http.Status.UNAUTHORIZED
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import play.api.test.Injecting
 import views.behaviours.ViewBehaviours
 import views.html.unauthorised
+
 import scala.concurrent.Future
 
 class UnauthorisedControllerSpec extends ViewBehaviours with Injecting {

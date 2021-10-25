@@ -51,7 +51,7 @@ class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPe
        |{
        |  "reference" : "$testReference",
        |  "amountInPence" : $testAmountInPence,
-       |  "status" : ${Json.toJson(PaymentStatus.Successful).toString()},
+       |  "status" : ${Json.toJson[PaymentStatus](PaymentStatus.Successful).toString()},
        |  "createdOn" : "$createOn",
        |  "taxType" : "$testTaxType"
        |}
