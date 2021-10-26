@@ -5,7 +5,7 @@ checkYourAnswers.guidance = Guidance for check your answers
 error.boolean = Please give an answer
 error.number = Please enter a valid number
 error.required = Please enter a value
-error.summary.title = Mae problem wedi codi
+error.summary.titles = Mae problem wedi codi
 error.message.prefix = Gwall:
 error.browser.title = Gwall: {0}
 

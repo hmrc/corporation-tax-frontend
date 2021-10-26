@@ -37,10 +37,10 @@ class PaymentStatusSpec extends WordSpec with MustMatchers {
 
   "paymentStatusWrites" should {
     "write Successful as the SuccessfulJsString" in {
-      Json.toJson(Successful)(PaymentStatus.paymentStatusWrites) mustBe JsString(ApiStatusCode.Successful)
+      Json.toJson[PaymentStatus](Successful)(PaymentStatus.paymentStatusWrites) mustBe JsString(ApiStatusCode.Successful)
     }
     "write Invalid as the invalid JsString" in {
-      Json.toJson(Invalid)(PaymentStatus.paymentStatusWrites) mustBe JsString(ApiStatusCode.Invalid)
+      Json.toJson[PaymentStatus](Invalid)(PaymentStatus.paymentStatusWrites) mustBe JsString(ApiStatusCode.Invalid)
     }
   }
 

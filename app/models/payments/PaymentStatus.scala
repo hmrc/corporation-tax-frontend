@@ -47,8 +47,7 @@ object PaymentStatus {
       }
   }
 
-  implicit def paymentStatusWrites: Writes[PaymentStatus] = new Writes[PaymentStatus] {
-    def writes(paymentStatus: PaymentStatus): JsString = paymentStatus match {
+  implicit def paymentStatusWrites: Writes[PaymentStatus] = new Writes[PaymentStatus] {def writes(paymentStatus: PaymentStatus): JsString = paymentStatus match {
       case Successful => JsString(ApiStatusCode.Successful)
       case Invalid => JsString(ApiStatusCode.Invalid)
     }

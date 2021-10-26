@@ -17,8 +17,6 @@
 package controllers.actions
 
 
-import config.CorporationTaxHeaderCarrierForPartialsConverter
-import connectors.ServiceInfoPartialConnector
 import controllers.ServiceInfoController
 import javax.inject.Inject
 import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
