@@ -36,9 +36,9 @@ unauthorised.correct_id = Gwnewch yn siŵr eich bod wedi mewngofnodi gyda’r Dy
 links.opens_in_portal = (yn agor CThEM ar-lein)
 
 #timeout dialog
-timeout.keep-alive-button = Yn eich blaen â’r cais
-timeout.message = Byddwn yn eich allgofnodi os na fyddwch yn ymateb ymhen
-timeout.title = Bydd eich cais yn dod i ben cyn hir
+timeout.keep-alive-button = Parhau i fod wedi''ch mewngofnodi
+timeout.message = Er eich diogelwch, byddwn yn eich allgofnodi cyn pen
+timeout.title = Mae’ch sesiwn ar fin dod i ben
 
 #######################################################
 ##  Subpage
