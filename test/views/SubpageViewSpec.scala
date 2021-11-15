@@ -107,7 +107,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         doc,
         "more",
 
-        "More (opens in new tab)",
+        "More Corporation Tax details (opens in new tab)",
 
         s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
         expectedGAEvent = "link - click:CTSidebar:More",

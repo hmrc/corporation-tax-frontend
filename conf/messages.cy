@@ -52,7 +52,7 @@ subpage.sidebar.dormant_close = Caewch eich cwmni neu gwnewch yn segur
 subpage.sidebar.more_options = Rhagor o opsiynau
 subpage.sidebar.cert_of_residence = Cael tystysgrif preswylio (yn agor tab newydd)
 subpage.sidebar.help_and_contact = Cymorth a chysylltu
-subpage.sidebar.more = Rhagor (yn agor tab newydd)
+subpage.sidebar.more = Rhagor o fanylion Treth Gorfforaeth (yn agor tab newydd)
 subpage.sidebar.help_with_tax= Cynorthwyo
 subpage.sidebar.navigation = Is-fordwyo Treth Gorfforaeth
 
@@ -63,7 +63,7 @@ subpage.payments_notice = Bydd yn cymryd hyd at 7 diwrnod gwaith i daliadau ymdd
 
 subpage.no_longer_use_personal_credit_card=Ni allwch ddefnyddio cerdyn credyd personol mwyach. Os talwch â cherdyn credyd, rhaid iddo fod wedi’i gysylltu â chyfrif banc busnes.
 
-#######################################################
+######################################################
 ##  Account Summary
 #######################################################
 account.summary.file_a_return = Llenwi Ffurflen Dreth Gorfforaeth
