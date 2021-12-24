@@ -36,7 +36,7 @@ unauthorised.correct_id = Make sure you’re signed in with the correct user ID.
 links.opens_in_portal = (opens in HMRC online)
 
 #timeout dialog
-timeout.title= Your session is about to end
+timeout.title= You’re about to be signed out
 timeout.message= For your security, we will sign you out in
 timeout.keep-alive-button= Stay signed in
 
