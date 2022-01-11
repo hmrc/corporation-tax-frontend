@@ -9,8 +9,7 @@ private object AppDependencies {
     ws,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.16.0",
     "uk.gov.hmrc" %% "http-caching-client" % "9.4.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.94.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-govuk" % "0.84.0-play-28"
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % "1.31.0-play-28"
   )
 
   trait TestDependencies {

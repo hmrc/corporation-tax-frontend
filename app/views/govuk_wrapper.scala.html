@@ -25,7 +25,7 @@
         hmrcHead: HmrcHead,
         govukFooter: HmrcStandardFooter,
         hmrcStandardHeader: HmrcStandardHeader,
-        hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcLanguageSelect: HmrcLanguageSelect,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
         hmrcScripts: HmrcScripts)
@@ -93,12 +93,7 @@
 }
 
 
-@getHelpForm = @{hmrcReportTechnicalIssue(
-    uk.gov.hmrc.hmrcfrontend.views.html.components.ReportTechnicalIssue(
-        appConfig.appName,
-        language = if (messages.lang.code == "cy") Cy else En
-    )
-)}
+@getHelpForm = @{hmrcReportTechnicalIssueHelper()}
 
 @headerAndMainContent = {
   @if(contentHeader.isDefined) {
