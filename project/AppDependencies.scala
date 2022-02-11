@@ -8,8 +8,8 @@ private object AppDependencies {
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.20.0",
-    "uk.gov.hmrc" %% "http-caching-client" % "9.4.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % "2.0.0-play-28"
+    "uk.gov.hmrc" %% "http-caching-client" % "9.5.0-play-28",
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % "3.4.0-play-28"
   )
 
   trait TestDependencies {
@@ -19,14 +19,16 @@ private object AppDependencies {
 
   object Test {
     def apply(): Seq[ModuleID] = new TestDependencies {
-      override lazy val test = Seq("org.mockito" % "mockito-core" % "3.7.7" % scope)
+      override lazy val test = Seq("org.mockito" % "mockito-core" % "4.3.1" % scope)
     }.test
   }
 
   object IntegrationTest {
     def apply(): Seq[ModuleID] = new TestDependencies {
       override lazy val scope: String = "it"
-      override lazy val test: Seq[ModuleID] = Seq("com.github.tomakehurst" % "wiremock-jre8" % "2.27.2" % scope)
+      override lazy val test: Seq[ModuleID] = Seq(
+        "com.github.tomakehurst" % "wiremock-jre8" % "2.32.0" % scope,
+        "com.fasterxml.jackson.module" %% "jackson-module-scala"   % "2.13.1" % scope)
     }.test
   }
 

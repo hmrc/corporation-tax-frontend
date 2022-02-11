@@ -1,19 +1,19 @@
 package connectors
 
-import org.joda.time.LocalDateTime
 import models.{UserEnrolmentStatus, UserEnrolments}
+import org.joda.time.LocalDateTime
+import org.scalatestplus.play.PlaySpec
+import play.api.test.Helpers._
+import support.DateTimeUtils.createLocalDateTime
 import support.IntegrationTest
 import support.TestConstants._
 import support.TestJsonObjects.{testInvalidUserEnrolments, testMultipleUserEnrolments, testSingleUserEnrolment}
-import support.DateTimeUtils.createLocalDateTime
 import support.stubs.StubConnector
-import org.scalatest.{MustMatchers, WordSpec}
-import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class EnrolmentStoreConnectorISpec extends WordSpec with MustMatchers with IntegrationTest {
+class EnrolmentStoreConnectorISpec extends PlaySpec with IntegrationTest {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

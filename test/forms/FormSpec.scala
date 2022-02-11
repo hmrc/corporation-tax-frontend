@@ -16,17 +16,18 @@
 
 package forms
 
-import org.scalatest.{Assertion, Matchers, OptionValues, WordSpec}
+import org.scalatest.{Assertion, OptionValues}
+import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
 
-trait FormSpec extends WordSpec with OptionValues with Matchers {
+trait FormSpec extends PlaySpec with OptionValues {
 
   def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]): Assertion = {
 
     form.bind(data).fold(
       formWithErrors => {
-        for (error <- expectedErrors) formWithErrors.errors should contain(FormError(error.key, error.message, error.args))
-        formWithErrors.errors.size shouldBe expectedErrors.size
+        for (error <- expectedErrors) formWithErrors.errors must contain(FormError(error.key, error.message, error.args))
+        formWithErrors.errors.size mustBe expectedErrors.size
       },
       form => {
         fail("Expected a validation error when binding the form, but it was bound successfully.")
