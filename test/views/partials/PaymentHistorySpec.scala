@@ -23,16 +23,15 @@ import models.payments.PaymentRecord
 import org.joda.time.DateTime
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import views.html.partials.payment_history
 
 import scala.collection.JavaConverters._
-
 import scala.util.Random
 
-class PaymentHistorySpec extends WordSpec with MustMatchers with GuiceOneServerPerSuite {
+class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite {
 
   implicit lazy val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 

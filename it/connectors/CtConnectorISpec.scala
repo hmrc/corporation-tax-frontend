@@ -1,19 +1,18 @@
 package connectors
 
-import models.{CtAccountBalance, CtAccountSummaryData, CtDesignatoryDetailsCollection, CtUtr, DesignatoryDetails, MicroServiceException}
-import models.{DesignatoryDetailsAddress, DesignatoryDetailsContact, DesignatoryDetailsEmail, DesignatoryDetailsName, DesignatoryDetailsTelephone}
-import support.stubs.StubConnector
-import org.scalatest.{MustMatchers, WordSpec}
+import models._
+import org.scalatestplus.play.PlaySpec
 import play.api.test.Helpers._
 import support.IntegrationTest
 import support.TestConstants._
 import support.TestJsonObjects._
+import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CtConnectorISpec extends WordSpec with MustMatchers with IntegrationTest {
+class CtConnectorISpec extends PlaySpec with IntegrationTest {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

@@ -1,18 +1,18 @@
 package connectors.payments
 
 import config.FrontendAppConfig
+import org.scalatestplus.play.PlaySpec
+import play.api.test.Helpers._
 import support.IntegrationTest
 import support.TestConstants.testCtUtr
 import support.TestJsonObjects.testNextUrlSuccess
 import support.stubs.StubConnector
-import org.scalatest.{MustMatchers, WordSpec}
-import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class PaymentConnectorISpec extends WordSpec with MustMatchers with IntegrationTest {
+class PaymentConnectorISpec extends PlaySpec with IntegrationTest {
 
   override protected def essentialConfigs: Map[String, String] =
     Map(

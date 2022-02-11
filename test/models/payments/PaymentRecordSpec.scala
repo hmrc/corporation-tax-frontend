@@ -20,7 +20,7 @@ import java.util.UUID
 
 import models.PaymentRecordFailure
 import org.joda.time.DateTime
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
@@ -28,7 +28,7 @@ import play.api.test.FakeRequest
 
 import scala.util.Random
 
-class PaymentRecordSpec extends WordSpec with MustMatchers with GuiceOneServerPerSuite {
+class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite {
 
   val testReference: String = UUID.randomUUID().toString
   val testAmountInPence: Long = Random.nextLong()

@@ -17,10 +17,10 @@
 package models.payments
 
 import models.payments.PaymentStatus.{ApiStatusCode, Invalid, Successful}
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsString, JsSuccess, Json}
 
-class PaymentStatusSpec extends WordSpec with MustMatchers {
+class PaymentStatusSpec extends PlaySpec {
 
   val invalidStatuses: Set[String] = Set(ApiStatusCode.Created, ApiStatusCode.Sent, ApiStatusCode.Failed, ApiStatusCode.Cancelled, "anything else")
 

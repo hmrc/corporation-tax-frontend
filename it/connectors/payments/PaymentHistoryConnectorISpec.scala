@@ -2,16 +2,16 @@ package connectors.payments
 
 import models.payments.CtPaymentRecord
 import models.payments.PaymentStatus.{Invalid, Successful}
+import org.scalatestplus.play.PlaySpec
+import play.api.test.Helpers._
 import support.IntegrationTest
 import support.TestJsonObjects.{testEmptyCtPaymentList, testIncompleteCtPayment, testMultipleEntryCtPaymentList, testSingleEntryCtPaymentList}
 import support.stubs.StubConnector
-import org.scalatest.{MustMatchers, WordSpec}
-import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class PaymentHistoryConnectorISpec extends WordSpec with MustMatchers with IntegrationTest {
+class PaymentHistoryConnectorISpec extends PlaySpec with IntegrationTest {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

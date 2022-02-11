@@ -18,16 +18,13 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.data.Forms._
-import play.api.data.{Field, Form, _}
 import play.api.i18n.{Messages, MessagesApi}
 import play.twirl.api.Html
-import utils.RadioOption
-import views.html.components.{heading, input_radio}
+import views.html.components.heading
 
-class HeadingSpec extends WordSpec with MustMatchers with GuiceOneAppPerSuite {
+class HeadingSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   implicit lazy val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 

@@ -18,7 +18,7 @@ package views.components
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.Forms._
 import play.api.data.{Field, Form, _}
@@ -28,8 +28,7 @@ import utils.RadioOption
 import views.html.components.input_radio
 
 class InputRadioSpec
-    extends WordSpec
-    with MustMatchers
+    extends PlaySpec
     with GuiceOneAppPerSuite {
 
   implicit lazy val messages: Messages =
