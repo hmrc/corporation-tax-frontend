@@ -22,8 +22,7 @@
     <a class="govuk-link" id="ir-ct-activate"
        href="@activateUrl"
        data-sso="false"
-       class="activate-enrolment-link"
-       data-journey-click="link - click:Not Activated:Activate your CT account">
+       class="activate-enrolment-link">
       @messages("not_activated.access_your_corporation_tax_fynd")</a>.
   </p>
 } else {
@@ -35,8 +34,7 @@
     <a class="govuk-link" class="govuk-link" id="ir-ct-activate"
        href="@activateUrl"
        data-sso="false"
-       class="activate-enrolment-link"
-       data-journey-click="link - click:Not Activated:Activate your CT account">
+       class="activate-enrolment-link">
       @messages("not_activated.access_your_corporation_tax_mynd")</a>.
   </p>
 }
@@ -47,8 +45,7 @@
   <p class="govuk-body">@messages("not_activated.you_can")
     <a class="govuk-link" id="ir-ct-reset"
       href="@resetCodeUrl"
-      data-sso="false"
-      data-journey-click="link - click:Not Activated:I’ve lost my activation code">
+      data-sso="false">
       @messages("not_activated.request_a_new_activation_code")</a>.
   </p>
 }

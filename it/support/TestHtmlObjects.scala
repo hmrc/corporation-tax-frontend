@@ -7,32 +7,28 @@ object TestHtmlObjects {
        |   <ul id="service-info-list">
        |     <li>
        |       <a id="service-info-home-link"
-       |          href="http://localhost:9020/business-account"
-       |          data-journey-click="link - click:Service info:Business tax home">
+       |          href="http://localhost:9020/business-account">
        |         Home
        |       </a>
        |     </li>
        |     <li>
        |       <a id="service-info-manage-account-link"
-       |          href="http://localhost:9020/business-account/manage-account"
-       |          data-journey-click="link - click:Service info:Manage account">
+       |          href="http://localhost:9020/business-account/manage-account">
        |         Manage account
        |       </a>
        |     </li>
        |     <li>
        |       <a id="service-info-messages-link"
-       |          href="http://localhost:9020/business-account/messages"
-       |          data-journey-click="link - click:Service info:Messages" aria-label="Messages5 unread">
+       |          href="http://localhost:9020/business-account/messages">
        |         Messages<span class="badge">5</span>
        |       </a>
        |     </li>
        |     <li>
-       |       <a id="forms-tracking" href="/track/bta" data-journey-click="link - click:Service info:Track your forms">Track your forms</a>
+       |       <a id="forms-tracking" href="/track/bta">Track your forms</a>
        |     </li>
        |     <li>
        |       <a id="service-info-help-and-contact-link"
-       |          href="http://localhost:9733/business-account/help"
-       |          data-journey-click="link - click:Service info:Help and contact">
+       |          href="http://localhost:9733/business-account/help">
        |         Help and contact
        |       </a>
        |     </li>

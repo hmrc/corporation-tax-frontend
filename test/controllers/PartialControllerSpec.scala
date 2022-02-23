@@ -59,8 +59,7 @@ class PartialControllerSpec extends SpecBase with MockitoSugar with GuiceOneAppP
         Link(
           id = "ct-account-details-card-link",
           title = "CT",
-          href = "http://someTestUrl",
-          ga = "link - click:CT cards:More CT details"
+          href = "http://someTestUrl"
         )
       ),
       messageReferenceKey = Some(""),

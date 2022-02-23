@@ -51,14 +51,13 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
           id = "ct-account-details-card-link",
           title = "Corporation Tax",
           href = "http://someTestUrl",
-          ga = "link - click:CT cards:More CT details",
           dataSso = None,
           external = false
         )
       ),
       messageReferenceKey = Some(""),
       paymentsPartial = Some("Payments partial"),
-      returnsPartial = Some("\n\n<p>You may have returns to complete.</p>\n<a id=\"ct-complete-return\" href=\"http://testReturnsUrl\"\n  target=\"_blank\" rel=\"external noopener\"\n  data-journey-click=\"link - click:CT cards:Complete CT Return\">\nComplete Corporation Tax return\n</a>\n")
+      returnsPartial = Some("\n\n<p>You may have returns to complete.</p>\n<a id=\"ct-complete-return\" href=\"http://testReturnsUrl\"\n  target=\"_blank\" rel=\"external noopener\">\nComplete Corporation Tax return\n</a>\n")
     )
 
     def requestWithEnrolment(activated: Boolean): AuthenticatedRequest[AnyContent] = {
@@ -85,7 +84,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
         linkId = "ct-complete-return",
         expectedText = "Complete Corporation Tax return",
         expectedUrl = "http://localhost:9030/cato",
-        expectedGAEvent = "link - click:CT cards:Complete CT Return",
         expectedIsExternal = true,
         expectedOpensInNewTab = true
       )

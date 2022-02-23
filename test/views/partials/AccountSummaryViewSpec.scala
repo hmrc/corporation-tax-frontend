@@ -54,7 +54,6 @@ class AccountSummaryViewSpec extends ViewSpecBase {
           "ct-file-return-cato",
           "Complete Corporation Tax return",
           "http://localhost:9030/cato",
-          "link - click:CTSubpage:Complete Corporation Tax return",
           expectedRole = "button"
         )
       }
@@ -65,7 +64,6 @@ class AccountSummaryViewSpec extends ViewSpecBase {
           "ct-make-payment-link",
           "Make a Corporation Tax payment",
           "http://localhost:9731/business-account/corporation-tax/make-a-payment",
-          "link - click:CTSubpage:Make a Corporation Tax payment",
           expectedRole = "button"
         )
       }
