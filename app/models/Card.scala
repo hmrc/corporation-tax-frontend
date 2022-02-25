@@ -20,7 +20,6 @@ import models.payments.PaymentRecord
 import play.api.libs.json.{Json, OFormat}
 
 case class Link(href: String,
-                ga: String,
                 id: String,
                 title: String,
                 dataSso: Option[String] = None,

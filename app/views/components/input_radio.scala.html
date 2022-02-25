@@ -39,7 +39,7 @@
         </legend>
         @for(input <- inputs) {
             <div class="multiple-choice">
-                <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value == Some(input.value)){checked="checked"} @if(trackGa){data-journey-click="corporation-tax-frontend:click:@{input.id}"} />
+                <input id="@{input.id}" type="radio" name="@{field.id}" value="@{input.value}" @if(field.value == Some(input.value)){checked="checked"} />
 
                 <label class="govuk-radios__label" for="@{input.id}">
                     @messages(input.messageKey)

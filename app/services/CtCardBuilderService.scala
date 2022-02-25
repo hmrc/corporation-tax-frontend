@@ -67,7 +67,6 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
       primaryLink = Some(
         Link(
           href = appConfig.getUrl("mainPage"),
-          ga = "link - click:CT cards:More CT details",
           id = "ct-account-details-card-link",
           title = messages("partial.heading")
         )
@@ -80,13 +79,11 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
         List(
           Link(
             href = appConfig.getPortalUrl("balance")(request.ctEnrolment),
-            ga = "link - click:CT cards:View your CT statement",
             id = "view-ct-statement",
             title = messages("card.view_your_corporation_tax_statement")
           ),
           Link(
             href = s"${appConfig.getUrl("mainPage")}/make-a-payment",
-            ga = "link - click:CT cards:Make a CT payment",
             id = "make-ct-payment",
             title = messages("card.make_a_corporation_tax_payment")
           )

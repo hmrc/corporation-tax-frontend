@@ -91,8 +91,6 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         "Get a certificate of residence (opens in new tab)",
 
         "https://www.gov.uk/guidance/get-a-certificate-of-residence",
-        expectedGAEvent =
-          "link - click:CTMoreOptions:Get a certificate of residence",
         expectedIsExternal = true,
         expectedOpensInNewTab = true
       )
@@ -101,7 +99,6 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         "help-and-contact",
         "Help and contact",
         "http://localhost:9733/business-account/help",
-        expectedGAEvent = "link - click:CTSidebar:Help and contact"
       )
       assertLinkById(
         doc,
@@ -110,7 +107,6 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         "More Corporation Tax details (opens in new tab)",
 
         s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
-        expectedGAEvent = "link - click:CTSidebar:More",
         expectedIsExternal = true,
         expectedOpensInNewTab = true
       )

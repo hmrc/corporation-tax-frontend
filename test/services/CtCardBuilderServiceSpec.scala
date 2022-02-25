@@ -50,7 +50,6 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
         id = "ct-account-details-card-link",
         title = "Corporation Tax",
         href = "http://someTestUrl",
-        ga = "link - click:CT cards:More CT details",
         dataSso = None
       )
     ),
@@ -62,13 +61,11 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
       List(
         Link(
           href = "http://testStatementUrl",
-          ga = "link - click:CT cards:View your CT statement",
           id = "view-ct-statement",
           title = "View your Corporation Tax statement"
         ),
         Link(
           href = "http://someTestUrl/make-a-payment",
-          ga = "link - click:CT cards:Make a CT payment",
           id = "make-ct-payment",
           title = "Make a Corporation Tax payment"
         )
@@ -86,7 +83,6 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
         id = "ct-account-details-card-link",
         title = "Corporation Tax",
         href = "http://someTestUrl",
-        ga = "link - click:CT cards:More CT details",
         dataSso = None
       )
     ),
@@ -97,13 +93,11 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
       List(
         Link(
           href = "http://testStatementUrl",
-          ga = "link - click:CT cards:View your CT statement",
           id = "view-ct-statement",
           title = "View your Corporation Tax statement"
         ),
         Link(
           href = "http://someTestUrl/make-a-payment",
-          ga = "link - click:CT cards:Make a CT payment",
           id = "make-ct-payment",
           title = "Make a Corporation Tax payment"
         )

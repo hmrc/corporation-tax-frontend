@@ -34,8 +34,7 @@ class NotActivatedViewSpec extends ViewSpecBase {
         doc,
         "ir-ct-activate",
         "access your Corporation Tax",
-        activateUrl,
-        "link - click:Not Activated:Activate your CT account"
+        activateUrl
       )
     }
 
@@ -51,8 +50,7 @@ class NotActivatedViewSpec extends ViewSpecBase {
         asDocument(viewAfterSevenDays()),
         "ir-ct-reset",
         "request a new activation code",
-        resetCodeUrl,
-        "link - click:Not Activated:I’ve lost my activation code"
+        resetCodeUrl
       )
     }
 
@@ -65,8 +63,7 @@ class NotActivatedViewSpec extends ViewSpecBase {
         doc,
         "ir-ct-activate",
         "access your Corporation Tax",
-        activateUrl,
-        "link - click:Not Activated:Activate your CT account"
+        activateUrl
       )
     }
 

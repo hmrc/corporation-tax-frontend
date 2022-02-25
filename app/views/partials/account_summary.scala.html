@@ -31,8 +31,7 @@
     <a class="govuk-link govuk-button" id="ct-file-return-cato"
         href='@appConfig.getUrl("fileAReturn")'
         class="button"
-        role="button"
-        data-journey-click="link - click:CTSubpage:Complete Corporation Tax return">
+        role="button">
         @Html(Messages("account.summary.file_a_return"))
     </a>
 </section>
@@ -43,8 +42,7 @@
     }
     <p class="govuk-body">@Html(balanceInformation)</p>
     <p class="govuk-body">@breakdownLink.map { link =>
-        <a class="govuk-link" id="ct-see-breakdown" href="@link" target="_blank" rel="external noopener"
-            data-journey-click="link - click:CTSubpage:How we worked this out">@breakdownText</a>
+        <a class="govuk-link" id="ct-see-breakdown" href="@link" target="_blank" rel="external noopener">@breakdownText</a>
     }
     </p>
     @payment_history(maybePaymentHistory)
@@ -52,8 +50,7 @@
         href="@appConfig.getUrl("mainPage")/make-a-payment"
         data-sso="false"
         class="button button--payment"
-        role = "button"
-        data-journey-click="link - click:CTSubpage:Make a Corporation Tax payment">
+        role = "button">
         @Html(Messages("account.summary.make_a_payment"))
     </a>
 </section>

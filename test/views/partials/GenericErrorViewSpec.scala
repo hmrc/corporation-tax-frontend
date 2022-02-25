@@ -27,8 +27,7 @@ class GenericErrorViewSpec extends ViewSpecBase {
     "display the correct content" in {
       asDocument(view()).text() must include("We can’t display your Corporation Tax information at the moment.")
       asDocument(view()).text() must include("Try refreshing the page in a few minutes or use the old HMRC website.")
-      assertLinkById(asDocument(view()), "ct-old-hmrc", "old HMRC website", "http://portal.url",
-        "link - click:CT Generic Error:Try refreshing the page in a few minutes or use the old HMRC website")
+      assertLinkById(asDocument(view()), "ct-old-hmrc", "old HMRC website", "http://portal.url")
     }
   }
 }

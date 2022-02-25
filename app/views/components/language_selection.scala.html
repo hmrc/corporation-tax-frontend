@@ -25,7 +25,6 @@
             id = Some(s"$key-switch"),
             url = s"${langToCall(key)}",
             value = Some(key.capitalize),
-            dataAttributes = Some(Map("journey-click" -> s"link - click:Corporation Tax language select:${if(key == "cymraeg") "Welsh" else key.capitalize}"))
         ).toHtml
     }
 

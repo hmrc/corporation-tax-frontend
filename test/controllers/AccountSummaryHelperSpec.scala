@@ -305,7 +305,6 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           view.toString() must include("You owe &pound;999.99")
           view.toString() must include("How we worked this out (opens in new tab)")
           view.toString() must include("http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
-          view.toString() must include("link - click:CTSubpage:How we worked this out")
           view.toString() must include("""target="_blank"""")
           view.toString() must include("""rel="external noopener"""")
         }
