@@ -71,8 +71,8 @@ account.summary.make_a_payment = Make a Corporation Tax payment
 
 account.summary.your_returns = Your returns
 account.summary.your_payments = Your payments
-account.summary.in_debit = You owe {0}
-account.summary.in_credit = You are {0} in credit
+account.summary.in_debit = You owe <span class="govuk-!-font-weight-bold">{0}</span>
+account.summary.in_credit = You are <span class="govuk-!-font-weight-bold">{0}</span> in credit
 account.summary.nothing_to_pay = You have nothing to pay
 account.summary.worked_out = How we worked this out (opens in new tab)
 account.summary.view_statement = View statement (opens in new tab)

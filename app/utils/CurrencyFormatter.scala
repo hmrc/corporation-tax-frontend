@@ -16,6 +16,10 @@
 
 package utils
 
+import play.api.i18n.Messages
+import play.twirl.api.{Html, HtmlFormat}
+import views.html.components.bold
+
 object CurrencyFormatter {
 
   def formatCurrency(amount: BigDecimal, symbol:String = "£"): String = {
@@ -37,5 +41,17 @@ object CurrencyFormatter {
     val pounds: BigDecimal = BigDecimal(amount) / 100
     formatCurrency(pounds, symbol)
   }
+
+  def formatBoldCurrency(amount: BigDecimal, symbol: String = "£")(implicit messages: Messages): HtmlFormat.Appendable = {
+    lazy val boldComponent = new bold
+    boldComponent(Html(formatCurrency(amount, symbol)))
+  }
+
+
+  def formatBoldCurrencyFromPennies(amount: Long, symbol: String = "£")(implicit messages: Messages): HtmlFormat.Appendable = {
+    lazy val boldComponent = new bold
+    boldComponent(Html(formatCurrencyFromPennies(amount, symbol)))
+  }
+
 
 }

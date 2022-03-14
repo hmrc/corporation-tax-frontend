@@ -23,6 +23,7 @@ import models.payments.PaymentRecord._
 import org.joda.time.{DateTime, LocalDate}
 import play.api.i18n.Messages
 import play.api.libs.json._
+import play.twirl.api.HtmlFormat
 import utils.CurrencyFormatter
 
 import scala.util.{Failure, Success, Try}
@@ -37,6 +38,10 @@ case class PaymentRecord(reference: String,
 
   def currencyFormatted: String =
     CurrencyFormatter.formatCurrencyFromPennies(amountInPence)
+
+  def currencyFormattedBold()(implicit messages: Messages): HtmlFormat.Appendable = {
+    CurrencyFormatter.formatBoldCurrencyFromPennies(amountInPence)
+  }
 
 }
 
