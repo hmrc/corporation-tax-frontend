@@ -24,12 +24,12 @@
     @if(paymentHistory.length > 1) {
       <ul class="govuk-list govuk-list--bullet" id="payment-history-list">
         @paymentHistory.map { x =>
-          <li>@messages("payment.history.amount", x.currencyFormatted, x.dateFormatted)</li>
+          <li>@Html(messages("payment.history.amount", x.currencyFormattedBold(), x.dateFormatted))</li>
         }
       </ul>
     } else {
       @paymentHistory.map { record =>
-        <p class="govuk-body" id="single-payment-history">@messages("payment.history.amount", record.currencyFormatted, record.dateFormatted)</p>
+        <p class="govuk-body" id="single-payment-history">@Html(messages("payment.history.amount", record.currencyFormattedBold(), record.dateFormatted))</p>
         <p class="govuk-body" id="payment-history-reference" class="no-margin-bottom">@messages("payment.history.reference", record.reference)</p>
       }
     }

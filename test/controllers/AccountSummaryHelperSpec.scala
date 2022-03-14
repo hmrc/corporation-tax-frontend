@@ -269,7 +269,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString() must include("You are &pound;123.45 in credit")
+          view.toString() must include("You are <span class=\"govuk-!-font-weight-bold\">&pound;123.45</span> in credit")
           view.toString() must include("How we worked this out (opens in new tab)")
         }
       }
@@ -285,7 +285,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString() must include("You owe &pound;999.99")
+          view.toString() must include("You owe <span class=\"govuk-!-font-weight-bold\">&pound;999.99</span>")
           view.toString() must include("How we worked this out (opens in new tab)")
         }
       }
@@ -302,7 +302,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString() must include("How we worked this out (opens in new tab)")
-          view.toString() must include("You owe &pound;999.99")
+          view.toString() must include("You owe <span class=\"govuk-!-font-weight-bold\">&pound;999.99</span>")
           view.toString() must include("How we worked this out (opens in new tab)")
           view.toString() must include("http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
           view.toString() must include("""target="_blank"""")
@@ -344,7 +344,8 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString must include ("Your card payments in the last 7 days")
-          view.toString must include ("You paid £0.01 on 21 October 2018")
+          view.toString must include ("You paid")
+          view.toString must include ("<span class=\"govuk-!-font-weight-bold\">£0.01</span> on 21 October 2018")
           view.toString must include ("Your payment reference number is TEST56.")
         }
       }
@@ -375,8 +376,10 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString must include ("Your card payments in the last 7 days")
-          view.toString must include ("You paid £0.01 on 21 October 2018")
-          view.toString must include ("You paid £0.03 on 22 October 2018")
+          view.toString must include ("You paid")
+          view.toString must include ("<span class=\"govuk-!-font-weight-bold\">£0.01</span> on 21 October 2018")
+          view.toString must include ("You paid")
+          view.toString must include ("<span class=\"govuk-!-font-weight-bold\">£0.03</span> on 22 October 2018")
           view.toString must not include "Your payment reference number is TEST56."
           view.toString must include ("It will take up to 7 days to update your balance after each payment.")
         }
