@@ -67,7 +67,7 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
     when(config.getUrl("fileAReturn")).thenReturn("http://localhost:9030/cato")
     when(config.getUrl("mainPage")).thenReturn("http://localhost:9731/business-account/corporation-tax")
     when(config.getPortalUrl("balance")(ctEnrolment)(fakeRequestWithEnrolments))
-        .thenReturn("http://localhost:8080/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
+        .thenReturn("http://localhost:8081/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
   }
 
   "Calling CtPartialBuilder.buildReturnsPartial" should {

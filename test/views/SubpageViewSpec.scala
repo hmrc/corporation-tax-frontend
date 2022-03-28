@@ -106,7 +106,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
 
         "More Corporation Tax details (opens in new tab)",
 
-        s"http://localhost:8080/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
+        s"http://localhost:8081/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
         expectedIsExternal = true,
         expectedOpensInNewTab = true
       )
