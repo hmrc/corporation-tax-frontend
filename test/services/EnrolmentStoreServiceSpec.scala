@@ -18,35 +18,35 @@ package services
 
 import base.SpecBase
 import connectors.EnrolmentStoreConnector
-import models.{CtEnrolment, UserEnrolmentStatus, UserEnrolments}
+import models.{CtEnrolment, CtUtr, UserEnrolmentStatus, UserEnrolments}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.joda.time.{DateTime, LocalDateTime}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import models.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.DateUtil
 
-import scala.concurrent.Future
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfter {
-  val activeOct13: UserEnrolmentStatus = UserEnrolmentStatus("IR-CT", Some("active"), Some(new LocalDateTime("2018-10-13T23:59:59.999")))
-  val activeJan01: UserEnrolmentStatus = UserEnrolmentStatus("IR-CT", Some("active"), Some(new LocalDateTime("2018-01-01T23:59:59.999")))
-  val activeFeb28: UserEnrolmentStatus = UserEnrolmentStatus("IR-CT", Some("active"), Some(new LocalDateTime("2018-02-28T23:59:59.999")))
+class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with BeforeAndAfter with DateUtil {
+  val activeOct13: UserEnrolmentStatus = UserEnrolmentStatus("IR-CT", Some("active"), Some(LocalDateTime.parse("2018-10-13T23:59:59.999")))
+  val activeJan01: UserEnrolmentStatus = UserEnrolmentStatus("IR-CT", Some("active"), Some(LocalDateTime.parse("2018-01-01T23:59:59.999")))
+  val activeFeb28: UserEnrolmentStatus = UserEnrolmentStatus("IR-CT", Some("active"), Some(LocalDateTime.parse("2018-02-28T23:59:59.999")))
   val noDate: UserEnrolmentStatus = UserEnrolmentStatus("IR-CT", Some("active"), None)
 
   val mockConnector: EnrolmentStoreConnector = mock[EnrolmentStoreConnector]
   val service = new EnrolmentStoreService(mockConnector)
 
-  private val moreThan23DaysFromTokenExpiry = new DateTime("2018-09-15T08:00:00.000")
+  private val moreThan23DaysFromTokenExpiry = LocalDateTime.parse("2018-09-15T08:00:00.000").utcOffset
 
-  private val lessThan23DaysFromTokenExpiry = new DateTime("2018-09-25T08:00:00.000")
+  private val lessThan23DaysFromTokenExpiry = LocalDateTime.parse("2018-09-25T08:00:00.000").utcOffset
 
-  private val exactly23DaysFromTokenExpiry = new DateTime("2018-09-20T23:59:59.999")
+  private val exactly23DaysFromTokenExpiry = LocalDateTime.parse("2018-09-20T23:59:59.999").utcOffset
 
-  private val multipleRecords = new DateTime("2018-02-01T17:36:00.000")
+  private val multipleRecords = LocalDateTime.parse("2018-02-01T17:36:00.000").utcOffset
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -58,8 +58,9 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
         when(mockConnector.getEnrolments(any())(any()))
             .thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
 
-        service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
-          moreThan23DaysFromTokenExpiry).futureValue mustBe false
+        service.showNewPinLink(
+          enrolment = CtEnrolment(ctUtr = CtUtr("credId"), isActivated = false),
+          currentDate = moreThan23DaysFromTokenExpiry).futureValue mustBe false
       }
 
       "return false when enrolment was requested within last 7 days and tax is activated" in {

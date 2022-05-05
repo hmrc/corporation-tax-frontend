@@ -17,21 +17,21 @@
 package views.partials
 
 import java.util.UUID
-
 import models.PaymentRecordFailure
 import models.payments.PaymentRecord
-import org.joda.time.DateTime
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Messages, MessagesApi}
+import utils.DateUtil
 import views.html.partials.payment_history
 
+import java.time.{LocalDateTime, OffsetDateTime}
 import scala.collection.JavaConverters._
 import scala.util.Random
 
-class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite {
+class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite with DateUtil {
 
   implicit lazy val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
@@ -39,10 +39,10 @@ class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite {
 
   def testAmount: Long = Random.nextLong().abs
 
-  val testCreatedOn: DateTime = new DateTime("2018-10-21T08:00:00.000")
+  val testCreatedOn: OffsetDateTime = LocalDateTime.parse("2018-10-21T08:00:00.000").utcOffset
   val testTaxType: String = "tax type"
 
-  def newTestPaymentRecord = PaymentRecord(
+  def newTestPaymentRecord: PaymentRecord = PaymentRecord(
     reference = testReference,
     amountInPence = testAmount,
     createdOn = testCreatedOn,

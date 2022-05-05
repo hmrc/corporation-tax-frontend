@@ -16,21 +16,20 @@
 
 package models.payments
 
-import com.ibm.icu.text.SimpleDateFormat
-import com.ibm.icu.util.{TimeZone, ULocale}
 import models.PaymentRecordFailure
-import models.payments.PaymentRecord._
-import org.joda.time.{DateTime, LocalDate}
+import models.payments.PaymentRecord.DateFormatting
+import play.api.Logging
 import play.api.i18n.Messages
 import play.api.libs.json._
 import play.twirl.api.HtmlFormat
-import utils.CurrencyFormatter
+import utils.{CurrencyFormatter, DateUtil}
 
-import scala.util.{Failure, Success, Try}
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, OffsetDateTime}
 
 case class PaymentRecord(reference: String,
                          amountInPence: Long,
-                         createdOn: DateTime,
+                         createdOn: OffsetDateTime,
                          taxType: String) {
 
   def dateFormatted(implicit messages: Messages): String =
@@ -42,74 +41,39 @@ case class PaymentRecord(reference: String,
   def currencyFormattedBold()(implicit messages: Messages): HtmlFormat.Appendable = {
     CurrencyFormatter.formatBoldCurrencyFromPennies(amountInPence)
   }
-
 }
 
-object PaymentRecord {
+object PaymentRecord extends DateUtil with Logging {
 
   private[payments] object DateFormatting {
-    def formatFull(date: LocalDate)(implicit messages: Messages): String =
-      createDateFormatForPattern("d MMMM yyyy", messages).format(date.toDate)
-
-    private def createDateFormatForPattern(pattern: String, messages: Messages): SimpleDateFormat = {
-      val langCode = messages.lang.code
-      val uk = TimeZone.getTimeZone("Europe/London")
-      val validLang: Boolean = ULocale.getAvailableLocales.contains(new ULocale(langCode))
-      val locale: ULocale = if (validLang) new ULocale(langCode) else ULocale.getDefault
-      val sdf = new SimpleDateFormat(pattern, locale)
-      sdf.setTimeZone(uk)
-      sdf
+    def formatFull(date: LocalDate)(implicit messages: Messages): String = {
+      DateTimeFormatter.ofPattern("d MMMM yyyy").format(date)
     }
   }
 
-  def from(paymentRecordData: CtPaymentRecord, currentDateTime: DateTime): Option[PaymentRecord] =
-    if (paymentRecordData.isValid(currentDateTime) && paymentRecordData.isSuccessful) {
-      Some(PaymentRecord(
-        reference = paymentRecordData.reference,
-        amountInPence = paymentRecordData.amountInPence,
-        createdOn = new DateTime(paymentRecordData.createdOn),
-        taxType = paymentRecordData.taxType
-      ))
-    } else {
-      None
-    }
-
-  private def dateTimeReads: Reads[DateTime] = new Reads[DateTime] {
-    override def reads(json: JsValue): JsResult[DateTime] = json.validate[String] match {
-      case JsSuccess(string, jsPath) => Try(new DateTime(string)) match {
-        case Success(value) => JsSuccess(value, jsPath)
-        case Failure(exception) => JsError("not a valid date " + exception)
-      }
-      case JsError(err) => JsError(err)
-    }
+  //BTA expects the date time string to be in LocalDateTime format e.g. 2022-04-01T00:00:00.000
+  implicit val dateTimeWrites: Writes[OffsetDateTime] = Writes { dateTime =>
+    JsString(dateTime.toLocalDateTime.toString)
   }
-
-  private def dateTimeWrites: Writes[DateTime] = new Writes[DateTime] {
-    override def writes(dateTime: DateTime): JsValue = JsString(dateTime.toString)
-  }
-
-  private implicit lazy val dateTimeFormat: Format[DateTime] = Format(dateTimeReads, dateTimeWrites)
 
   implicit lazy val format: OFormat[PaymentRecord] = Json.format[PaymentRecord]
 
+  private def eitherPaymentHistoryReader: Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+    (json: JsValue) => json.validate[List[PaymentRecord]] match {
+      case JsSuccess(validList, jsPath) =>
+        logger.debug(s"[PaymentRecord][eitherPaymentHistoryReader] validList: $validList")
+        JsSuccess(Right(validList), jsPath)
+      case _ =>
+        logger.debug(s"[PaymentRecord][eitherPaymentHistoryReader] failed to read payment history: $json")
+        JsSuccess(Left(PaymentRecordFailure))
+    }
+
   private[models] val paymentRecordFailureString = "Bad Gateway"
 
-  private def eitherPaymentHistoryReader: Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
-    new Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] {
-      override def reads(json: JsValue): JsResult[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
-        json.validate[List[PaymentRecord]] match {
-          case JsSuccess(validList, jsPath) => JsSuccess(Right(validList), jsPath)
-          case _ => JsSuccess(Left(PaymentRecordFailure))
-        }
-    }
-
-  private def eitherPaymentHistoryWriter: Writes[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
-    new Writes[Either[PaymentRecordFailure.type, List[PaymentRecord]]] {
-      override def writes(eitherPaymentHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]]): JsValue = eitherPaymentHistory match {
-        case Right(list) => Json.toJson(list)
-        case _ => JsString(paymentRecordFailureString)
-      }
-    }
+  private def eitherPaymentHistoryWriter: Writes[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
+    case Right(list) => Json.toJson(list)
+    case _ => JsString(paymentRecordFailureString)
+  }
 
   implicit lazy val eitherPaymentHistoryFormatter: Format[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
     Format(eitherPaymentHistoryReader, eitherPaymentHistoryWriter)
@@ -119,15 +83,30 @@ object PaymentRecord {
 case class CtPaymentRecord(reference: String,
                            amountInPence: Long,
                            status: PaymentStatus,
-                           createdOn: String,
-                           taxType: String) {
+                           createdOn: String, //BTA expects the date time string to be in LocalDateTime format e.g. 2022-04-01T00:00:00.000
+                           taxType: String) extends DateUtil with Logging {
 
-  def isValid(currentDateTime: DateTime): Boolean =
-    Try(new DateTime(createdOn).plusDays(7).isAfter(currentDateTime)).getOrElse(false)
+  def isValid(createdOn: OffsetDateTime, currentDateTime: OffsetDateTime): Boolean = {
+    createdOn.plusDays(7).isAfter(currentDateTime)
+  }
 
   def isSuccessful: Boolean = status == PaymentStatus.Successful
 
+  def validateAndConvertToPaymentRecord(currentDateTime: OffsetDateTime): Option[PaymentRecord] = {
+    createdOn.parseOffsetDateTimeFromLocalDateTimeFormat() match {
+      case Right(offsetDateTime) if isValid(offsetDateTime, currentDateTime) && isSuccessful =>
+        Some(PaymentRecord(
+          reference = reference,
+          amountInPence = amountInPence,
+          createdOn = offsetDateTime,
+          taxType = taxType
+        ))
+      case _ => None
+    }
+
+  }
 }
+
 
 object CtPaymentRecord {
   implicit val format: OFormat[CtPaymentRecord] = Json.format[CtPaymentRecord]

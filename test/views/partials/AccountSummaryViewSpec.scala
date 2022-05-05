@@ -18,18 +18,20 @@ package views.partials
 
 import models.PaymentRecordFailure
 import models.payments.PaymentRecord
-import org.joda.time.DateTime
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import utils.DateUtil
 import views.ViewSpecBase
 import views.html.partials.{account_summary, payment_history}
 
-class AccountSummaryViewSpec extends ViewSpecBase {
+import java.time.LocalDateTime
 
-  val testPaymentRecord = PaymentRecord(
+class AccountSummaryViewSpec extends ViewSpecBase with DateUtil{
+
+  val testPaymentRecord: PaymentRecord = PaymentRecord(
     reference = "TEST1",
     amountInPence = 100,
-    createdOn = new DateTime("2018-10-21T08:00:00.000"),
+    createdOn = LocalDateTime.parse("2018-10-21T08:00:00.000").utcOffset,
     taxType = "tax type"
   )
   val testPaymentHistory

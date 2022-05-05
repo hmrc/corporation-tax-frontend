@@ -16,24 +16,24 @@
 
 package models.payments
 
-import java.util.UUID
-
 import models.PaymentRecordFailure
-import org.joda.time.DateTime
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
 import play.api.test.FakeRequest
+import utils.DateUtil
 
+import java.time.{OffsetDateTime, ZoneOffset}
+import java.util.UUID
 import scala.util.Random
 
-class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite {
+class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite with DateUtil {
 
   val testReference: String = UUID.randomUUID().toString
   val testAmountInPence: Long = Random.nextLong()
-  val currentDateTime: DateTime = DateTime.now()
-  val testCreatedOn: String = currentDateTime.toString
+  val currentDateTime: OffsetDateTime = OffsetDateTime.of(2022, 4, 1, 11, 59, 59, 0, ZoneOffset.UTC)
+  val testCreatedOn: String = "2022-04-01T11:59:59.000"
   val testTaxType: String = "testTaxType"
 
   val testPaymentRecord: PaymentRecord = PaymentRecord(
@@ -57,26 +57,11 @@ class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite {
        |}
     """.stripMargin
 
-  "PaymentRecord.from" should {
-    "return None" when {
-      "the status is not Successful" in {
-        val invalidCtPaymentRecordData = CtPaymentRecord(testReference, testAmountInPence, PaymentStatus.Invalid, testCreatedOn, testTaxType)
-        PaymentRecord.from(invalidCtPaymentRecordData, currentDateTime) mustBe None
-      }
-      "the createdOn is an invalid dateTime" in {
-        val invalidCreatedOnCtPaymentRecordData = CtPaymentRecord(testReference, testAmountInPence, PaymentStatus.Successful, "", testTaxType)
-        PaymentRecord.from(invalidCreatedOnCtPaymentRecordData, currentDateTime) mustBe None
-      }
-    }
-    "return Some(PaymentRecord)" in {
-      val validCtPaymentRecordData = CtPaymentRecord(testReference, testAmountInPence, PaymentStatus.Successful, testCreatedOn, testTaxType)
-      val expected = Some(PaymentRecord(
-        reference = testReference,
-        amountInPence = testAmountInPence,
-        createdOn = currentDateTime,
-        taxType = testTaxType
-      ))
-      PaymentRecord.from(validCtPaymentRecordData, currentDateTime) mustBe expected
+  "dateTimeWrites" must {
+
+    "convert OffsetDateTime to String in localDateTime format as this is what BTA expects" in {
+
+      Json.toJson(currentDateTime)(PaymentRecord.dateTimeWrites) mustBe JsString("2022-04-01T11:59:59")
     }
   }
 
@@ -127,9 +112,8 @@ class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite {
 
   "PaymentRecord.dateFormatted" should {
     "display the date in d MMMM yyyy format" in {
-      val testDate: DateTime = currentDateTime
-      val testRecord = testPaymentRecord.copy(createdOn = testDate)
-      testRecord.dateFormatted mustBe s"${testDate.dayOfMonth().get()} ${testDate.monthOfYear().getAsText} ${testDate.year().get()}"
+      val testRecord = testPaymentRecord.copy(createdOn = currentDateTime)
+      testRecord.dateFormatted mustBe s"1 April 2022"
     }
   }
 
@@ -151,4 +135,146 @@ class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite {
     }
   }
 
+  val ctPaymentRecord: CtPaymentRecord = CtPaymentRecord(
+    reference = testReference,
+    amountInPence = testAmountInPence,
+    status = PaymentStatus.Successful,
+    createdOn = testCreatedOn,
+    taxType = testTaxType
+  )
+
+  "CtPaymentRecord" when {
+
+    "isValid" when {
+
+      "createdOn + 7 days is before currentDateTime" must {
+
+        "return false" in {
+
+          val createdOn = currentDateTime.minusDays(8)
+
+          ctPaymentRecord.isValid(createdOn, currentDateTime) mustBe false
+        }
+      }
+
+      "createdOn + 7 days equals currentDateTime" must {
+
+        "return false" in {
+
+          val createdOn = currentDateTime.minusDays(7)
+
+          ctPaymentRecord.isValid(createdOn, currentDateTime) mustBe false
+        }
+      }
+
+      "createdOn + 7 days is after currentDateTime" must {
+
+        "return true" in {
+
+          val createdOn = currentDateTime.minusDays(6)
+
+          ctPaymentRecord.isValid(createdOn, currentDateTime) mustBe true
+        }
+      }
+    }
+
+    "validateAndConvertToPaymentRecord" when {
+
+      "createdOn can be parsed to OffsetDateTime" when {
+
+        "createdOn is valid" when {
+
+          "status is Successful" must {
+
+            "return Some(PaymentRecord)" in {
+
+              val ctPaymentRecordData = CtPaymentRecord(
+                reference = testReference,
+                amountInPence = testAmountInPence,
+                status = PaymentStatus.Successful,
+                createdOn = testCreatedOn,
+                taxType = testTaxType
+              )
+
+              val expectedPaymentRecord = Some(PaymentRecord(
+                reference = testReference,
+                amountInPence = testAmountInPence,
+                createdOn = currentDateTime,
+                taxType = testTaxType
+              ))
+
+              ctPaymentRecordData.validateAndConvertToPaymentRecord(currentDateTime) mustBe expectedPaymentRecord
+            }
+          }
+
+          "status is not Successful" must {
+
+            "return Some(PaymentRecord)" in {
+
+              val ctPaymentRecordData = CtPaymentRecord(
+                reference = testReference,
+                amountInPence = testAmountInPence,
+                status = PaymentStatus.Invalid,
+                createdOn = testCreatedOn,
+                taxType = testTaxType
+              )
+
+              ctPaymentRecordData.validateAndConvertToPaymentRecord(currentDateTime) mustBe None
+            }
+          }
+        }
+
+        "createdOn is invalid" when {
+
+          "status is Successful" must {
+
+            "return Some(PaymentRecord)" in {
+
+              val ctPaymentRecordData = CtPaymentRecord(
+                reference = testReference,
+                amountInPence = testAmountInPence,
+                status = PaymentStatus.Successful,
+                createdOn = "2022-03-25T11:59:59.000",
+                taxType = testTaxType
+              )
+
+              ctPaymentRecordData.validateAndConvertToPaymentRecord(currentDateTime) mustBe None
+            }
+          }
+
+          "status is not Successful" must {
+
+            "return Some(PaymentRecord)" in {
+
+              val ctPaymentRecordData = CtPaymentRecord(
+                reference = testReference,
+                amountInPence = testAmountInPence,
+                status = PaymentStatus.Invalid,
+                createdOn = "2022-03-25T11:59:59.000",
+                taxType = testTaxType
+              )
+
+              ctPaymentRecordData.validateAndConvertToPaymentRecord(currentDateTime) mustBe None
+            }
+          }
+        }
+      }
+
+      "createdOn can be parsed to OffsetDateTime" must {
+
+        "return None" in {
+
+          val ctPaymentRecordData = CtPaymentRecord(
+            reference = testReference,
+            amountInPence = testAmountInPence,
+            status = PaymentStatus.Successful,
+            createdOn = "NOT A DATE TIME",
+            taxType = testTaxType
+          )
+
+          ctPaymentRecordData.validateAndConvertToPaymentRecord(currentDateTime) mustBe None
+        }
+      }
+    }
+  }
 }

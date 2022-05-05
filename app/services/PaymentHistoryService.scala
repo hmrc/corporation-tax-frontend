@@ -21,29 +21,30 @@ import config.FrontendAppConfig
 import connectors.payments.PaymentHistoryConnector
 import models.payments.{CtPaymentRecord, PaymentRecord}
 import models.{CtEnrolment, PaymentRecordFailure}
-import org.joda.time.DateTime
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.OffsetDateTime
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentHistoryService @Inject()(connector: PaymentHistoryConnector, config: FrontendAppConfig)
                                      (implicit ec: ExecutionContext) extends Logging {
 
-  def getPayments(ctEnrolment: CtEnrolment, currentDate: DateTime)
+  def getPayments(ctEnrolment: CtEnrolment, currentDate: OffsetDateTime)
                  (implicit hc: HeaderCarrier): Future[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
-      connector.get(ctEnrolment.ctUtr.utr).map {
-        case Right(payments) => Right(filterPaymentHistory(payments, currentDate))
-        case Left(message) => log(message)
-      }
+    connector.get(ctEnrolment.ctUtr.utr).map {
+      case Right(payments) =>
+        Right(filterPaymentHistory(payments, currentDate))
+      case Left(message) => log(message)
+    }
 
   private def log(errorMessage: String): Either[PaymentRecordFailure.type, List[PaymentRecord]] = {
     logger.warn(s"[PaymentHistoryService][getPayments] $errorMessage")
     Left(PaymentRecordFailure)
   }
 
-  private def filterPaymentHistory(payments: List[CtPaymentRecord], currentDate: DateTime): List[PaymentRecord] =
-    payments.flatMap(PaymentRecord.from(_, currentDate))
+  private def filterPaymentHistory(payments: List[CtPaymentRecord], currentDate: OffsetDateTime): List[PaymentRecord] =
+    payments.flatMap(_.validateAndConvertToPaymentRecord(currentDate))
 
 }

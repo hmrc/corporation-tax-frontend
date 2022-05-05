@@ -16,28 +16,33 @@
 
 package services
 
-import javax.inject.Inject
 import config.FrontendAppConfig
 import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
-import org.joda.time.DateTime
+import play.api.Logging
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.OffsetDateTime
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
                                      appConfig: FrontendAppConfig,
                                      ctService: CtService,
                                      ctPartialBuilder: CtPartialBuilder,
-                                     paymentHistoryService: PaymentHistoryService)(implicit ec: ExecutionContext) {
+                                     paymentHistoryService: PaymentHistoryService)(implicit ec: ExecutionContext) extends Logging{
 
-  def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] =
+  def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] = {
     for {
       model <- ctService.fetchCtModel(request.ctEnrolment)
-      history <- paymentHistoryService.getPayments(request.ctEnrolment, DateTime.now())
+      history <- paymentHistoryService.getPayments(request.ctEnrolment, OffsetDateTime.now())
     } yield {
+      logger.debug(s"[CtCardBuilderService][buildCtCard]" +
+        s"\n model: $model," +
+        s"\n history: $history"
+      )
       model match {
         case Right(None) => buildCtCardData(
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(None).toString()),
@@ -51,9 +56,12 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
           paymentHistory = history,
           ctAccountBalance = data.accountSummary.accountBalance.flatMap(_.amount)
         )
-        case _ => throw new Exception
+        case _ =>
+          logger.warn(s"[CtCardBuilderService][buildCtCard] failed to build card")
+          throw new Exception
       }
     }
+  }
 
   private def buildCtCardData(paymentsContent: Option[String],
                               returnsContent: Option[String],

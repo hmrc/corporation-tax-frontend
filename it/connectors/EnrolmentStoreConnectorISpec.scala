@@ -1,16 +1,15 @@
 package connectors
 
 import models.{UserEnrolmentStatus, UserEnrolments}
-import org.joda.time.LocalDateTime
 import org.scalatestplus.play.PlaySpec
 import play.api.test.Helpers._
-import support.DateTimeUtils.createLocalDateTime
 import support.IntegrationTest
 import support.TestConstants._
 import support.TestJsonObjects.{testInvalidUserEnrolments, testMultipleUserEnrolments, testSingleUserEnrolment}
 import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class EnrolmentStoreConnectorISpec extends PlaySpec with IntegrationTest {
@@ -28,9 +27,9 @@ class EnrolmentStoreConnectorISpec extends PlaySpec with IntegrationTest {
   val serviceStatusActive: String = "active"
   val serviceStatusInactive: String = "inactive"
 
-  val testService1EnrolmentTokenExpiryDate: LocalDateTime = createLocalDateTime("2028-01-01T12:00:00.000")
-  val testService2EnrolmentTokenExpiryDate: LocalDateTime = createLocalDateTime("2028-01-02T23:59:59.999")
-  val testService3EnrolmentTokenExpiryDate: LocalDateTime = createLocalDateTime("2028-01-03T00:00:00.000")
+  val testService1EnrolmentTokenExpiryDate: LocalDateTime = LocalDateTime.parse("2028-01-01T12:00:00.000")
+  val testService2EnrolmentTokenExpiryDate: LocalDateTime = LocalDateTime.parse("2028-01-02T23:59:59.999")
+  val testService3EnrolmentTokenExpiryDate: LocalDateTime = LocalDateTime.parse("2028-01-03T00:00:00.000")
 
   val testService1EnrolmentStatus: UserEnrolmentStatus = UserEnrolmentStatus(
     testService1Id,

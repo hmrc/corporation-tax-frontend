@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
-import org.joda.time.DateTime
+import models._
 import org.jsoup.nodes.Document
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -32,15 +32,17 @@ import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import services._
-import models.{CtAccountBalance, CtAccountSummaryData, CtData, CtEmpty, CtEnrolment, CtGenericError, CtUnactivated, CtUtr}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.DateUtil
 
+import java.time.{LocalDateTime, ZoneOffset}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach with GuiceOneAppPerSuite {
+class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutures
+  with BeforeAndAfterEach with GuiceOneAppPerSuite with DateUtil {
 
   def assertLinkById(doc: Document,
                      linkId: String,
@@ -49,7 +51,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
                      expectedGAEvent: String,
                      expectedIsExternal: Boolean = false,
                      expectedOpensInNewTab: Boolean = false,
-                     expectedRole: String = "") {
+                     expectedRole: String = ""): Unit = {
     val link = doc.getElementById(linkId)
     assert(
       link.text() == expectedText,
@@ -331,7 +333,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 1,
-            createdOn = new DateTime("2018-10-21T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-21T08:00:00.000").utcOffset,
             taxType = "tax type"
           )
         )
@@ -357,13 +359,13 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 1,
-            createdOn = new DateTime("2018-10-21T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-21T08:00:00.000").utcOffset,
             taxType = "tax type"
           ),
           PaymentRecord(
             reference = "TEST56",
             amountInPence = 3,
-            createdOn = new DateTime("2018-10-22T08:00:00.000"),
+            createdOn = LocalDateTime.parse("2018-10-22T08:00:00.000").utcOffset,
             taxType = "tax type"
           )
         )

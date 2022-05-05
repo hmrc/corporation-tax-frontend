@@ -20,8 +20,7 @@ import config.FrontendAppConfig
 import connectors.payments.PaymentHistoryConnector
 import models.payments.PaymentStatus._
 import models.payments._
-import models.{CtEnrolment, PaymentRecordFailure}
-import org.joda.time.DateTime
+import models.{CtEnrolment, CtUtr, PaymentRecordFailure}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -29,14 +28,15 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import services.PaymentHistoryService
-import models.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.DateUtil
 
+import java.time.{LocalDateTime, OffsetDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerTest with MockitoSugar {
+class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerTest with MockitoSugar with DateUtil {
 
   val mockConfig: FrontendAppConfig = mock[FrontendAppConfig]
   val mockConnector: PaymentHistoryConnector = mock[PaymentHistoryConnector]
@@ -44,7 +44,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
   val testService = new PaymentHistoryService(mockConnector, mockConfig)(global)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  val date = new DateTime("2018-10-20T08:00:00.000")
+  lazy val date: OffsetDateTime = LocalDateTime.parse("2018-10-20T08:00:00.000").utcOffset
 
   "PaymentHistoryServiceSpec" when {
     "getPayments is called and getSAPaymentHistory toggle set to true" should {
@@ -66,7 +66,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
           PaymentRecord(
             reference = "reference number",
             amountInPence = 1,
-            createdOn = new DateTime("2018-10-20T08:00:00.000"),
+            createdOn = date,
             taxType = "tax type"
           )
         ))
@@ -95,7 +95,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
           PaymentRecord(
             reference = "reference number",
             amountInPence = 3,
-            createdOn = new DateTime("2018-10-19T08:00:00.000"),
+            createdOn = date.minusDays(1),
             taxType = "tax type"
           )
         ))

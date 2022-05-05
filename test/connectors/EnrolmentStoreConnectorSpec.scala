@@ -18,7 +18,6 @@ package connectors
 
 import _root_.models.{UserEnrolmentStatus, UserEnrolments}
 import base.SpecBase
-import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -27,6 +26,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -57,7 +57,7 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
         val expected = Right(
           UserEnrolments(
             List(
-              UserEnrolmentStatus("IR-PAYE", Some("active"), Some(new DateTime("2018-10-13T17:36:00.000").toLocalDateTime))
+              UserEnrolmentStatus("IR-PAYE", Some("active"), Some(LocalDateTime.parse("2018-10-13T17:36:00.000")))
             )
           )
         )
@@ -91,13 +91,13 @@ class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with Scala
           UserEnrolments(
             List(
               UserEnrolmentStatus(
-                "IR-PAYE", Some("active"), Some(new DateTime("2018-10-13T17:36:00.000").toLocalDateTime)
+                "IR-PAYE", Some("active"), Some(LocalDateTime.parse("2018-10-13T17:36:00.000"))
               ),
               UserEnrolmentStatus(
-                "VAT", Some("active"), Some(new DateTime("2018-10-13T17:36:00.000").toLocalDateTime)
+                "VAT", Some("active"), Some(LocalDateTime.parse("2018-10-13T17:36:00.000"))
               ),
               UserEnrolmentStatus(
-                "SA", Some("active"), Some(new DateTime("2018-10-13T17:36:00.000").toLocalDateTime)
+                "SA", Some("active"), Some(LocalDateTime.parse("2018-10-13T17:36:00.000"))
               )
             )
           )

@@ -17,13 +17,12 @@
 package services
 
 import javax.inject.{Inject, Singleton}
-
 import connectors.EnrolmentStoreConnector
 import models._
-import org.joda.time.{DateTime, DateTimeZone}
 import models.CtUtr
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.{OffsetDateTime, ZoneOffset}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -31,7 +30,7 @@ class EnrolmentStoreService @Inject()(connector: EnrolmentStoreConnector)(implic
 
   final val daysBetweenExpectedArrivalAndExpiry = 23
 
-  def showNewPinLink(enrolment: CtEnrolment, currentDate: DateTime)(implicit hc: HeaderCarrier): Future[Boolean] = enrolment match {
+  def showNewPinLink(enrolment: CtEnrolment, currentDate: OffsetDateTime)(implicit hc: HeaderCarrier): Future[Boolean] = enrolment match {
     case CtEnrolment(CtUtr(utr), false) =>
       val enrolmentDetailsList: Future[Either[String, UserEnrolments]] = connector.getEnrolments(utr)
       enrolmentDetailsList.map{
@@ -44,8 +43,8 @@ class EnrolmentStoreService @Inject()(connector: EnrolmentStoreConnector)(implic
           enrolmentStatus match {
             case Nil => true
             case _ =>
-              val expectedArrivalDate =
-                enrolmentStatus.head.enrolmentTokenExpiryDate.get.minusDays(daysBetweenExpectedArrivalAndExpiry).toDateTime(DateTimeZone.UTC).getMillis
+              val expectedArrivalDate: OffsetDateTime =
+                enrolmentStatus.head.enrolmentTokenExpiryDate.get.minusDays(daysBetweenExpectedArrivalAndExpiry).atOffset(ZoneOffset.UTC)
               currentDate.isAfter(expectedArrivalDate)
           }
         case _ => true
