@@ -1,17 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <jmxconfigurator/>
-    <contextlistener class="ch.qos.logback.classic.jul.LevelChangePropagator"/>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%-5level] %logger{15} - %msg%n%rEx</pattern>
-            <immediateFlush>false</immediateFlush>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/new_service.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
     </appender>
 
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} logger=[%logger] [%highlight(%.-5level)] - %msg%n%rEx</pattern>
+        </encoder>
+    </appender>
 
-    <root level="WARN">
+    <appender name="CONNECTOR_LOG_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/connectors.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%message%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="accesslog" level="OFF" additivity="false"/>
+
+    <logger name="com.ning.http.client" level="WARN"/>`
+    <logger name="org.asynchttpclient.netty.channel.DefaultChannelPool" level="WARN"/>`
+    <logger name="org.asynchttpclient.netty" level="WARN"/>`
+    <logger name="play.shaded.ahc.org.asynchttpclient.netty.channel.DefaultChannelPool" level="WARN"/>`
+    <logger name="akka" level="INFO"/>
+    <logger name="play" level="INFO"/>
+    <logger name="com.google.inject" level="OFF"/>
+    <logger name="ch.qos" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="play.core.server" level="WARN"/>
+    <logger name="com.typesafe.sslconfig" level="WARN"/>
+    <logger name="controllers.AssetsMetadataProvider" level="WARN"/>
+    <logger name="controllers.AssetsConfiguration" level="WARN"/>
+    <logger name="akka.event.slf4j" level="WARN"/>
+    <logger name="akka.actor.CoordinatedShutdown" level="WARN"/>
+    <logger name="play.api.internal.libs.concurrent.CoordinatedShutdownSupport" level="WARN"/>
+
+    <logger name="uk.gov" level="OFF"/>
+    <logger name="application" level="DEBUG"/>
+
+    <logger name="connector" level="ERROR">
+        <appender-ref ref="CONNECTOR_LOG_FILE"/>
+    </logger>
+
+
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE" />
     </root>
 

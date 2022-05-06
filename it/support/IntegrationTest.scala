@@ -27,7 +27,7 @@ trait IntegrationTest extends GuiceOneServerPerSuite
 
   lazy val wireMockServer: WireMockServer = new WireMockServer(wmConfig)
 
-  final override lazy val app:Application =
+  final override lazy val app: Application =
     new GuiceApplicationBuilder()
       .configure(essentialConfigs)
       .build()
@@ -45,7 +45,7 @@ trait IntegrationTest extends GuiceOneServerPerSuite
 
   final protected def microservices: Map[String, String] =
     Set[String]("ct", "auth", "enrolment-store-proxy", "pay-api", "business-tax-account")
-      .flatMap{ microServiceName =>
+      .flatMap { microServiceName =>
         val key: String = s"microservice.services.$microServiceName"
         Map(s"$key.host" -> wireMockServerHost, s"$key.port" -> wireMockServerPort.toString)
       }.toMap
