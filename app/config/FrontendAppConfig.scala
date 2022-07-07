@@ -52,6 +52,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig,
   def payApiUrl: String = config.baseUrl("pay-api")
 
   private lazy val businessAccountHost: String = config.getString("urls.business-account.host")
+  private lazy val tarHost: String = config.getString("urls.tar.host")
   private lazy val helpAndContactHost: String = config.getString("urls.help-and-contact.host")
   lazy val businessAccountHome: String = businessAccountHost + "/business-account"
 
@@ -66,6 +67,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig,
   def getFormsUrl(key: String): String = loadConfig(s"urls.forms.$key")
 
   def getBusinessAccountUrl(key: String): String = businessAccountHost + loadConfig(s"urls.business-account.$key")
+
+  def getTarUrl: String = tarHost + loadConfig(s"urls.tar.url")
 
   def getPortalUrl(key: String)(ctEnrolment: CtEnrolment)(implicit request: Request[_]): String =
     buildPortalUrl(portalHost + loadConfig(s"urls.external.portal.$key"))(ctEnrolment)
