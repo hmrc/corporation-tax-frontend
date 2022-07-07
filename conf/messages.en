@@ -50,14 +50,14 @@ subpage.utr = Corporation Tax Unique Taxpayer Reference (UTR):
 subpage.sidebar.dormant_close = Close your company or make it dormant
 
 subpage.sidebar.more_options = More options
-subpage.sidebar.cert_of_residence = Get a certificate of residence (opens in new tab)
+subpage.sidebar.cert_of_residence = Get a certificate of residence
 subpage.sidebar.help_and_contact = Help and contact
-subpage.sidebar.more = More Corporation Tax details (opens in new tab)
+subpage.sidebar.more = More Corporation Tax details
 subpage.sidebar.help_with_tax = Help
 subpage.sidebar.navigation = Corporation Tax sub navigation
 
-subpage.more_options.dormant = Make your company dormant (opens in new tab)
-subpage.more_options.close = Close your company (opens in new tab)
+subpage.more_options.dormant = Make your company dormant
+subpage.more_options.close = Close your company
 
 subpage.payments_notice = Payments will take up to 7 working days to show, depending on how you pay. After you complete your return your tax calculation will take up to 2 days.
 
@@ -74,8 +74,8 @@ account.summary.your_payments = Your payments
 account.summary.in_debit = You owe <span class="govuk-!-font-weight-bold">{0}</span>
 account.summary.in_credit = You are <span class="govuk-!-font-weight-bold">{0}</span> in credit
 account.summary.nothing_to_pay = You have nothing to pay
-account.summary.worked_out = How we worked this out (opens in new tab)
-account.summary.view_statement = View statement (opens in new tab)
+account.summary.worked_out = How we worked this out
+account.summary.view_statement = View statement
 account.summary.no_balance = No balance information to display
 account.summary.generic_error = We can’t display your Corporation Tax information at the moment.
 account.summary.generic_error.portal = Try refreshing the page in a few minutes or use the {0}old HMRC website{1}.

@@ -240,7 +240,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString must include("You have nothing to pay")
-          view.toString must include("View statement (opens in new tab)")
+          view.toString must include("View statement")
         }
       }
     }
@@ -256,7 +256,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString must include("You have nothing to pay")
-          view.toString must include("View statement (opens in new tab)")
+          view.toString must include("View statement")
         }
       }
     }
@@ -272,7 +272,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString() must include("You are <span class=\"govuk-!-font-weight-bold\">&pound;123.45</span> in credit")
-          view.toString() must include("How we worked this out (opens in new tab)")
+          view.toString() must include("How we worked this out")
         }
       }
     }
@@ -288,7 +288,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString() must include("You owe <span class=\"govuk-!-font-weight-bold\">&pound;999.99</span>")
-          view.toString() must include("How we worked this out (opens in new tab)")
+          view.toString() must include("How we worked this out")
         }
       }
     }
@@ -303,11 +303,10 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString() must include("How we worked this out (opens in new tab)")
+          view.toString() must include("How we worked this out")
           view.toString() must include("You owe <span class=\"govuk-!-font-weight-bold\">&pound;999.99</span>")
-          view.toString() must include("How we worked this out (opens in new tab)")
+          view.toString() must include("How we worked this out")
           view.toString() must include("http://localhost:8081/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
-          view.toString() must include("""target="_blank"""")
           view.toString() must include("""rel="external noopener"""")
         }
       }
