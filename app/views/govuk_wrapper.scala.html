@@ -121,7 +121,7 @@
 @govukTemplate(pageTitle = Some(title),
     headerBlock = hmrcStandardHeader(
     serviceName = Some(messages("site.service_name")),
-    serviceUrl = Some(appConfig.getBusinessAccountUrl("home")),
+    serviceUrl = Some(appConfig.getTarUrl),
     signOutUrl = Some(appConfig.getBusinessAccountUrl("signout"))
     ),
     bodyEndBlock = Some(bodyEnd),
