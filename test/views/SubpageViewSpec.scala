@@ -88,11 +88,11 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         doc,
         "cert-of-residence",
 
-        "Get a certificate of residence (opens in new tab)",
+        "Get a certificate of residence",
 
         "https://www.gov.uk/guidance/get-a-certificate-of-residence",
         expectedIsExternal = true,
-        expectedOpensInNewTab = true
+        expectedOpensInNewTab = false
       )
       assertLinkById(
         doc,
@@ -104,11 +104,11 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
         doc,
         "more",
 
-        "More Corporation Tax details (opens in new tab)",
+        "More Corporation Tax details",
 
         s"http://localhost:8081/portal/corporation-tax/org/$utr/account/balanceperiods?lang=eng",
         expectedIsExternal = true,
-        expectedOpensInNewTab = true
+        expectedOpensInNewTab = false
       )
     }
   }

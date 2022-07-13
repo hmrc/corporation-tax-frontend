@@ -42,7 +42,7 @@
     }
     <p class="govuk-body">@Html(balanceInformation)</p>
     <p class="govuk-body">@breakdownLink.map { link =>
-        <a class="govuk-link" id="ct-see-breakdown" href="@link" target="_blank" rel="external noopener">@breakdownText</a>
+        <a class="govuk-link" id="ct-see-breakdown" href="@link" rel="external noopener">@breakdownText</a>
     }
     </p>
     @payment_history(maybePaymentHistory)
