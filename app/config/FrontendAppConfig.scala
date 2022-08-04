@@ -76,6 +76,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig,
   def getHelpAndContactUrl(key: String): String = helpAndContactHost + config.getString(s"urls.help-and-contact.$key")
 
   lazy val languageTranslationEnabled: Boolean = config.getBoolean("toggles.welsh-translation")
+  lazy val bankPaymentFeatureSwitch: Boolean = config.getBoolean("toggles.bankPaymentFeatureSwitch")
 
   def languageMap: Map[String, Lang] = Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
 

@@ -117,6 +117,7 @@ card.view_your_corporation_tax_statement = View your Corporation Tax statement
 ########################################################
 
 payment.history.title = Your card payments in the last 7 days
+payment.history.title2 = Your card and bank account payments in the last 7 days
 payment.history.message = It will take up to 7 days to update your balance after each payment.
 payment.history.amount = You paid {0} on {1}
 payment.history.reference = Your payment reference number is {0}.

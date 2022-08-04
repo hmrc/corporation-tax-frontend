@@ -16,6 +16,8 @@
 
 package views.partials
 
+import config.FrontendAppConfig
+
 import java.util.UUID
 import models.PaymentRecordFailure
 import models.payments.PaymentRecord
@@ -24,6 +26,7 @@ import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Messages, MessagesApi}
+import play.api.test.Injecting
 import utils.DateUtil
 import views.html.partials.payment_history
 
@@ -31,9 +34,10 @@ import java.time.{LocalDateTime, OffsetDateTime}
 import scala.collection.JavaConverters._
 import scala.util.Random
 
-class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite with DateUtil {
+class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite with DateUtil with Injecting{
 
   implicit lazy val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
+  implicit val appConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
   def testReference: String = UUID.randomUUID().toString
 
@@ -49,7 +53,7 @@ class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite with DateU
     taxType = testTaxType
   )
 
-  def view(maybeHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]]): Document = Jsoup.parse(payment_history(maybeHistory).toString())
+  def view(maybeHistory: Either[PaymentRecordFailure.type, List[PaymentRecord]]): Document = Jsoup.parse(payment_history(maybeHistory, appConfig).toString())
 
   "PaymentHistory" when {
     "maybeHistory is Right and a list of exactly one record" should {
@@ -59,7 +63,7 @@ class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite with DateU
 
         val h2s = doc.getElementsByTag("h2")
         h2s.size() mustBe 1
-        h2s.get(0).text mustBe "Your card payments in the last 7 days"
+        h2s.get(0).text mustBe "Your card and bank account payments in the last 7 days"
 
         doc.getElementsByTag("ul").size mustBe 0
 
@@ -81,7 +85,7 @@ class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite with DateU
 
         val h2s = doc.getElementsByTag("h2")
         h2s.size() mustBe 1
-        h2s.get(0).text mustBe "Your card payments in the last 7 days"
+        h2s.get(0).text mustBe "Your card and bank account payments in the last 7 days"
 
         doc.getElementsByTag("ul").size mustBe 1
         val listItems = doc.getElementsByTag("li")

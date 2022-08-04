@@ -45,7 +45,7 @@
         <a class="govuk-link" id="ct-see-breakdown" href="@link" rel="external noopener">@breakdownText</a>
     }
     </p>
-    @payment_history(maybePaymentHistory)
+    @payment_history(maybePaymentHistory, appConfig )
     <a class="govuk-link govuk-button" id="ct-make-payment-link"
         href="@appConfig.getUrl("mainPage")/make-a-payment"
         data-sso="false"

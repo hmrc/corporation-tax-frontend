@@ -18,8 +18,7 @@ class PaymentHistoryConnectorISpec extends PlaySpec with IntegrationTest {
   val connector: PaymentHistoryConnector = inject[PaymentHistoryConnector]
 
   val searchTag: String = "testSearchTag"
-
-  val paymentHistoryConnectorUrl: String = s"/pay-api/payment/search/BTA/$searchTag?taxType=corporation-tax"
+  val paymentHistoryConnectorUrl: String = s"/pay-api/v2/payment/search/$searchTag?taxType=corporation-tax&searchScope=BTA"
 
   val expectedEmptyCtPaymentList: List[CtPaymentRecord] = List()
 

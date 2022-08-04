@@ -320,7 +320,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString.contains("Your card payments in the last 7 days") mustBe false
+          view.toString.contains("Your card and bank account payments in the last 7 days") mustBe false
         }
       }
     }
@@ -344,7 +344,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           .thenReturn(Future.successful(Right(history)))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString must include ("Your card payments in the last 7 days")
+          view.toString must include ("Your card and bank account payments in the last 7 days")
           view.toString must include ("You paid")
           view.toString must include ("<span class=\"govuk-!-font-weight-bold\">£0.01</span> on 21 October 2018")
           view.toString must include ("Your payment reference number is TEST56.")
@@ -376,7 +376,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           .thenReturn(Future.successful(Right(history)))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString must include ("Your card payments in the last 7 days")
+          view.toString must include ("Your card and bank account payments in the last 7 days")
           view.toString must include ("You paid")
           view.toString must include ("<span class=\"govuk-!-font-weight-bold\">£0.01</span> on 21 October 2018")
           view.toString must include ("You paid")
