@@ -117,6 +117,7 @@ card.view_your_corporation_tax_statement = Bwrw golwg ar eich datganiad Treth Go
 #######################################################
 
 payment.history.title = Eich taliadau cerdyn yn ystod y 7 diwrnod diwethaf
+payment.history.title2 = Eich taliadau trwy gerdyn a chyfrif banc yn ystod y 7 diwrnod diwethaf
 payment.history.message = Bydd yn cymryd hyd at 7 diwrnod i ddiweddaru’ch balans ar ôl pob taliad.
 payment.history.amount = Gwnaethoch dalu {0} ar {1}
 payment.history.reference = Cyfeirnod eich taliad yw {0}.

@@ -16,9 +16,11 @@
 
 package views.partials
 
+import config.FrontendAppConfig
 import models.PaymentRecordFailure
 import models.payments.PaymentRecord
 import play.api.i18n.Messages
+import play.api.test.Injecting
 import play.twirl.api.Html
 import utils.DateUtil
 import views.ViewSpecBase
@@ -26,7 +28,7 @@ import views.html.partials.{account_summary, payment_history}
 
 import java.time.LocalDateTime
 
-class AccountSummaryViewSpec extends ViewSpecBase with DateUtil{
+class AccountSummaryViewSpec extends ViewSpecBase with DateUtil with Injecting{
 
   val testPaymentRecord: PaymentRecord = PaymentRecord(
     reference = "TEST1",
@@ -79,8 +81,9 @@ class AccountSummaryViewSpec extends ViewSpecBase with DateUtil{
 
     "must include the payment_history section" in {
       implicit val implicitMessages: Messages = messages
+      implicit val appConfig: FrontendAppConfig = inject[FrontendAppConfig]
       view().toString() must include(
-        payment_history(testPaymentHistory).toString
+        payment_history(testPaymentHistory, appConfig).toString
       )
     }
   }
