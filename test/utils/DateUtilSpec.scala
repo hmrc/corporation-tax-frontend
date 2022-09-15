@@ -19,7 +19,7 @@ package utils
 import base.SpecBase
 import models.requests.AuthenticatedRequest
 import models.{CtEnrolment, CtUtr}
-import play.api.libs.json.{JsError, JsResult, JsValue, Json}
+import play.api.libs.json.{JsError, JsResult, JsValue, Json, Reads}
 import play.api.test.FakeRequest
 
 import java.time.{OffsetDateTime, ZoneOffset}
@@ -30,6 +30,7 @@ class DateUtilSpec extends SpecBase with DateUtil {
 
   implicit val request: AuthenticatedRequest[_] = AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true))
 
+  implicit val offsetDateTimeFromLocalDateTimeFormatReads: Reads[OffsetDateTime] = offsetDateTimeFromLocalDateTimeFormatReads()
 
   "offsetDateTimeFromLocalDateTimeFormatReads" when {
 
