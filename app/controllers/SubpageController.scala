@@ -40,8 +40,8 @@ class SubpageController @Inject()(appConfig: FrontendAppConfig,
     getAccountSummaryView(request)
   }
 
-  private def getAccountSummaryView(request: ServiceInfoRequest[AnyContent]): Future[Result] = {
-    implicit val requestToUse: AuthenticatedRequest[AnyContent] = request.request
+  private def getAccountSummaryView(request: ServiceInfoRequest[_]): Future[Result] = {
+    implicit val requestToUse: AuthenticatedRequest[_] = request.request
 
     accountSummaryHelper.getAccountSummaryView().map { accountSummaryView =>
       Ok(subpage(appConfig, request.request.ctEnrolment, accountSummaryView)(request.serviceInfoContent))

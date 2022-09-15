@@ -29,6 +29,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import models.CtUtr
+import play.api.Play.materializer
 import views.ViewSpecBase
 import views.html.subpage
 
@@ -57,11 +58,11 @@ class SubpageControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   val ctEnrolment: CtEnrolment = CtEnrolment(CtUtr("utr"), isActivated = true)
 
-  def requestWithEnrolment(activated: Boolean): ServiceInfoRequest[AnyContent] = {
-    ServiceInfoRequest[AnyContent](AuthenticatedRequest(FakeRequest(), "", ctEnrolment), HtmlFormat.empty)
+  def requestWithEnrolment(activated: Boolean): ServiceInfoRequest[_] = {
+    ServiceInfoRequest(AuthenticatedRequest(FakeRequest(), "", ctEnrolment), HtmlFormat.empty)
   }
 
-  val fakeRequestWithEnrolments: ServiceInfoRequest[AnyContent] = requestWithEnrolment(activated = true)
+  val fakeRequestWithEnrolments: ServiceInfoRequest[_] = requestWithEnrolment(activated = true)
 
   val expected: String = subpage(frontendAppConfig, ctEnrolment, accountSummary)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
 

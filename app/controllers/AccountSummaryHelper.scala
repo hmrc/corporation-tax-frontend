@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 
 import javax.inject.Inject
 import models.payments.PaymentRecord
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import models.{CtAccountBalance, CtAccountFailure, CtAccountSummaryData, CtData, CtUnactivated, PaymentRecordFailure}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.MessagesControllerComponents

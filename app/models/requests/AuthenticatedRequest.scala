@@ -19,4 +19,6 @@ package models.requests
 import models.CtEnrolment
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AuthenticatedRequest[A](request: Request[A], externalId: String, ctEnrolment: CtEnrolment) extends WrappedRequest[A](request)
+import javax.inject.Inject
+
+case class AuthenticatedRequest[A]@Inject()(request: Request[A], externalId: String, ctEnrolment: CtEnrolment) extends WrappedRequest[A](request)

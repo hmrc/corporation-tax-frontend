@@ -17,13 +17,19 @@
 package utils
 
 import base.SpecBase
+import models.requests.AuthenticatedRequest
+import models.{CtEnrolment, CtUtr}
 import play.api.libs.json.{JsError, JsResult, JsValue, Json}
+import play.api.test.FakeRequest
 
 import java.time.{OffsetDateTime, ZoneOffset}
 
 class DateUtilSpec extends SpecBase with DateUtil {
 
   val offsetDateTime: OffsetDateTime = OffsetDateTime.of(2022,4,1,12,0,0,0,ZoneOffset.UTC)
+
+  implicit val request: AuthenticatedRequest[_] = AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true))
+
 
   "offsetDateTimeFromLocalDateTimeFormatReads" when {
 
@@ -43,6 +49,8 @@ class DateUtilSpec extends SpecBase with DateUtil {
 
         val offsetDateTimeJson: JsValue = Json.toJson("2022-04-01T12:00Z")
 
+        println(Console.GREEN_B + offsetDateTimeJson + Console.RESET)
+
         offsetDateTimeJson.as[OffsetDateTime] mustBe offsetDateTime
       }
     }
@@ -54,6 +62,8 @@ class DateUtilSpec extends SpecBase with DateUtil {
         val notADateJson: JsValue = Json.toJson("This is not a date")
 
         val result: JsResult[OffsetDateTime] = notADateJson.validate[OffsetDateTime]
+
+        println(Console.GREEN_B + result + Console.RESET)
 
         result.isInstanceOf[JsError] mustBe true
         result.leftSideValue.toString.contains("not a valid date Text 'This is not a date' could not be parsed at index 0") mustBe true
@@ -69,7 +79,7 @@ class DateUtilSpec extends SpecBase with DateUtil {
 
         val string: String = "2022-04-01T12:00:00.000"
 
-        string.parseOffsetDateTimeFromLocalDateTimeFormat() mustBe Right(offsetDateTime)
+        string.parseOffsetDateTimeFromLocalDateTimeFormat()(request) mustBe Right(offsetDateTime)
       }
     }
 

@@ -18,14 +18,15 @@ package models.payments
 
 import models.PaymentRecordFailure
 import models.payments.PaymentRecord.DateFormatting
-import play.api.Logging
+import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
 import play.api.libs.json._
 import play.twirl.api.HtmlFormat
-import utils.{CurrencyFormatter, DateUtil}
+import utils.{CurrencyFormatter, DateUtil, LoggingUtil}
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, OffsetDateTime}
+import java.time.{LocalDate, LocalDateTime, OffsetDateTime, ZoneId}
+import scala.util.Try
 
 case class PaymentRecord(reference: String,
                          amountInPence: Long,
@@ -43,7 +44,7 @@ case class PaymentRecord(reference: String,
   }
 }
 
-object PaymentRecord extends DateUtil with Logging {
+object PaymentRecord extends DateUtil with LoggingUtil{
 
   private[payments] object DateFormatting {
     def formatFull(date: LocalDate)(implicit messages: Messages): String = {
@@ -55,6 +56,38 @@ object PaymentRecord extends DateUtil with Logging {
   implicit val dateTimeWrites: Writes[OffsetDateTime] = Writes { dateTime =>
     JsString(dateTime.toLocalDateTime.toString)
   }
+
+//  implicit val dateTimeReads: Reads[OffsetDateTime] = Reads {
+//    case JsString("") => JsError()
+//    case JsString(dateString) => {
+//      val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
+//      val offset = ZoneId.of("UTC").getRules.getOffset(dateTime)
+//      JsSuccess(OffsetDateTime.of( dateTime, offset))
+//    }
+//    case _  => JsError()
+//  }
+
+
+//  implicit val dateTimeReads: Reads[OffsetDateTime] = Reads {
+//    case JsString("") => JsError("Date is empty")
+//    case JsString(dateString) => {
+//      def getOffsetSuccess(localDateTime: LocalDateTime) = {
+//        JsSuccess(OffsetDateTime.of(localDateTime, ZoneId.of("UTC").getRules.getOffset(localDateTime)))
+//      }
+//      Try(LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))
+//        .map(getOffsetSuccess)
+//        .fold(
+//          fail => {
+//            println("I fail")
+//            println(fail)
+//            val localDate = LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+//            getOffsetSuccess(localDate)
+//          },
+//          identity
+//        )
+//    }
+//    case _ => JsError("Unable to parse Date not correct JsType")
+//  }
 
   implicit lazy val format: OFormat[PaymentRecord] = Json.format[PaymentRecord]
 
@@ -84,7 +117,7 @@ case class CtPaymentRecord(reference: String,
                            amountInPence: Long,
                            status: PaymentStatus,
                            createdOn: String, //BTA expects the date time string to be in LocalDateTime format e.g. 2022-04-01T00:00:00.000
-                           taxType: String) extends DateUtil with Logging {
+                           taxType: String) extends DateUtil with LoggingUtil {
 
   def isValid(createdOn: OffsetDateTime, currentDateTime: OffsetDateTime): Boolean = {
     createdOn.plusDays(7).isAfter(currentDateTime)
@@ -92,7 +125,7 @@ case class CtPaymentRecord(reference: String,
 
   def isSuccessful: Boolean = status == PaymentStatus.Successful
 
-  def validateAndConvertToPaymentRecord(currentDateTime: OffsetDateTime): Option[PaymentRecord] = {
+  def validateAndConvertToPaymentRecord(currentDateTime: OffsetDateTime)(implicit request: AuthenticatedRequest[_]): Option[PaymentRecord] = {
     createdOn.parseOffsetDateTimeFromLocalDateTimeFormat() match {
       case Right(offsetDateTime) if isValid(offsetDateTime, currentDateTime) && isSuccessful =>
         Some(PaymentRecord(

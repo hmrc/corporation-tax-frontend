@@ -20,7 +20,9 @@ import play.api.libs.json.Json
 import play.api.mvc.WrappedRequest
 import play.twirl.api.Html
 
-case class ServiceInfoRequest[A](request: AuthenticatedRequest[A], serviceInfoContent: Html) extends WrappedRequest[A](request)
+import javax.inject.Inject
+
+case class ServiceInfoRequest[A]@Inject()(request: AuthenticatedRequest[A], serviceInfoContent: Html) extends WrappedRequest[A](request)
 
 case class ListLinks(message: String, url: String, alerts: Option[String] = None, showBoolean: Option[Boolean] = Some(true))
 

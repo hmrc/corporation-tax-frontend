@@ -18,7 +18,7 @@ package connectors
 
 import base.SpecBase
 import controllers.ServiceInfoController
-import models.requests.{AuthenticatedRequest, ListLinks, NavContent, NavLinks}
+import models.requests.{AuthenticatedRequest, ListLinks, NavContent, NavLinks, ServiceInfoRequest}
 import models.{CtEnrolment, CtUtr}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -26,8 +26,9 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Lang, Messages}
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import services.PartialService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.service_info
@@ -37,6 +38,10 @@ import scala.concurrent.Future
 
 class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
 
+  implicit val request: ServiceInfoRequest[_] = ServiceInfoRequest(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
   val mockPartialService: PartialService = mock[PartialService]
   val mockServiceInfoPartialConnector: ServiceInfoPartialConnector = mock[ServiceInfoPartialConnector]
   val testView: service_info = app.injector.instanceOf[service_info]
@@ -67,7 +72,7 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
         ListLinks("testEnHelp", "testUrl"),
       )
 
-      when(mockServiceInfoPartialConnector.getNavLinks()(any(), any()))
+      when(mockServiceInfoPartialConnector.getNavLinks()(any(), any(), any()))
         .thenReturn(Future.successful(Some(navContent)))
 
       when(mockPartialService.partialList(any())(any())).thenReturn(listLinks)
@@ -83,7 +88,7 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
 
       implicit val messages: Messages = messagesApi.preferred(Seq(Lang("en")))
 
-      when(mockServiceInfoPartialConnector.getNavLinks()(any(), any()))
+      when(mockServiceInfoPartialConnector.getNavLinks()(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
       when(mockPartialService.partialList(any())(any())).thenReturn(Seq())

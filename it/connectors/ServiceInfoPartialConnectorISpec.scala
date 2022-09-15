@@ -1,8 +1,12 @@
 package connectors
 
-import models.requests.{NavContent, NavLinks}
+import models.{CtEnrolment, CtUtr}
+import models.requests.{AuthenticatedRequest, NavContent, NavLinks, ServiceInfoRequest}
 import org.scalatestplus.play.PlaySpec
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import support.IntegrationTest
 import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
@@ -12,6 +16,10 @@ import scala.concurrent.Future
 
 class ServiceInfoPartialConnectorISpec extends PlaySpec with IntegrationTest {
 
+  implicit val request: ServiceInfoRequest[_] = ServiceInfoRequest(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val connector: ServiceInfoPartialConnector = inject[ServiceInfoPartialConnector]

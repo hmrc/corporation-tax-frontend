@@ -17,16 +17,17 @@
 package utils
 
 
-import play.api.Logging
+import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import play.api.libs.json.{JsError, JsSuccess, Reads}
+import play.api.mvc.AnyContent
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, OffsetDateTime, ZoneOffset}
 import scala.util.{Failure, Success, Try}
 
-trait DateUtil {
+trait DateUtil extends LoggingUtil {
 
-  implicit val offsetDateTimeFromLocalDateTimeFormatReads: Reads[OffsetDateTime] = { json =>
+  implicit def offsetDateTimeFromLocalDateTimeFormatReads()(implicit request: AuthenticatedRequest[_]): Reads[OffsetDateTime] = { json =>
     json.as[String].parseOffsetDateTimeFromLocalDateTimeFormat() match {
       case Right(value) => JsSuccess(value)
       case Left(error) => JsError("not a valid date " + error.errorMessage)
@@ -37,14 +38,15 @@ trait DateUtil {
     def utcOffset: OffsetDateTime = localDateTime.atOffset(ZoneOffset.UTC)
   }
 
-  implicit class StringExtensions(string: String) extends Logging {
+  implicit class StringExtensions(string: String) {
 
-    def parseOffsetDateTimeFromLocalDateTimeFormat(formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME): Either[DateError, OffsetDateTime] = {
+    def parseOffsetDateTimeFromLocalDateTimeFormat(formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME)(implicit request: AuthenticatedRequest[_])
+                                                  : Either[DateError, OffsetDateTime] = {
 
       Try(LocalDateTime.parse(string, formatter).utcOffset) match {
         case Success(offsetDateTime) => Right(offsetDateTime)
         case Failure(exception) =>
-          logger.warn(s"[DateUtil][parseOffsetDateTimeFromLocalDateTimeFormat] could not parse createdOn dateTime" +
+          warnLog(s"[DateUtil][parseOffsetDateTimeFromLocalDateTimeFormat] could not parse createdOn dateTime" +
             s"\n createdOn: $string" +
             s"\n exception: ${exception.getMessage}"
           )
