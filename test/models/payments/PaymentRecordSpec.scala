@@ -48,6 +48,7 @@ class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite with DateUt
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages: Messages = messagesApi.preferred(FakeRequest())
 
+  implicit val offsetDateTimeFromLocalDateTimeFormatReads: Reads[OffsetDateTime] = offsetDateTimeFromLocalDateTimeFormatReads()
   def testJson(createOn: String): String =
     s"""
        |{

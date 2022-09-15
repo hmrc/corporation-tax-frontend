@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
 import java.time.{LocalDateTime, OffsetDateTime, ZoneOffset}
 import scala.util.{Failure, Success, Try}
 
-trait DateUtil extends LoggingUtil {
+class DateUtil extends LoggingUtil {
 
   implicit def offsetDateTimeFromLocalDateTimeFormatReads()(implicit request: AuthenticatedRequest[_]): Reads[OffsetDateTime] = { json =>
     json.as[String].parseOffsetDateTimeFromLocalDateTimeFormat() match {

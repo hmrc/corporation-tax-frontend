@@ -17,7 +17,7 @@
 package models
 
 import models.payments.PaymentRecord
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json, OFormat}
 
 case class Link(href: String,
                 id: String,
@@ -42,7 +42,25 @@ case class Card(title: String,
                 accountBalance: Option[BigDecimal] = None)
 
 object Card {
-  implicit val cardFormat: OFormat[Card] = Json.format[Card]
+  implicit def eitherErrorOrPaymentRecordFormat:  Format[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = PaymentRecord.eitherPaymentHistoryFormatter()
+
+  implicit def paymentRecordsReads()(implicit request: AuthenticatedRequest[_]): Reads[PaymentRecord] = (
+    (__ \ "reference").read[String] and
+      (__ \ "amountInPence").read[Long] and
+      (__ \ "createdOn").read[OffsetDateTime](offsetDateTimeFromLocalDateTimeFormatReads()) and
+      (__ \ "taxType").read[String]
+    ) (PaymentRecord.apply(_, _, _, _))
+
+  implicit def paymentRecordsWrites: Writes[PaymentRecord] = Writes { paymentRecord =>
+    JsObject(Seq(
+      "reference" -> JsString(paymentRecord.reference),
+      "amountInPence" -> JsNumber(paymentRecord.amountInPence),
+      "createdOn" -> Json.toJson(paymentRecord.createdOn)(dateTimeWrites),
+      "taxType" -> JsString(paymentRecord.taxType),
+    ))
+  }
+
+  implicit def cardFormat(implicit request): OFormat[Card] = Json.format[Card]
 }
 
 case object PaymentRecordFailure

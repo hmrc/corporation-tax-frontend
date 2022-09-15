@@ -17,9 +17,12 @@
 package models.payments
 
 import models.PaymentRecordFailure
-import models.payments.PaymentRecord.DateFormatting
+import models.payments.PaymentRecord.{DateFormatting, paymentRecordsWrites}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Format.GenericFormat
+import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json._
 import play.twirl.api.HtmlFormat
 import utils.{CurrencyFormatter, DateUtil, LoggingUtil}
@@ -44,7 +47,7 @@ case class PaymentRecord(reference: String,
   }
 }
 
-object PaymentRecord extends DateUtil with LoggingUtil{
+object PaymentRecord extends DateUtil with LoggingUtil {
 
   private[payments] object DateFormatting {
     def formatFull(date: LocalDate)(implicit messages: Messages): String = {
@@ -52,46 +55,32 @@ object PaymentRecord extends DateUtil with LoggingUtil{
     }
   }
 
-  //BTA expects the date time string to be in LocalDateTime format e.g. 2022-04-01T00:00:00.000
+
+  //bta expects the date time string to be in localdatetime format e.g. 2021-04-01t00:00:00.000
   implicit val dateTimeWrites: Writes[OffsetDateTime] = Writes { dateTime =>
     JsString(dateTime.toLocalDateTime.toString)
   }
+//  implicit val offsetDateTimeFromLocalDateTimeFormatReads: Reads[OffsetDateTime] = offsetDateTimeFromLocalDateTimeFormatReads()
+  //  (implicit request: AuthenticatedRequest[_] )
+  implicit def paymentRecordsReads()(implicit request: AuthenticatedRequest[_]) : Reads[PaymentRecord] = (
+    (__ \ "reference").read[String] and
+      (__ \ "amountInPence").read[Long] and
+      (__ \ "createdOn").read[OffsetDateTime](offsetDateTimeFromLocalDateTimeFormatReads()) and
+      (__ \ "taxType").read[String]
+    )(PaymentRecord.apply(_, _, _, _))
+ implicit def paymentRecordsWrites : Writes[PaymentRecord] = Writes{ paymentRecord =>
+     JsObject(Seq(
+       "reference" -> JsString(paymentRecord.reference),
+       "amountInPence" -> JsNumber(paymentRecord.amountInPence),
+       "createdOn" -> Json.toJson(paymentRecord.createdOn)(dateTimeWrites),
+       "taxType" -> JsString(paymentRecord.taxType),
+     ))
+ }
+  implicit def paymentRecordformat()(implicit request: AuthenticatedRequest[_]): Format[PaymentRecord] =
+    Format[PaymentRecord](paymentRecordsReads()(request), paymentRecordsWrites)
 
-//  implicit val dateTimeReads: Reads[OffsetDateTime] = Reads {
-//    case JsString("") => JsError()
-//    case JsString(dateString) => {
-//      val dateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
-//      val offset = ZoneId.of("UTC").getRules.getOffset(dateTime)
-//      JsSuccess(OffsetDateTime.of( dateTime, offset))
-//    }
-//    case _  => JsError()
-//  }
-
-
-//  implicit val dateTimeReads: Reads[OffsetDateTime] = Reads {
-//    case JsString("") => JsError("Date is empty")
-//    case JsString(dateString) => {
-//      def getOffsetSuccess(localDateTime: LocalDateTime) = {
-//        JsSuccess(OffsetDateTime.of(localDateTime, ZoneId.of("UTC").getRules.getOffset(localDateTime)))
-//      }
-//      Try(LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")))
-//        .map(getOffsetSuccess)
-//        .fold(
-//          fail => {
-//            println("I fail")
-//            println(fail)
-//            val localDate = LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-//            getOffsetSuccess(localDate)
-//          },
-//          identity
-//        )
-//    }
-//    case _ => JsError("Unable to parse Date not correct JsType")
-//  }
-
-  implicit lazy val format: OFormat[PaymentRecord] = Json.format[PaymentRecord]
-
-  private def eitherPaymentHistoryReader: Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+  private def eitherPaymentHistoryReader()(implicit request: AuthenticatedRequest[_]): Reads[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
+    implicit val format: Format[PaymentRecord] = paymentRecordformat()(request)
     (json: JsValue) => json.validate[List[PaymentRecord]] match {
       case JsSuccess(validList, jsPath) =>
         logger.debug(s"[PaymentRecord][eitherPaymentHistoryReader] validList: $validList")
@@ -100,6 +89,7 @@ object PaymentRecord extends DateUtil with LoggingUtil{
         logger.debug(s"[PaymentRecord][eitherPaymentHistoryReader] failed to read payment history: $json")
         JsSuccess(Left(PaymentRecordFailure))
     }
+  }
 
   private[models] val paymentRecordFailureString = "Bad Gateway"
 
@@ -108,8 +98,9 @@ object PaymentRecord extends DateUtil with LoggingUtil{
     case _ => JsString(paymentRecordFailureString)
   }
 
-  implicit lazy val eitherPaymentHistoryFormatter: Format[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
+  implicit def eitherPaymentHistoryFormatter()(implicit request: AuthenticatedRequest[_]): Format[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
     Format(eitherPaymentHistoryReader, eitherPaymentHistoryWriter)
+  }
 
 }
 
