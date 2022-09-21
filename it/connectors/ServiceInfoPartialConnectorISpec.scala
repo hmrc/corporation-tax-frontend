@@ -1,7 +1,9 @@
 package connectors
 
-import models.requests.{NavContent, NavLinks}
+import models.requests.{AuthenticatedRequest, NavContent, NavLinks}
+import models.{CtEnrolment, CtUtr}
 import org.scalatestplus.play.PlaySpec
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.IntegrationTest
 import support.stubs.StubConnector
@@ -11,6 +13,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ServiceInfoPartialConnectorISpec extends PlaySpec with IntegrationTest {
+
+  implicit val request: AuthenticatedRequest[_] = AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

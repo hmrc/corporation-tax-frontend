@@ -17,16 +17,16 @@
 package controllers
 
 import connectors.ServiceInfoPartialConnector
-import javax.inject.Inject
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import play.api.i18n.Messages
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import services.PartialService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.service_info
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ServiceInfoController @Inject()(serviceInfoPartialConnector: ServiceInfoPartialConnector,
@@ -35,6 +35,7 @@ class ServiceInfoController @Inject()(serviceInfoPartialConnector: ServiceInfoPa
                                       partialService: PartialService) extends FrontendController(mcc) {
 
   def serviceInfoPartial[A](request: AuthenticatedRequest[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Html] = {
+    implicit val authenticatedRequest = request
     val maybeNavLinks = serviceInfoPartialConnector.getNavLinks()
     implicit val messages: Messages = mcc.messagesApi.preferred(request.request)
     for {

@@ -19,10 +19,10 @@ package services
 import config.FrontendAppConfig
 import models._
 import models.payments.PaymentRecord
-import models.requests.AuthenticatedRequest
-import play.api.Logging
+import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.LoggingUtil
 
 import java.time.OffsetDateTime
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
                                      appConfig: FrontendAppConfig,
                                      ctService: CtService,
                                      ctPartialBuilder: CtPartialBuilder,
-                                     paymentHistoryService: PaymentHistoryService)(implicit ec: ExecutionContext) extends Logging{
+                                     paymentHistoryService: PaymentHistoryService)(implicit ec: ExecutionContext) extends LoggingUtil{
 
   def buildCtCard()(implicit request: AuthenticatedRequest[_], hc: HeaderCarrier, messages: Messages): Future[Card] = {
     for {
@@ -57,7 +57,7 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
           ctAccountBalance = data.accountSummary.accountBalance.flatMap(_.amount)
         )
         case _ =>
-          logger.warn(s"[CtCardBuilderService][buildCtCard] failed to build card")
+          warnLog(s"[CtCardBuilderService][buildCtCard] failed to build card")
           throw new Exception
       }
     }

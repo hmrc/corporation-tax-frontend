@@ -17,7 +17,7 @@
 package views
 
 import play.api.test.Injecting
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import views.html.error_template
 
 class ErrorViewSpec extends ViewSpecBase with Injecting {
