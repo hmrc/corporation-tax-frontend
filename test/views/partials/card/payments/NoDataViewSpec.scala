@@ -16,14 +16,13 @@
 
 package views.partials.card.payments
 
+import models.{CtEnrolment, CtUtr}
 import models.requests.AuthenticatedRequest
-import play.api.mvc.{AnyContent, AnyContentAsEmpty}
+import org.jsoup.nodes.Document
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import views.ViewSpecBase
 import views.html.partials.card.payments.no_data
-import models.CtEnrolment
-import org.jsoup.nodes.Document
-import models.CtUtr
 
 class NoDataViewSpec extends ViewSpecBase {
 

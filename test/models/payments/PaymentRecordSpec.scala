@@ -16,19 +16,24 @@
 
 package models.payments
 
-import models.PaymentRecordFailure
+import models.requests.AuthenticatedRequest
+import models.{CtEnrolment, CtUtr, PaymentRecordFailure}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
 import play.api.test.FakeRequest
 import utils.DateUtil
+import models.payments.PaymentRecord
 
 import java.time.{OffsetDateTime, ZoneOffset}
 import java.util.UUID
 import scala.util.Random
 
 class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite with DateUtil {
+
+  implicit val request: AuthenticatedRequest[_] = AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true))
+//  implicit val date = validateAndConvertToPaymentRecord()
 
   val testReference: String = UUID.randomUUID().toString
   val testAmountInPence: Long = Random.nextLong()

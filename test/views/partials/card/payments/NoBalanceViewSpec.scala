@@ -16,14 +16,13 @@
 
 package views.partials.card.payments
 
-import models.CtEnrolment
+import models.{CtEnrolment, CtUtr}
 import models.requests.AuthenticatedRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import models.CtUtr
 import views.ViewSpecBase
-import views.html.partials.card.payments.{no_balance, no_data}
+import views.html.partials.card.payments.no_balance
 
 class NoBalanceViewSpec extends ViewSpecBase {
 

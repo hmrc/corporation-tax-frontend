@@ -18,12 +18,12 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json.toJson
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CtCardBuilderService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.LoggingUtil
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -34,7 +34,7 @@ class PartialController @Inject()(mcc: MessagesControllerComponents,
                                   accountSummaryHelper: AccountSummaryHelper,
                                   appConfig: FrontendAppConfig,
                                   ctCardBuilderService: CtCardBuilderService)(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with Logging {
+  extends FrontendController(mcc) with I18nSupport with LoggingUtil {
 
   def getCard: Action[AnyContent] = authenticate.async { implicit request =>
     ctCardBuilderService.buildCtCard().map(card => {

@@ -17,7 +17,6 @@
 package utils
 
 
-import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import java.time.format.DateTimeFormatter
@@ -37,26 +36,24 @@ trait DateUtil {
     def utcOffset: OffsetDateTime = localDateTime.atOffset(ZoneOffset.UTC)
   }
 
-  implicit class StringExtensions(string: String) extends Logging {
+   implicit class StringExtensions(string: String) {
 
-    def parseOffsetDateTimeFromLocalDateTimeFormat(formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME): Either[DateError, OffsetDateTime] = {
+    def parseOffsetDateTimeFromLocalDateTimeFormat(formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME)
+                                                  : Either[DateError, OffsetDateTime] = {
 
       Try(LocalDateTime.parse(string, formatter).utcOffset) match {
         case Success(offsetDateTime) => Right(offsetDateTime)
-        case Failure(exception) =>
-          logger.warn(s"[DateUtil][parseOffsetDateTimeFromLocalDateTimeFormat] could not parse createdOn dateTime" +
-            s"\n createdOn: $string" +
-            s"\n exception: ${exception.getMessage}"
-          )
-          Left(DateParseError(exception.getMessage))
+        case Failure(exception) => Left(DateParseError(exception.getMessage, string))
       }
     }
   }
 
   sealed trait DateError {
     val errorMessage: String
+    val dateFailedToParse: String
   }
-  case class DateParseError(e: String) extends DateError {
+  case class DateParseError(e: String, dateFailed: String) extends DateError {
+    val dateFailedToParse: String = dateFailed
     val errorMessage: String = e
   }
 }

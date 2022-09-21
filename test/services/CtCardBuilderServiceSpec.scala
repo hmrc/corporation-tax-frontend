@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import config.FrontendAppConfig
+import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -27,7 +28,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import models.{Card, CtAccountBalance, CtAccountSummaryData, CtData, CtEmpty, CtEnrolment, CtGenericError, CtUnactivated, CtUtr, Link}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -126,7 +126,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     "return a card with Payments information when getting CtData" in {
       when(mockCtService.fetchCtModel(any())(any(),any()))
         .thenReturn(Future.successful(Right(Some(ctData))))
-      when(mockHistoryService.getPayments(any(), any())(any()))
+      when(mockHistoryService.getPayments(any(), any())(any(), any()))
         .thenReturn(Future.successful(Right(Nil)))
 
       when(mockPartialBuilder.buildPaymentsPartial(any())(any(),any()))

@@ -17,11 +17,9 @@
 package controllers
 
 import config.FrontendAppConfig
-
-import javax.inject.Inject
+import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
-import models.{CtAccountBalance, CtAccountFailure, CtAccountSummaryData, CtData, CtUnactivated, PaymentRecordFailure}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.MessagesControllerComponents
 import play.twirl.api.HtmlFormat
@@ -31,6 +29,7 @@ import utils.MoneyPounds
 import views.html.partials.{account_summary, generic_error, not_activated}
 
 import java.time.OffsetDateTime
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,

@@ -17,13 +17,18 @@
 package utils
 
 import base.SpecBase
-import play.api.libs.json.{JsError, JsResult, JsValue, Json}
+import models.requests.AuthenticatedRequest
+import models.{CtEnrolment, CtUtr}
+import play.api.libs.json._
+import play.api.test.FakeRequest
 
 import java.time.{OffsetDateTime, ZoneOffset}
 
 class DateUtilSpec extends SpecBase with DateUtil {
 
   val offsetDateTime: OffsetDateTime = OffsetDateTime.of(2022,4,1,12,0,0,0,ZoneOffset.UTC)
+
+  implicit val request: AuthenticatedRequest[_] = AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true))
 
   "offsetDateTimeFromLocalDateTimeFormatReads" when {
 
@@ -90,7 +95,7 @@ class DateUtilSpec extends SpecBase with DateUtil {
         val string: String = "This is not a date"
 
         string.parseOffsetDateTimeFromLocalDateTimeFormat() mustBe
-          Left(DateParseError("Text 'This is not a date' could not be parsed at index 0"))
+          Left(DateParseError("Text 'This is not a date' could not be parsed at index 0", "This is not a date"))
       }
     }
   }

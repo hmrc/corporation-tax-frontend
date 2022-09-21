@@ -17,12 +17,13 @@
 package connectors.payments
 
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
 import models.payments.CtPaymentRecord
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.payments.PaymentHistoryConnector
 import models.payments.PaymentStatus._
 import models.payments._
+import models.requests.AuthenticatedRequest
 import models.{CtEnrolment, CtUtr, PaymentRecordFailure}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -27,6 +28,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
+import play.api.test.FakeRequest
 import services.PaymentHistoryService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateUtil
@@ -38,6 +40,7 @@ import scala.concurrent.Future
 
 class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerTest with MockitoSugar with DateUtil {
 
+  implicit val request: AuthenticatedRequest[_] = AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true))
   val mockConfig: FrontendAppConfig = mock[FrontendAppConfig]
   val mockConnector: PaymentHistoryConnector = mock[PaymentHistoryConnector]
 
