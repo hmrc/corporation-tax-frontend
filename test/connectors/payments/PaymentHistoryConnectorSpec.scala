@@ -17,15 +17,19 @@
 package connectors.payments
 
 import base.SpecBase
-import models.CtUtr
+import models.{CtEnrolment, CtUtr}
 import models.payments.PaymentStatus.{Invalid, Successful}
 import models.payments._
+import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.libs.json.Json
+import play.api.mvc.Request
+import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http._
 
 import scala.concurrent.Future
@@ -36,6 +40,11 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
   val connector = new PaymentHistoryConnector(mockHttp, frontendAppConfig)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   val ctUtr: CtUtr = CtUtr("utr")
 

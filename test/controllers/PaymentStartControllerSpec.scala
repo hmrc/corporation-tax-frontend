@@ -48,10 +48,10 @@ class PaymentStartControllerSpec extends SpecBase with MockitoSugar {
 
   "Payment Controller" must {
     "return See Other and a NextUrl for a GET with the correct user information available" in {
-      when(mockPayConnector.ctPayLink(any())(any(), any()))
+      when(mockPayConnector.ctPayLink(any())(any(), any(), any()))
         .thenReturn(Future.successful(NextUrl(testPayUrl)))
 
-      when(mockCtService.fetchCtModel(any())(any(),any()))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Right(Some(testCtData))))
 
       val result: Future[Result] = controller.makeAPayment(fakeRequest)
@@ -60,10 +60,10 @@ class PaymentStartControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "return Bad Request and the error page when the user has no account balance" in {
-      when(mockPayConnector.ctPayLink(any())(any(), any()))
+      when(mockPayConnector.ctPayLink(any())(any(), any(), any()))
         .thenReturn(Future.successful(NextUrl(testPayUrl)))
 
-      when(mockCtService.fetchCtModel(any())(any(),any()))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Right(Some(testCtDataNoAccountBalance))))
 
       val result: Future[Result] = controller.makeAPayment(fakeRequest)
@@ -72,10 +72,10 @@ class PaymentStartControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "return Bad Request and the error page when CtGenericError is returend " in {
-      when(mockPayConnector.ctPayLink(any())(any(), any()))
+      when(mockPayConnector.ctPayLink(any())(any(), any(), any()))
         .thenReturn(Future.successful(NextUrl(testPayUrl)))
 
-      when(mockCtService.fetchCtModel(any())(any(),any()))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Left(CtGenericError)))
 
       val result: Future[Result] = controller.makeAPayment(fakeRequest)

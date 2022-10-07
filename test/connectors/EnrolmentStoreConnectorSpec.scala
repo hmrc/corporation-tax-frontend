@@ -16,14 +16,18 @@
 
 package connectors
 
-import _root_.models.{UserEnrolmentStatus, UserEnrolments}
+import _root_.models.{CtEnrolment, CtUtr, UserEnrolmentStatus, UserEnrolments}
 import base.SpecBase
+import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.libs.json.Json
+import play.api.mvc.Request
+import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import java.time.LocalDateTime
@@ -32,6 +36,11 @@ import scala.concurrent.Future
 
 class EnrolmentStoreConnectorSpec  extends SpecBase with MockitoSugar with ScalaFutures {
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   lazy val httpGet: HttpClient = mock[HttpClient]
 

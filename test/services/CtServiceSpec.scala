@@ -23,6 +23,10 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import models.CtUtr
+import models.requests.AuthenticatedRequest
+import play.api.mvc.Request
+import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,6 +35,11 @@ import scala.concurrent.Future
 class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   val mockCtConnector: CtConnector = mock[CtConnector]
 

@@ -71,8 +71,12 @@ object PaymentRecord extends DateUtil with LoggingUtil {
   private[models] val paymentRecordFailureString = "Bad Gateway"
 
   private def eitherPaymentHistoryWriter: Writes[Either[PaymentRecordFailure.type, List[PaymentRecord]]] = {
-    case Right(list) => Json.toJson(list)
-    case _ => JsString(paymentRecordFailureString)
+    case Right(list) =>
+      logger.debug(s"[PaymentRecord][eitherPaymentHistoryWriter] validList: $list")
+      Json.toJson(list)
+    case Left(error) =>
+      logger.debug(s"[PaymentRecord][eitherPaymentHistoryWriter] failed to write payment history: $error")
+      JsString(paymentRecordFailureString)
   }
 
   implicit lazy val eitherPaymentHistoryFormatter: Format[Either[PaymentRecordFailure.type, List[PaymentRecord]]] =
@@ -95,6 +99,7 @@ case class CtPaymentRecord(reference: String,
   def validateAndConvertToPaymentRecord(currentDateTime: OffsetDateTime)(implicit request: AuthenticatedRequest[_]): Option[PaymentRecord] = {
     createdOn.parseOffsetDateTimeFromLocalDateTimeFormat() match {
       case Right(offsetDateTime) if isValid(offsetDateTime, currentDateTime) && isSuccessful =>
+        infoLog(s"[CtPaymentRecord][validateAndConvertToPaymentRecord] - validated and converted to PaymentRecord")
         Some(PaymentRecord(
           reference = reference,
           amountInPence = amountInPence,

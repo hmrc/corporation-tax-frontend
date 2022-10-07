@@ -32,6 +32,7 @@ class ServiceInfoPartialConnector @Inject()(val http: HttpClient,
   lazy val btaNavLinksUrl: String = config.btaUrl + "/business-account/partial/nav-links"
 
   def getNavLinks()(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedRequest[_]): Future[Option[NavContent]] = {
+    infoLog(s"[ServiceInfoPartialConnector][getNavLinks] - Attempted with: $btaNavLinksUrl")
     http.GET[Option[NavContent]](s"$btaNavLinksUrl")
       .recover {
         case e =>

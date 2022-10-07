@@ -17,23 +17,29 @@
 package connectors.payments
 
 import config.FrontendAppConfig
+
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Format, Json}
+import play.api.mvc.Request
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import utils.LoggingUtil
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
+class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig)  extends LoggingUtil{
   private def payApiBaseUrl: String = config.payApiUrl
 
   private def paymentsFrontendBaseUrl: String = config.getUrl("paymentsFrontendBase")
 
-  def ctPayLink(spjRequest: SpjRequestBtaCt)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[NextUrl] = {
+  def ctPayLink(spjRequest: SpjRequestBtaCt)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[NextUrl] = {
+    infoLog(s"[PaymentConnector][ctPayLink] - ctPayLink attempted")
     http.POST[SpjRequestBtaCt, NextUrl](s"$payApiBaseUrl/pay-api/bta/ct/journey/start", spjRequest)
       .recover({
-        case _: Exception =>
+        case e: Exception =>
+          errorLog(s"[PaymentConnector][ctPayLink] - Error: ${e.getMessage}")
           NextUrl(s"$paymentsFrontendBaseUrl/service-unavailable")
       })
   }

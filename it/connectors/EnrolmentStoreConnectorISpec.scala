@@ -1,8 +1,12 @@
 package connectors
 
-import models.{UserEnrolmentStatus, UserEnrolments}
+import models.requests.AuthenticatedRequest
+import models.{CtEnrolment, CtUtr, UserEnrolmentStatus, UserEnrolments}
 import org.scalatestplus.play.PlaySpec
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import support.IntegrationTest
 import support.TestConstants._
 import support.TestJsonObjects.{testInvalidUserEnrolments, testMultipleUserEnrolments, testSingleUserEnrolment}
@@ -15,6 +19,11 @@ import scala.concurrent.Future
 class EnrolmentStoreConnectorISpec extends PlaySpec with IntegrationTest {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   lazy val connector: EnrolmentStoreConnector = inject[EnrolmentStoreConnector]
 

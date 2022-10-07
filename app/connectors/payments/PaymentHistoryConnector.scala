@@ -20,31 +20,43 @@ import config.FrontendAppConfig
 import models.payments.CtPaymentRecord
 import play.api.http.Status._
 import play.api.libs.json.JsSuccess
+import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+import utils.LoggingUtil
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) {
+class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) extends LoggingUtil{
 
 
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, List[CtPaymentRecord]]] =
+  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Either[String, List[CtPaymentRecord]]] =
     http.GET[HttpResponse](buildUrl(searchTag)).map { response =>
+      infoLog(s"[PaymentHistoryConnector][get] - Attempted to retrieve payment history")
       response.status match {
         case OK =>
           (response.json \ "payments").validate[List[CtPaymentRecord]] match {
-            case JsSuccess(paymentHistory, _) => Right(paymentHistory)
-            case _ => Left("unable to parse data from payment api")
+            case JsSuccess(paymentHistory: Seq[CtPaymentRecord], _) =>
+              infoLog(s"[PaymentHistoryConnector][get] -retrieve payment history successful")
+              Right(paymentHistory)
+            case _ =>
+              warnLog(s"[PaymentHistoryConnector][get] - Failed with: unable to parse data from payment api")
+              Left("unable to parse data from payment api")
           }
-        case _ => Left("couldn't handle response from payment api")
+        case _ =>
+          warnLog(s"[PaymentHistoryConnector][get] - Failed with: couldn't handle response from payment api")
+          Left("couldn't handle response from payment api")
       }
     }.recover {
       case _: NotFoundException => Right(Nil)
-      case _: BadRequestException => Left("invalid request sent")
-      case _: Exception =>
+      case e: BadRequestException =>
+        errorLog(s"[PaymentHistoryConnector][get] - Failed with: ${e.getMessage}")
+        Left("invalid request sent")
+      case e: Exception =>
+        errorLog(s"[PaymentHistoryConnector][get] - Failed with: ${e.getMessage}")
         Left("exception thrown from payment api")
     }
 

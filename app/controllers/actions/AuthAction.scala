@@ -32,21 +32,29 @@ import uk.gov.hmrc.auth.core.retrieve.{OptionalRetrieval, Retrieval, ~}
 import models.CtUtr
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import utils.LoggingUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(val authConnector: AuthConnector, config: FrontendAppConfig, defaultParser: PlayBodyParsers)
                               (implicit val executionContext: ExecutionContext)
-  extends AuthAction with AuthorisedFunctions {
+  extends AuthAction with AuthorisedFunctions with LoggingUtil{
 
   val parser: BodyParser[AnyContent] = defaultParser.defaultBodyParser
 
   val ctUtr: Retrieval[Option[String]] = OptionalRetrieval("ctUtr", Reads.StringReads)
 
-  private[controllers] def getEnrolment(enrolments: Enrolments): CtEnrolment = {
+  private[controllers] def getEnrolment(enrolments: Enrolments)(implicit request: Request[_]): CtEnrolment = {
+    infoLog(s"[AuthActionImpl][getEnrolment] - Attempted to get IR-CT enrolment")
     enrolments.getEnrolment("IR-CT")
-      .map(e => CtEnrolment(CtUtr(e.getIdentifier("UTR").map(_.value).getOrElse(throw new UnauthorizedException("Unable to retrieve ct utr"))), e.isActivated))
-      .getOrElse(throw new UnauthorizedException("unable to retrieve ct enrolment"))
+      .map(e => CtEnrolment(CtUtr(e.getIdentifier("UTR").map(_.value).getOrElse{
+        errorLog(s"[AuthActionImpl][getEnrolment] - Failed with: Unable to retrieve ct utr")
+        throw new UnauthorizedException("Unable to retrieve ct utr")
+      }), e.isActivated))
+      .getOrElse{
+        errorLog(s"[AuthActionImpl][getEnrolment] - Failed with:unable to retrieve ct enrolment")
+        throw new UnauthorizedException("unable to retrieve ct enrolment")
+      }
   }
 
   val activatedEnrolment: Enrolment = Enrolment("IR-CT")
@@ -58,7 +66,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector, config: Fronten
     authorised(AlternatePredicate(activatedEnrolment, notYetActivatedEnrolment)).retrieve(Retrievals.externalId and Retrievals.authorisedEnrolments) {
       case externalId ~ enrolments =>
         externalId.map {
-          externalId => block(AuthenticatedRequest(request, externalId, getEnrolment(enrolments)))
+          externalId => block(AuthenticatedRequest(request, externalId, getEnrolment(enrolments)(request)))
         }.getOrElse(throw new UnauthorizedException("Unable to retrieve external Id"))
     } recover {
       case _: NoActiveSession =>

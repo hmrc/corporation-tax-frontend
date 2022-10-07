@@ -17,14 +17,16 @@
 package services
 
 import config.FrontendAppConfig
+
 import javax.inject.{Inject, Singleton}
 import models.{CtAccountBalance, CtAccountSummaryData, CtData}
 import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import utils.LoggingUtil
 
 @Singleton
-class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig) {
+class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig) extends LoggingUtil{
 
   def buildReturnsPartial()(implicit request: AuthenticatedRequest[_], messages: Messages): Html =
     views.html.partials.card.returns.potential_returns(appConfig)
@@ -34,17 +36,22 @@ class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig) {
       case Some(CtData(accountSummaryData)) => accountSummaryData match {
         case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
           if (amount > 0) {
+            infoLog(s"[CtPartialBuilder][buildPaymentsPartial] - Build payments partial with a debit balance")
             views.html.partials.card.payments.in_debit(amount.abs, appConfig)
           }
           else if (amount == 0) {
+            infoLog(s"[CtPartialBuilder][buildPaymentsPartial] - Build payments partial with no balance")
             views.html.partials.card.payments.no_balance(appConfig)
           }
           else {
+            infoLog(s"[CtPartialBuilder][buildPaymentsPartial] - Build payments partial with a credit balance")
             views.html.partials.card.payments.in_credit(amount.abs, appConfig)
           }
         case _ => Html("")
       }
-      case None => views.html.partials.card.payments.no_data(appConfig)
+      case None =>
+        warnLog(s"[CtPartialBuilder][buildPaymentsPartial] - Failed to build payments partial")
+        views.html.partials.card.payments.no_data(appConfig)
     }
   }
 

@@ -116,9 +116,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "show personal credit card message" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(None)))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -130,9 +130,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "not show personal credit card message when boolean is false" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(None)))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
         whenReady(helper.getAccountSummaryView(showCreditCardMessage = false)(fakeRequestWithEnrolments, global)) { view =>
@@ -145,9 +145,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return 'No Balance information to display'" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(None)))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -159,9 +159,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return the generic error message" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Left(CtGenericError)))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -174,9 +174,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return the generic error message" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Left(CtEmpty)))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -195,9 +195,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Left(CtUnactivated)))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -217,9 +217,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Left(CtUnactivated)))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(false))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -233,9 +233,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return Nothing to pay" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(None))))))))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -249,9 +249,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return Nothing to pay" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))))))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -265,9 +265,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return You are in credit" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(-123.45)))))))))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -281,9 +281,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return You owe money" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -297,9 +297,9 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "direct the user to the breakdown page" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any()))
+        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -316,7 +316,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "not display the payment history section " in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any()))
+        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
@@ -337,7 +337,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           )
         )
 
-        when(mockCtService.fetchCtModel(any())(any(),any()))
+        when(mockCtService.fetchCtModel(any())(any(),any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
 
         when(mockPaymentHistoryService.getPayments(any(),any())(any(), any()))
@@ -369,7 +369,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
           )
         )
 
-        when(mockCtService.fetchCtModel(any())(any(),any()))
+        when(mockCtService.fetchCtModel(any())(any(),any(), any()))
           .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
 
         when(mockPaymentHistoryService.getPayments(any(),any())(any(), any()))
