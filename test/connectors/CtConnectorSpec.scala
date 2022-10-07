@@ -18,13 +18,18 @@ package connectors
 
 import base.SpecBase
 import models._
+import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import play.api.mvc.Request
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, Upstream5xxResponse, UpstreamErrorResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,6 +39,11 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
   val mockHttp: HttpClient = mock[HttpClient]
 
   val connector = new CtConnector(mockHttp, frontendAppConfig)
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val ctUtr: CtUtr = CtUtr("utr")

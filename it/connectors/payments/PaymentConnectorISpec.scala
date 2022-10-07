@@ -1,8 +1,13 @@
 package connectors.payments
 
 import config.FrontendAppConfig
+import models.requests.AuthenticatedRequest
+import models.{CtEnrolment, CtUtr}
 import org.scalatestplus.play.PlaySpec
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import support.IntegrationTest
 import support.TestConstants.testCtUtr
 import support.TestJsonObjects.testNextUrlSuccess
@@ -21,6 +26,11 @@ class PaymentConnectorISpec extends PlaySpec with IntegrationTest {
     ) ++ microservices
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   val connector: PaymentConnector = inject[PaymentConnector]
   val frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]

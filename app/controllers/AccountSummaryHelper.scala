@@ -25,7 +25,7 @@ import play.api.mvc.MessagesControllerComponents
 import play.twirl.api.HtmlFormat
 import services.{CtService, EnrolmentStoreService, PaymentHistoryService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.MoneyPounds
+import utils.{LoggingUtil, MoneyPounds}
 import views.html.partials.{account_summary, generic_error, not_activated}
 
 import java.time.OffsetDateTime
@@ -36,10 +36,11 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
                                      ctService: CtService,
                                      enrolmentStoreService: EnrolmentStoreService,
                                      paymentHistoryService: PaymentHistoryService,
-                                     mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+                                     mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport with LoggingUtil{
 
   private[controllers] def getAccountSummaryView(showCreditCardMessage: Boolean = true)(implicit request: AuthenticatedRequest[_],
                                                                                         ec: ExecutionContext): Future[HtmlFormat.Appendable] = {
+    infoLog(s"[AccountSummaryHelper][getAccountSummaryView] - Attempted to get AccountSummaryView")
     val modelHistory: Future[(Either[CtAccountFailure, Option[CtData]], Either[PaymentRecordFailure.type, List[PaymentRecord]])] =
       for {
         model <- ctService.fetchCtModel(request.ctEnrolment)
@@ -48,10 +49,13 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
 
     modelHistory flatMap {
       case (Right(Some(CtData(accountSummaryData))), maybeHistory) =>
+        infoLog(s"[AccountSummaryHelper][getAccountSummaryView] - Succeeded")
         Future.successful(buildView(accountSummaryData, maybeHistory, showCreditCardMessage))
       case (Right(None), _) =>
+        infoLog(s"[AccountSummaryHelper][getAccountSummaryView] - No balance to show")
         Future.successful(account_summary(Messages("account.summary.no_balance"), appConfig, shouldShowCreditCardMessage = showCreditCardMessage))
       case (Left(CtUnactivated), _) =>
+        warnLog(s"[AccountSummaryHelper][getAccountSummaryView] - Unactivated enrolment")
         enrolmentStoreService
           .showNewPinLink(request.ctEnrolment, OffsetDateTime.now())
           .map(showLink => not_activated(
@@ -60,6 +64,7 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
             showNewPinLink = showLink
           ))
       case _ =>
+        errorLog(s"[AccountSummaryHelper][getAccountSummaryView] - Failed to show account summary view")
         Future.successful(generic_error(appConfig.getPortalUrl("home")(request.ctEnrolment)))
     }
   }

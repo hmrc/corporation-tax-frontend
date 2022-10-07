@@ -18,12 +18,16 @@ package services
 
 import base.SpecBase
 import connectors.EnrolmentStoreConnector
+import models.requests.AuthenticatedRequest
 import models.{CtEnrolment, CtUtr, UserEnrolmentStatus, UserEnrolments}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.Request
+import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateUtil
 
@@ -50,12 +54,17 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
+
   "EnrolmentStoreService" when {
 
     "showActivationLink is called" should {
 
       "return false when enrolment was requested within last 7 days" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
             .thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
 
         service.showNewPinLink(
@@ -64,7 +73,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return false when enrolment was requested within last 7 days and tax is activated" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = true),
@@ -72,7 +81,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return false when multiple records are returned and latest enrolment record is within 7 days of current date" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(List(activeJan01, activeFeb28)))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
@@ -80,7 +89,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return false when enrolment was requested 7 days ago" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
@@ -88,7 +97,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return true when enrolment was requested more than 7 days ago" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(List(activeOct13)))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
@@ -96,7 +105,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return true if no enrolments were found" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(Nil))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
@@ -104,7 +113,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return true if enrolments were not able to be retrieved" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Left("Simulated Failure")))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
@@ -113,7 +122,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return true if for single enrolment with no enrolmentTokenExpiryDate set" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(List(noDate)))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
@@ -122,7 +131,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return true if for multiple enrolments with no enrolmentTokenExpiryDate set" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(List(noDate, noDate)))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),
@@ -130,7 +139,7 @@ class EnrolmentStoreServiceSpec extends SpecBase with MockitoSugar with ScalaFut
       }
 
       "return false if for multiple enrolments with no enrolmentTokenExpiryDate set" in {
-        when(mockConnector.getEnrolments(any())(any()))
+        when(mockConnector.getEnrolments(any())(any(), any()))
           .thenReturn(Future.successful(Right(UserEnrolments(List(noDate, noDate)))))
 
         service.showNewPinLink(CtEnrolment(CtUtr("credId"), isActivated = false),

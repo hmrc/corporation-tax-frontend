@@ -1,9 +1,14 @@
 package connectors.payments
 
+import models.{CtEnrolment, CtUtr}
 import models.payments.CtPaymentRecord
 import models.payments.PaymentStatus.{Invalid, Successful}
+import models.requests.AuthenticatedRequest
 import org.scalatestplus.play.PlaySpec
+import play.api.mvc.Request
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import support.IntegrationTest
 import support.TestJsonObjects.{testEmptyCtPaymentList, testIncompleteCtPayment, testMultipleEntryCtPaymentList, testSingleEntryCtPaymentList}
 import support.stubs.StubConnector
@@ -14,6 +19,11 @@ import scala.concurrent.Future
 class PaymentHistoryConnectorISpec extends PlaySpec with IntegrationTest {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   val connector: PaymentHistoryConnector = inject[PaymentHistoryConnector]
 

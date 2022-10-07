@@ -41,7 +41,9 @@ class PartialController @Inject()(mcc: MessagesControllerComponents,
       logger.debug(s"[PartialController][getCard] $card")
       Ok(toJson(card))
     }).recover {
-      case _: Exception => InternalServerError("Failed to get data from backend")
+      case e: Exception =>
+        errorLog(s"[PartialController][getCard] - Failed with: ${e.getMessage}")
+        InternalServerError("Failed to get data from backend")
     }
   }
 

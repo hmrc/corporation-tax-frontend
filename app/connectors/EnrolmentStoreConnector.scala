@@ -18,32 +18,43 @@ package connectors
 
 import _root_.models.UserEnrolments
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.http.Status
 import play.api.libs.json.JsSuccess
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import utils.LoggingUtil
+
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAppConfig)
-                                       (implicit val ec: ExecutionContext) {
+                                       (implicit val ec: ExecutionContext) extends LoggingUtil{
 
-  def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier): Future[Either[String, UserEnrolments]] =
+  def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Either[String, UserEnrolments]] = {
+    infoLog(s"[EnrolmentStoreConnector][getEnrolments] - Attempted to retrieve enrolments")
     http.GET[HttpResponse](buildURL(credId)).map { response =>
       response.status match {
         case Status.OK =>
           response.json.validate[UserEnrolments] match {
-            case JsSuccess(userEnrolments, _) => Right(userEnrolments)
-            case _ => Left("Unable to parse data from enrolment API")
+            case JsSuccess(userEnrolments, _) =>
+              Right(userEnrolments)
+            case _ =>
+              warnLog(s"[EnrolmentStoreConnector][getEnrolments] - Failed with: Unable to parse data from enrolment API")
+              Left("Unable to parse data from enrolment API")
           }
-        case _ => Left(errorMessage(response))
+        case _ =>
+          warnLog(s"[EnrolmentStoreConnector][getEnrolments] - Failed with: ${errorMessage(response)}")
+          Left(errorMessage(response))
       }
     }.recover {
-      case _: Exception => Left("Exception thrown from enrolment API")
+      case e: Exception =>
+        warnLog(s"[EnrolmentStoreConnector][getEnrolments] - Failed with: ${e.getMessage}")
+        Left("Exception thrown from enrolment API")
     }
+  }
 
   def errorMessage(response: HttpResponse): String =
     response.status match {

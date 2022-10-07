@@ -25,9 +25,9 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,6 +37,11 @@ import scala.concurrent.Future
 class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSugar with BeforeAndAfterEach {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit val request: Request[_] = Request(
+    AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
+    HtmlFormat.empty
+  )
 
   val ctEnrolment: CtEnrolment = CtEnrolment(CtUtr("utr"), isActivated = true)
 
@@ -124,7 +129,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
   "Calling CtCardBuilderService.buildCtCard" should {
     "return a card with Payments information when getting CtData" in {
-      when(mockCtService.fetchCtModel(any())(any(),any()))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Right(Some(ctData))))
       when(mockHistoryService.getPayments(any(), any())(any(), any()))
         .thenReturn(Future.successful(Right(Nil)))
@@ -140,7 +145,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with No Payments information when getting CtNoData" in {
-      when(mockCtService.fetchCtModel(ctEnrolment))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Right(None)))
 
       when(mockPartialBuilder.buildPaymentsPartial(any())(any(),any()))
@@ -152,7 +157,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with Returns information when getting CtData" in {
-      when(mockCtService.fetchCtModel(ctEnrolment))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Right(Some(ctData))))
 
       when(mockPartialBuilder.buildPaymentsPartial(any())(any(),any()))
@@ -164,7 +169,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with Returns information when getting CtNoData" in {
-      when(mockCtService.fetchCtModel(ctEnrolment))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Right(None)))
 
       when(mockPartialBuilder.buildPaymentsPartial(any())(any(),any()))
@@ -176,7 +181,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "return a card with payment history information when that information is available" in {
-      when(mockCtService.fetchCtModel(ctEnrolment))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Right(Some(ctData))))
 
       when(mockPartialBuilder.buildPaymentsPartial(any())(any(),any()))
@@ -187,7 +192,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
     }
 
     "throw an exception when getting CtGenericError" in {
-      when(mockCtService.fetchCtModel(ctEnrolment))
+      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
         .thenReturn(Future.successful(Left(CtGenericError)))
 
       val result: Future[Card] = service.buildCtCard()(authenticatedRequest, hc, messages)

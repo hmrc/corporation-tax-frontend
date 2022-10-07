@@ -17,8 +17,10 @@
 package services
 
 import connectors.CtConnector
+
 import javax.inject.{Inject, Singleton}
 import models.{CtAccountSummaryData, _}
+import play.api.mvc.Request
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -27,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CtService @Inject()(ctConnector: CtConnector) {
 
   def fetchCtModel(ctEnrolment: CtEnrolment)(implicit headerCarrier: HeaderCarrier,
-                                             ec: ExecutionContext): Future[Either[CtAccountFailure, Option[CtData]]] =
+                                             ec: ExecutionContext, request: Request[_]): Future[Either[CtAccountFailure, Option[CtData]]] =
     ctEnrolment match {
       case CtEnrolment(utr, true) =>
         ctConnector.accountSummary(utr).map {
