@@ -7,9 +7,9 @@ private object AppDependencies {
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "6.3.0",
-    "uk.gov.hmrc" %% "http-caching-client" % "9.6.0-play-28",
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % "3.22.0-play-28"
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "7.11.0",
+    "uk.gov.hmrc" %% "http-caching-client" % "10.0.0-play-28",
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % "3.33.0-play-28"
   )
 
   trait TestDependencies {
@@ -39,7 +39,7 @@ private object AppDependencies {
         "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.jsoup" % "jsoup" % "1.15.2" % scope,
-        "uk.gov.hmrc" %% "bootstrap-test-play-28" % "6.3.0"  % scope,
+        "uk.gov.hmrc" %% "bootstrap-test-play-28" % "7.11.0"  % scope,
         "org.scalatestplus" %% "mockito-3-12" % "3.2.10.0" % scope
       )
     }.test
