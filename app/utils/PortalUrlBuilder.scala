@@ -20,10 +20,9 @@ import models.CtEnrolment
 import play.api.i18n.Lang
 import play.api.mvc.Request
 import uk.gov.hmrc.play.language.LanguageUtils
-import uk.gov.hmrc.urls.UrlBuilder
 import utils.PortalUrlBuilder.WELSH
 
-trait PortalUrlBuilder {
+trait PortalUrlBuilder extends UrlBuilder {
 
   val languageUtils: LanguageUtils
 
