@@ -102,9 +102,9 @@ class CtConnectorISpec extends PlaySpec with IntegrationTest {
 
       "return an instance of CtAccountSummaryData for a valid response" in {
 
-        val expectedAccountBalance: CtAccountBalance = CtAccountBalance(Some(10.00))
+        val expectedAccountBalance: CtAccountBalance = CtAccountBalance(10.00)
         val expectedCtAccountSummary: CtAccountSummaryData = CtAccountSummaryData(
-          accountBalance = Some(expectedAccountBalance),
+          accountBalance = expectedAccountBalance,
           effectiveDueDate = LocalDate.parse("2023-09-01")
 
         )

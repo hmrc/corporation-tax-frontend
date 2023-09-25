@@ -29,7 +29,7 @@ object CtAccountSummaryConstants {
 
   def ctAccountSummary(amount: BigDecimal = amount): CtAccountSummaryData =
     CtAccountSummaryData(
-      accountBalance = Some(CtAccountBalance(Some(amount))),
+      accountBalance = CtAccountBalance(amount),
       effectiveDueDate = effectiveDueDate
     )
 

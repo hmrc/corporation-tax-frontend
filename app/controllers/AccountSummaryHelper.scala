@@ -105,7 +105,7 @@ class AccountSummaryHelper @Inject()(appConfig: FrontendAppConfig,
                         showCreditCardMessage: Boolean)(implicit r: AuthenticatedRequest[_]): HtmlFormat.Appendable = {
     val breakdownLink = Some(appConfig.getPortalUrl("balance")(r.ctEnrolment))
     accountSummaryData match {
-      case CtAccountSummaryData(Some(CtAccountBalance(Some(amount))), effectiveDueDate) =>
+      case CtAccountSummaryData(CtAccountBalance(amount), _) =>
         buildCtAccountSummaryForKnownBalance(amount, showCreditCardMessage, breakdownLink, maybeHistory)
       case _ => account_summary(
         Messages("account.summary.nothing_to_pay"),

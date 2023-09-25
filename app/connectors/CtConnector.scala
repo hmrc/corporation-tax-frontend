@@ -59,7 +59,8 @@ class CtConnector @Inject()(val http: HttpClient,
     http.GET[Option[CtAccountSummaryData]](uri)(handleResponse[CtAccountSummaryData](uri), hc, ec)
   }
 
-  def designatoryDetails(ctUtr: CtUtr)(implicit hc: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[Option[CtDesignatoryDetailsCollection]] = {
+  def designatoryDetails(ctUtr: CtUtr)
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[Option[CtDesignatoryDetailsCollection]] = {
     val uri = ctUrl + s"/ct/$ctUtr/designatory-details"
     infoLog(s"[CtConnector][designatoryDetails] - Attempted to retrieve designatory details")
     http.GET[Option[CtDesignatoryDetailsCollection]](uri)(handleResponse[CtDesignatoryDetailsCollection](uri), hc, ec)

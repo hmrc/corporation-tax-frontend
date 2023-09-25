@@ -225,22 +225,6 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       }
     }
 
-    "the user has a null balance" should {
-      "return Nothing to pay" in {
-        when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
-          .thenReturn(Future.successful(Right(Nil)))
-        when(mockCtService.fetchCtModel(any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(None)), CtAccountSummaryConstants.effectiveDueDate))))))
-        when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
-          .thenReturn(Future.successful(true))
-
-        whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString must include("You have nothing to pay")
-          view.toString must include("View statement")
-        }
-      }
-    }
-
     "the user has a balance of 0" should {
       "return Nothing to pay" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))

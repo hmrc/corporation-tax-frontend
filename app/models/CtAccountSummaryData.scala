@@ -20,8 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
-// TODO*** accountBalance DOESN'T NEED TO BE AN OPTION 
-case class CtAccountSummaryData(accountBalance: Option[CtAccountBalance], effectiveDueDate: LocalDate)
+case class CtAccountSummaryData(accountBalance: CtAccountBalance, effectiveDueDate: LocalDate)
 
 object CtAccountSummaryData {
   implicit val formats: OFormat[CtAccountSummaryData] = Json.format[CtAccountSummaryData]

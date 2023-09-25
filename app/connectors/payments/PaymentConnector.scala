@@ -37,11 +37,11 @@ class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig) ex
     infoLog(s"[PaymentConnector][ctPayLink] - ctPayLink attempted. Amount and dueDate provided")
 
     http.POST[SpjRequestBtaCt, NextUrl](s"$payApiBaseUrl/pay-api/bta/ct/journey/start", spjRequest)
-      .recover({
+      .recover {
         case e: Exception =>
           errorLog(s"[PaymentConnector][ctPayLink] - Error: ${e.getMessage}")
           NextUrl(s"$paymentsFrontendBaseUrl/service-unavailable")
-      })
+      }
   }
 }
 

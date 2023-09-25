@@ -2,7 +2,7 @@ package connectors.payments
 
 import config.FrontendAppConfig
 import models.requests.AuthenticatedRequest
-import models.{CtEnrolment, CtUtr}
+import models.{CtEnrolment, CtUtr, SpjRequestBtaCt}
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.Request
 import play.api.test.FakeRequest

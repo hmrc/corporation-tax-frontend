@@ -32,11 +32,11 @@ class CtService @Inject()(ctConnector: CtConnector) {
     ctEnrolment match {
       case CtEnrolment(utr, true) =>
         ctConnector.accountSummary(utr).map {
-          case Some(accountSummary@CtAccountSummaryData(Some(_), effectiveDueDate)) =>
+          case Some(accountSummary: CtAccountSummaryData) =>
             Right(Some(CtData(accountSummary)))
           case _ => Right(None)
         }.recover {
-          case error =>
+          case _ =>
             Left(CtGenericError)
         }
       case CtEnrolment(_, false) => Future.successful(Left(CtUnactivated))

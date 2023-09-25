@@ -17,8 +17,7 @@
 package models
 
 import play.api.libs.json.{Json, OFormat}
-
-case class CtAccountBalance(amount: Option[BigDecimal])
+case class CtAccountBalance(amount: BigDecimal)
 
 object CtAccountBalance {
   implicit val formats: OFormat[CtAccountBalance] = Json.format[CtAccountBalance]

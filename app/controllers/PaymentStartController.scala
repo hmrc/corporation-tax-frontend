@@ -29,6 +29,7 @@ import views.html.partials.generic_error
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+
 class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
                                        payConnector: PaymentConnector,
                                        authenticate: AuthAction,
@@ -39,7 +40,7 @@ class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
   def makeAPayment: Action[AnyContent] = authenticate.async { implicit request =>
     infoLog(s"[PaymentStartController][makeAPayment] - make a payment attempted")
     ctService.fetchCtModel(request.ctEnrolment).flatMap {
-      case Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))), effectiveDueDate)))) =>
+      case Right(Some(CtData(CtAccountSummaryData(CtAccountBalance(amount), effectiveDueDate)))) =>
         val spjRequestBtaVat = SpjRequestBtaCt(
           SpjRequestBtaCt.toAmountInPence(amount),
           appConfig.businessAccountHomeAbsoluteUrl,
@@ -47,7 +48,11 @@ class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
           request.ctEnrolment.ctUtr.utr,
           SpjRequestBtaCt.localDateToIsoString(effectiveDueDate)
         )
-        payConnector.ctPayLink(spjRequestBtaVat).map(response => Redirect(response.nextUrl))
+
+        payConnector.ctPayLink(spjRequestBtaVat).map { response =>
+          infoLog(s"[PaymentStartController][makeAPayment] make a payment redirect successful. Redirect location: ${response.nextUrl}")
+          Redirect(response.nextUrl)
+        }
       case _ =>
         errorLog(s"[PaymentStartController][makeAPayment] - Failed to fetch CtModel")
         Future.successful(BadRequest(generic_error(appConfig.getPortalUrl("home")(request.ctEnrolment))))

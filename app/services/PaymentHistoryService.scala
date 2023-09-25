@@ -19,9 +19,8 @@ package services
 import config.FrontendAppConfig
 import connectors.payments.PaymentHistoryConnector
 import models.payments.{CtPaymentRecord, PaymentRecord}
-import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import models.requests.AuthenticatedRequest
 import models.{CtEnrolment, PaymentRecordFailure}
-import play.api.mvc.AnyContent
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.LoggingUtil
 
