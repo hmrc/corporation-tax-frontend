@@ -17,12 +17,11 @@
 package services
 
 import connectors.CtConnector
-
-import javax.inject.{Inject, Singleton}
-import models.{CtAccountSummaryData, _}
+import models._
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -33,10 +32,12 @@ class CtService @Inject()(ctConnector: CtConnector) {
     ctEnrolment match {
       case CtEnrolment(utr, true) =>
         ctConnector.accountSummary(utr).map {
-          case Some(accountSummary@CtAccountSummaryData(Some(_))) => Right(Some(CtData(accountSummary)))
+          case Some(accountSummary@CtAccountSummaryData(Some(_), effectiveDueDate)) =>
+            Right(Some(CtData(accountSummary)))
           case _ => Right(None)
         }.recover {
-          case _ => Left(CtGenericError)
+          case error =>
+            Left(CtGenericError)
         }
       case CtEnrolment(_, false) => Future.successful(Left(CtUnactivated))
       case _ => Future.successful(Left(CtEmpty))

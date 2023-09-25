@@ -17,7 +17,7 @@
 package connectors.payments
 
 import base.SpecBase
-import models.{CtEnrolment, CtUtr}
+import models.{CtEnrolment, CtUtr, SpjRequestBtaCt}
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,14 +29,17 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   private val testAmount = 1000
+  private val testDate = LocalDate.parse("2023-09-01").format(DateTimeFormatter.ISO_LOCAL_DATE)
   private val testBackReturnUrl = "https://www.tax.service.gov.uk/business-account"
-  private val testSpjRequest = SpjRequestBtaCt(testAmount, testBackReturnUrl, testBackReturnUrl, "123456789")
+  private val testSpjRequest = SpjRequestBtaCt(testAmount, testBackReturnUrl, testBackReturnUrl, "123456789", testDate)
 
   val mockHttp: HttpClient = mock[HttpClient]
   val connector = new PaymentConnector(mockHttp, frontendAppConfig)
@@ -49,16 +52,16 @@ class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures 
   )
 
   "PaymentConnector" when {
-     "ctPayLink is called" should {
-       "return a NextUrl if the external service is responsive" in {
-         val nextUrl = NextUrl("https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay")
+    "ctPayLink is called" should {
+      "return a NextUrl if the external service is responsive" in {
+        val nextUrl = NextUrl("https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay")
 
         when(mockHttp.POST[SpjRequestBtaCt, NextUrl](any(), any(), any())(any(), any(), any(), any()))
           .thenReturn(Future.successful(nextUrl))
 
-         val response = connector.ctPayLink(testSpjRequest)
+        val response = connector.ctPayLink(testSpjRequest)
 
-         whenReady(response) { r =>
+        whenReady(response) { r =>
           r mustBe nextUrl
         }
       }
@@ -66,8 +69,8 @@ class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures 
       "return the service-unavailable page if there is a problem" in {
         val nextUrl = NextUrl("http://localhost:9050/pay-online/service-unavailable")
 
-       when(mockHttp.POST[SpjRequestBtaCt, NextUrl](any(), any(), any())(any(), any(), any(), any()))
-         .thenReturn(Future.failed(new RuntimeException("oops")))
+        when(mockHttp.POST[SpjRequestBtaCt, NextUrl](any(), any(), any())(any(), any(), any(), any()))
+          .thenReturn(Future.failed(new RuntimeException("oops")))
 
         val response = connector.ctPayLink(testSpjRequest)
 

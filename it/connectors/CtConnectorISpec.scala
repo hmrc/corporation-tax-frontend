@@ -13,6 +13,7 @@ import support.TestJsonObjects._
 import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -102,7 +103,11 @@ class CtConnectorISpec extends PlaySpec with IntegrationTest {
       "return an instance of CtAccountSummaryData for a valid response" in {
 
         val expectedAccountBalance: CtAccountBalance = CtAccountBalance(Some(10.00))
-        val expectedCtAccountSummary: CtAccountSummaryData = CtAccountSummaryData(Some(expectedAccountBalance))
+        val expectedCtAccountSummary: CtAccountSummaryData = CtAccountSummaryData(
+          accountBalance = Some(expectedAccountBalance),
+          effectiveDueDate = LocalDate.parse("2023-09-01")
+
+        )
 
         StubConnector.withResponse(accountSummaryUrl)(OK, Some(testCtAccountSummaryData))
 

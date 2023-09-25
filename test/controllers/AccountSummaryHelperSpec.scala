@@ -17,6 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
+import constants.CtAccountSummaryConstants
 import models._
 import models.payments.PaymentRecord
 import models.requests.AuthenticatedRequest
@@ -209,11 +210,6 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
 
     "the user has an unactivated enrolment created less than seven days ago" should {
       "return the not activated view without the new pin link" in {
-//        val notActivated = not_activated(
-//          "/enrolment-management-frontend/IR-CT/get-access-tax-scheme?continue=%2Fbusiness-account",
-//          "/enrolment-management-frontend/IR-CT/request-new-activation-code?continue=%2Fbusiness-account",
-//          false
-//        )(FakeRequest(), messages)
 
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
@@ -234,7 +230,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(None))))))))
+          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(None)), CtAccountSummaryConstants.effectiveDueDate))))))
         when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
@@ -249,8 +245,10 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return Nothing to pay" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
+        
+        val amount: BigDecimal = BigDecimal(0)
         when(mockCtService.fetchCtModel(any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))))))
+          .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData(amount)))))
         when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
@@ -265,13 +263,14 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return You are in credit" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
+
         when(mockCtService.fetchCtModel(any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(-123.45)))))))))
+          .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData(CtAccountSummaryConstants.amount * -1)))))
         when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString() must include("You are <span class=\"govuk-!-font-weight-bold\">&pound;123.45</span> in credit")
+          view.toString() must include(s"You are <span class=\"govuk-!-font-weight-bold\">&pound;${CtAccountSummaryConstants.amount}</span> in credit")
           view.toString() must include("How we worked this out")
         }
       }
@@ -281,13 +280,14 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
       "return You owe money" in {
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
+
         when(mockCtService.fetchCtModel(any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
+          .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
         when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
-          view.toString() must include("You owe <span class=\"govuk-!-font-weight-bold\">&pound;999.99</span>")
+          view.toString() must include(s"You owe <span class=\"govuk-!-font-weight-bold\">&pound;${CtAccountSummaryConstants.amount}</span>")
           view.toString() must include("How we worked this out")
         }
       }
@@ -298,13 +298,13 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
+          .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
         when(mockEnrolmentService.showNewPinLink(any(), any())(any(), any()))
           .thenReturn(Future.successful(true))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString() must include("How we worked this out")
-          view.toString() must include("You owe <span class=\"govuk-!-font-weight-bold\">&pound;999.99</span>")
+          view.toString() must include(s"You owe <span class=\"govuk-!-font-weight-bold\">&pound;${CtAccountSummaryConstants.amount}</span>")
           view.toString() must include("How we worked this out")
           view.toString() must include("http://localhost:8081/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
           view.toString() must include("""rel="external noopener"""")
@@ -317,7 +317,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
         when(mockPaymentHistoryService.getPayments(any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
         when(mockCtService.fetchCtModel(any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
+          .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
 
         whenReady(helper.getAccountSummaryView()(fakeRequestWithEnrolments, global)) { view =>
           view.toString.contains("Your card and bank account payments in the last 7 days") mustBe false
@@ -338,7 +338,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
         )
 
         when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
+          .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
 
         when(mockPaymentHistoryService.getPayments(any(),any())(any(), any()))
           .thenReturn(Future.successful(Right(history)))
@@ -370,7 +370,7 @@ class AccountSummaryHelperSpec extends PlaySpec with MockitoSugar with ScalaFutu
         )
 
         when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-          .thenReturn(Future.successful(Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))))))
+          .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
 
         when(mockPaymentHistoryService.getPayments(any(),any())(any(), any()))
           .thenReturn(Future.successful(Right(history)))

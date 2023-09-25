@@ -16,31 +16,19 @@
 
 package controllers
 
-import java.time.LocalDate
 import config.FrontendAppConfig
-import connectors.payments.{PaymentConnector, SpjRequestBtaCt}
-import controllers.PaymentStartController.toAmountInPence
+import connectors.payments.PaymentConnector
 import controllers.actions._
-
-import javax.inject.Inject
-import models.{CtAccountBalance, CtAccountSummaryData, CtData}
-import play.api.i18n.{I18nSupport, Messages}
+import models.{CtAccountBalance, CtAccountSummaryData, CtData, SpjRequestBtaCt}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CtService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.LoggingUtil
 import views.html.partials.generic_error
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-
-object PaymentStartController {
-  def toAmountInPence(amountInPounds: BigDecimal): Long = (amountInPounds * 100).toLong
-
-  implicit val localDateOrdering: Ordering[LocalDate] = new Ordering[LocalDate] {
-    def compare(x: LocalDate, y: LocalDate): Int = x compareTo y
-  }
-}
-
 class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
                                        payConnector: PaymentConnector,
                                        authenticate: AuthAction,
@@ -51,12 +39,14 @@ class PaymentStartController @Inject()(appConfig: FrontendAppConfig,
   def makeAPayment: Action[AnyContent] = authenticate.async { implicit request =>
     infoLog(s"[PaymentStartController][makeAPayment] - make a payment attempted")
     ctService.fetchCtModel(request.ctEnrolment).flatMap {
-      case Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))))))) =>
+      case Right(Some(CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(amount))), effectiveDueDate)))) =>
         val spjRequestBtaVat = SpjRequestBtaCt(
-          toAmountInPence(amount),
+          SpjRequestBtaCt.toAmountInPence(amount),
           appConfig.businessAccountHomeAbsoluteUrl,
           appConfig.businessAccountHomeAbsoluteUrl,
-          request.ctEnrolment.ctUtr.utr)
+          request.ctEnrolment.ctUtr.utr,
+          SpjRequestBtaCt.localDateToIsoString(effectiveDueDate)
+        )
         payConnector.ctPayLink(spjRequestBtaVat).map(response => Redirect(response.nextUrl))
       case _ =>
         errorLog(s"[PaymentStartController][makeAPayment] - Failed to fetch CtModel")

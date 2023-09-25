@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.CtConnector
+import constants.CtAccountSummaryConstants
 import models._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -47,16 +48,14 @@ class CtServiceSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   val ctEnrolment = CtEnrolment(CtUtr("utr"), isActivated = true)
 
-  val ctAccountSummary = CtAccountSummaryData(Some(CtAccountBalance(Some(1200.0))))
-
   "The CtService fetchCtModel method" when {
     "the connector return data" should {
       "return Right(CtData)" in {
         reset(mockCtConnector)
-        when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.successful(Option(ctAccountSummary)))
+        when(mockCtConnector.accountSummary(ctEnrolment.ctUtr)).thenReturn(Future.successful(Option(CtAccountSummaryConstants.ctAccountSummary())))
 
         whenReady(service.fetchCtModel(ctEnrolment)) {
-          _ mustBe Right(Some(CtData(ctAccountSummary)))
+          _ mustBe Right(Some(CtData(CtAccountSummaryConstants.ctAccountSummary())))
         }
       }
     }

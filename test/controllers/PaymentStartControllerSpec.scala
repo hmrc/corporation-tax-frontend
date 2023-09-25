@@ -18,6 +18,7 @@ package controllers
 
 import base.{FakeAuthAction, SpecBase}
 import connectors.payments.{NextUrl, PaymentConnector}
+import constants.CtAccountSummaryConstants
 import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -31,9 +32,7 @@ import scala.concurrent.Future
 
 class PaymentStartControllerSpec extends SpecBase with MockitoSugar {
 
-  val testAccountBalance: CtAccountBalance = CtAccountBalance(Some(0.0))
-  val testCtData: CtData = CtData(CtAccountSummaryData(Some(testAccountBalance)))
-  val testCtDataNoAccountBalance: CtData = CtData(CtAccountSummaryData(None))
+  val testCtDataNoAccountBalance: CtData = CtData(CtAccountSummaryData(None, CtAccountSummaryConstants.effectiveDueDate))
   val testPayUrl: String = "https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay"
 
   val mockPayConnector: PaymentConnector = mock[PaymentConnector]
@@ -52,7 +51,7 @@ class PaymentStartControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(NextUrl(testPayUrl)))
 
       when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-        .thenReturn(Future.successful(Right(Some(testCtData))))
+        .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
 
       val result: Future[Result] = controller.makeAPayment(fakeRequest)
       status(result) mustBe SEE_OTHER

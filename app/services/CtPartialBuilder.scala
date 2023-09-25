@@ -34,7 +34,7 @@ class CtPartialBuilder @Inject() (appConfig: FrontendAppConfig) extends LoggingU
   def buildPaymentsPartial(ctData: Option[CtData])(implicit request: AuthenticatedRequest[_], messages: Messages): Html = {
     ctData match {
       case Some(CtData(accountSummaryData)) => accountSummaryData match {
-        case CtAccountSummaryData(Some(CtAccountBalance(Some(amount)))) =>
+        case CtAccountSummaryData(Some(CtAccountBalance(Some(amount))), effectiveDueDate) =>
           if (amount > 0) {
             infoLog(s"[CtPartialBuilder][buildPaymentsPartial] - Build payments partial with a debit balance")
             views.html.partials.card.payments.in_debit(amount.abs, appConfig)

@@ -14,6 +14,7 @@ import support.TestJsonObjects.testNextUrlSuccess
 import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -39,9 +40,10 @@ class PaymentConnectorISpec extends PlaySpec with IntegrationTest {
 
   // Create test input instance of SpjRequestBtaCt
   val amountInPence: Long = 1000L
+  val testDate: String = "2023-09-01"
   val backUrl: String = frontendAppConfig.businessAccountHomeAbsoluteUrl
 
-  val spjRequestBtaCt: SpjRequestBtaCt = SpjRequestBtaCt(amountInPence, backUrl, backUrl, testCtUtr)
+  val spjRequestBtaCt: SpjRequestBtaCt = SpjRequestBtaCt(amountInPence, backUrl, backUrl, testCtUtr, testDate)
 
   val expectedNextUrl: String = "https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay"
 

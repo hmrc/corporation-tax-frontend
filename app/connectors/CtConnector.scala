@@ -39,7 +39,8 @@ class CtConnector @Inject()(val http: HttpClient,
     infoLog(s"[CtConnector][handleResponse] - Attempted with uri: $uri")
 
     override def read(method: String, url: String, response: HttpResponse): Option[A] = response.status match {
-      case OK => Some(rds.read(method, url, response))
+      case OK =>
+        Some(rds.read(method, url, response))
       case NO_CONTENT | NOT_FOUND =>
         warnLog(s"[CtConnector][handleResponse] - Failed with: ${NO_CONTENT | NOT_FOUND}")
         None
