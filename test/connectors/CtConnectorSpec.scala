@@ -17,6 +17,7 @@
 package connectors
 
 import base.SpecBase
+import constants.CtAccountSummaryConstants
 import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
@@ -52,15 +53,14 @@ class CtConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
     "call the micro service with the correct uri and return the contents" in {
 
-      val ctAccountSummary = CtAccountSummaryData(Some(CtAccountBalance(Some(4.0))))
 
       when(mockHttp.GET[Option[CtAccountSummaryData]](any(), any(), any())(any(),any(),any()))
-        .thenReturn(Future.successful(Some(ctAccountSummary)))
+        .thenReturn(Future.successful(Some(CtAccountSummaryConstants.ctAccountSummary)))
 
       val response = connector.accountSummary(ctUtr)
 
       whenReady(response) { r =>
-        r mustBe Some(ctAccountSummary)
+        r mustBe Some(CtAccountSummaryConstants.ctAccountSummary)
       }
 
     }

@@ -18,6 +18,7 @@ package services
 
 import base.SpecBase
 import config.FrontendAppConfig
+import constants.CtAccountSummaryConstants
 import models._
 import models.requests.AuthenticatedRequest
 import org.mockito.ArgumentMatchers.any
@@ -45,7 +46,6 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
   val ctEnrolment: CtEnrolment = CtEnrolment(CtUtr("utr"), isActivated = true)
 
-  val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(999.99)))))
   val testCard: Card = Card(
     title = "Corporation Tax",
     description = "",
@@ -76,7 +76,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
         )
       )
     ),
-    accountBalance = Some(999.99)
+    accountBalance = Some(CtAccountSummaryConstants.amount)
   )
 
   val testCardNoData: Card = Card(
@@ -130,7 +130,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
   "Calling CtCardBuilderService.buildCtCard" should {
     "return a card with Payments information when getting CtData" in {
       when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-        .thenReturn(Future.successful(Right(Some(ctData))))
+        .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
       when(mockHistoryService.getPayments(any(), any())(any(), any()))
         .thenReturn(Future.successful(Right(Nil)))
 
@@ -158,7 +158,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
     "return a card with Returns information when getting CtData" in {
       when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-        .thenReturn(Future.successful(Right(Some(ctData))))
+        .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
 
       when(mockPartialBuilder.buildPaymentsPartial(any())(any(),any()))
         .thenReturn(Html("Payments partial"))
@@ -182,7 +182,7 @@ class CtCardBuilderServiceSpec extends SpecBase with ScalaFutures with MockitoSu
 
     "return a card with payment history information when that information is available" in {
       when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-        .thenReturn(Future.successful(Right(Some(ctData))))
+        .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
 
       when(mockPartialBuilder.buildPaymentsPartial(any())(any(),any()))
         .thenReturn(Html("Payments partial"))

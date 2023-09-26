@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-package models
+package constants
 
-import play.api.libs.json.{Json, OFormat}
+import models.{CtAccountBalance, CtAccountSummaryData, CtData}
 
 import java.time.LocalDate
 
-case class CtAccountSummaryData(accountBalance: CtAccountBalance, effectiveDueDate: LocalDate)
+object CtAccountSummaryConstants {
 
-object CtAccountSummaryData {
-  implicit val formats: OFormat[CtAccountSummaryData] = Json.format[CtAccountSummaryData]
+  val amount: BigDecimal = BigDecimal(123.45)
+
+
+  val effectiveDueDate: LocalDate = LocalDate.parse("2023-09-22")
+
+  def ctAccountSummary(amount: BigDecimal = amount): CtAccountSummaryData =
+    CtAccountSummaryData(
+      accountBalance = CtAccountBalance(amount),
+      effectiveDueDate = effectiveDueDate
+    )
+
+  val ctAccountSummary: CtAccountSummaryData = ctAccountSummary()
+
+  def ctData(amount: BigDecimal = amount): CtData =
+    CtData(ctAccountSummary(amount))
+
+  val ctData: CtData = ctData()
+
 }

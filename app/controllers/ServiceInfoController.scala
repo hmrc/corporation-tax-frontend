@@ -17,9 +17,9 @@
 package controllers
 
 import connectors.ServiceInfoPartialConnector
-import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import models.requests.AuthenticatedRequest
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, MessagesControllerComponents}
+import play.api.mvc.MessagesControllerComponents
 import play.twirl.api.Html
 import services.PartialService
 import uk.gov.hmrc.http.HeaderCarrier

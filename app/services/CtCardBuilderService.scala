@@ -19,7 +19,7 @@ package services
 import config.FrontendAppConfig
 import models._
 import models.payments.PaymentRecord
-import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import models.requests.AuthenticatedRequest
 import play.api.i18n.{Messages, MessagesApi}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.LoggingUtil
@@ -54,7 +54,7 @@ class CtCardBuilderService @Inject()(val messagesApi: MessagesApi,
           paymentsContent = Some(ctPartialBuilder.buildPaymentsPartial(Some(data)).toString()),
           returnsContent = Some(ctPartialBuilder.buildReturnsPartial().toString()),
           paymentHistory = history,
-          ctAccountBalance = data.accountSummary.accountBalance.flatMap(_.amount)
+          ctAccountBalance = Some(data.accountSummary.accountBalance.amount)
         )
         case _ =>
           warnLog(s"[CtCardBuilderService][buildCtCard] failed to build card")

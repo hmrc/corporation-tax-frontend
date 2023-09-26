@@ -18,6 +18,7 @@ package controllers
 
 import base.{FakeAuthAction, SpecBase}
 import connectors.payments.{NextUrl, PaymentConnector}
+import constants.CtAccountSummaryConstants
 import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -31,9 +32,6 @@ import scala.concurrent.Future
 
 class PaymentStartControllerSpec extends SpecBase with MockitoSugar {
 
-  val testAccountBalance: CtAccountBalance = CtAccountBalance(Some(0.0))
-  val testCtData: CtData = CtData(CtAccountSummaryData(Some(testAccountBalance)))
-  val testCtDataNoAccountBalance: CtData = CtData(CtAccountSummaryData(None))
   val testPayUrl: String = "https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay"
 
   val mockPayConnector: PaymentConnector = mock[PaymentConnector]
@@ -52,23 +50,11 @@ class PaymentStartControllerSpec extends SpecBase with MockitoSugar {
         .thenReturn(Future.successful(NextUrl(testPayUrl)))
 
       when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-        .thenReturn(Future.successful(Right(Some(testCtData))))
+        .thenReturn(Future.successful(Right(Some(CtAccountSummaryConstants.ctData))))
 
       val result: Future[Result] = controller.makeAPayment(fakeRequest)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(testPayUrl)
-    }
-
-    "return Bad Request and the error page when the user has no account balance" in {
-      when(mockPayConnector.ctPayLink(any())(any(), any(), any()))
-        .thenReturn(Future.successful(NextUrl(testPayUrl)))
-
-      when(mockCtService.fetchCtModel(any())(any(),any(), any()))
-        .thenReturn(Future.successful(Right(Some(testCtDataNoAccountBalance))))
-
-      val result: Future[Result] = controller.makeAPayment(fakeRequest)
-//      contentType(result) mustBe Some("text/html")
-      status(result) mustBe BAD_REQUEST
     }
 
     "return Bad Request and the error page when CtGenericError is returend " in {

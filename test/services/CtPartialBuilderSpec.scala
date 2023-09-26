@@ -17,6 +17,7 @@
 package services
 
 import config.FrontendAppConfig
+import constants.CtAccountSummaryConstants
 import models.requests.AuthenticatedRequest
 import models.{Card, CtAccountBalance, CtAccountSummaryData, CtData, CtEnrolment, CtUtr, Link}
 import org.jsoup.Jsoup
@@ -40,7 +41,6 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
     lazy val utr: CtUtr = CtUtr("utr")
     lazy val ctEnrolment: CtEnrolment = CtEnrolment(utr, isActivated = true)
     lazy val config: FrontendAppConfig = mock[FrontendAppConfig]
-    lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(None))))
 
     lazy val testCard: Card = Card(
       title = "Corporation Tax",
@@ -67,14 +67,14 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
     when(config.getUrl("fileAReturn")).thenReturn("http://localhost:9030/cato")
     when(config.getUrl("mainPage")).thenReturn("http://localhost:9731/business-account/corporation-tax")
     when(config.getPortalUrl("balance")(ctEnrolment)(fakeRequestWithEnrolments))
-        .thenReturn("http://localhost:8081/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
+      .thenReturn("http://localhost:8081/portal/corporation-tax/org/utr/account/balanceperiods?lang=eng")
   }
 
   "Calling CtPartialBuilder.buildReturnsPartial" should {
 
     "handle returns" in new LocalSetup {
       val ctPartialBuilder: CtPartialBuilder = new CtPartialBuilder(config)
-      val view: String =  ctPartialBuilder.buildReturnsPartial()(fakeRequestWithEnrolments, messages).body
+      val view: String = ctPartialBuilder.buildReturnsPartial()(fakeRequestWithEnrolments, messages).body
       val doc: Document = Jsoup.parse(view)
 
       doc.text() must include("You may have returns to complete.")
@@ -97,8 +97,8 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
 
       "the user is in credit with nothing to pay" in new LocalSetup {
         val ctPartialBuilder: CtPartialBuilder = new CtPartialBuilder(config)
-        override lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(-123.45)))))
-        val view: String =  ctPartialBuilder.buildPaymentsPartial(Some(ctData))(fakeRequestWithEnrolments, messages).body
+        val amount: BigDecimal = BigDecimal(-123.45)
+        val view: String = ctPartialBuilder.buildPaymentsPartial(Some(CtAccountSummaryConstants.ctData(amount)))(fakeRequestWithEnrolments, messages).body
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You are £123.45 in credit.")
@@ -106,8 +106,8 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
 
       "the user is in debit" in new LocalSetup {
         val ctPartialBuilder: CtPartialBuilder = new CtPartialBuilder(config)
-        override lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(543.21)))))
-        val view: String =  ctPartialBuilder.buildPaymentsPartial(Some(ctData))(fakeRequestWithEnrolments, messages).body
+        val amount: BigDecimal = BigDecimal(543.21)
+        val view: String = ctPartialBuilder.buildPaymentsPartial(Some(CtAccountSummaryConstants.ctData(amount)))(fakeRequestWithEnrolments, messages).body
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You owe £543.21.")
@@ -115,8 +115,8 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
 
       "the user has no tax to pay" in new LocalSetup {
         val ctPartialBuilder: CtPartialBuilder = new CtPartialBuilder(config)
-        override lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))
-        val view: String =  ctPartialBuilder.buildPaymentsPartial(Some(ctData))(fakeRequestWithEnrolments, messages).body
+        val amount: BigDecimal = BigDecimal(0)
+        val view: String = ctPartialBuilder.buildPaymentsPartial(Some(CtAccountSummaryConstants.ctData(amount)))(fakeRequestWithEnrolments, messages).body
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("You have no tax to pay.")
@@ -125,8 +125,7 @@ class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with Mo
 
       "there is no balance information to display" in new LocalSetup {
         val ctPartialBuilder: CtPartialBuilder = new CtPartialBuilder(config)
-        override lazy val ctData: CtData = CtData(CtAccountSummaryData(Some(CtAccountBalance(Some(0)))))
-        val view: String =  ctPartialBuilder.buildPaymentsPartial(None)(fakeRequestWithEnrolments, messages).body
+        val view: String = ctPartialBuilder.buildPaymentsPartial(None)(fakeRequestWithEnrolments, messages).body
         val doc: Document = Jsoup.parse(view)
 
         doc.text() must include("There is no balance information to display.")

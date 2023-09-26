@@ -7,7 +7,8 @@ object TestJsonObjects {
      | "accountBalance":
      |   {
      |     "amount": 10.00
-     |   }
+     |   },
+     |  "effectiveDueDate": "2023-09-01"
      |}""".stripMargin
 
   val testCtDesignatoryDetailsCollection: String =
