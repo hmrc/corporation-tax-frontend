@@ -17,11 +17,12 @@
 package utils
 
 import base.SpecBase
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
 class UrlBuilderSpec extends SpecBase {
 
-  implicit val request = FakeRequest()
+  implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   "build url processes a URL template" should {
 

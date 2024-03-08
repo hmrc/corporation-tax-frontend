@@ -19,11 +19,10 @@ package services
 import config.FrontendAppConfig
 import constants.CtAccountSummaryConstants
 import models.requests.AuthenticatedRequest
-import models.{Card, CtAccountBalance, CtAccountSummaryData, CtData, CtEnrolment, CtUtr, Link}
+import models.{Card, CtEnrolment, CtUtr, Link}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
-import org.scalatest.MustMatchers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -32,7 +31,7 @@ import play.api.test.FakeRequest
 import views.ViewSpecBase
 
 
-class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures with MustMatchers {
+class CtPartialBuilderSpec extends ViewSpecBase with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures {
 
   trait LocalSetup {
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
