@@ -26,10 +26,10 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
 
   val messageKeyPrefix = "subpage"
 
-  val utr = CtUtr("this-is-a-utr")
-  val ctEnrolment = CtEnrolment(utr, isActivated = true)
+  val utr: CtUtr = CtUtr("this-is-a-utr")
+  val ctEnrolment: CtEnrolment = CtEnrolment(utr, isActivated = true)
 
-  val partialContent = Html("<p id=\"partial-content\">hello world</p>")
+  val partialContent: Html = Html("<p id=\"partial-content\">hello world</p>")
   def createView(): Html = inject[subpage].apply(frontendAppConfig, ctEnrolment, partialContent)(HtmlFormat.empty)(fakeRequest, messages)
 
   "Subpage view" must {

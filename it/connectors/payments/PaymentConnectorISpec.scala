@@ -13,8 +13,6 @@ import support.TestConstants.testCtUtr
 import support.TestJsonObjects.testNextUrlSuccess
 import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
-
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

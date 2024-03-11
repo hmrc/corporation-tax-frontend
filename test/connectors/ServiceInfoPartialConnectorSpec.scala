@@ -26,7 +26,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Lang, Messages}
-import play.api.mvc.{AnyContent, MessagesControllerComponents}
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import services.PartialService

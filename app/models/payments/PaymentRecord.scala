@@ -32,7 +32,7 @@ case class PaymentRecord(reference: String,
                          createdOn: OffsetDateTime,
                          taxType: String) {
 
-  def dateFormatted(implicit messages: Messages): String =
+  def dateFormatted: String =
     DateFormatting.formatFull(createdOn.toLocalDate)
 
   def currencyFormatted: String =
@@ -46,7 +46,7 @@ case class PaymentRecord(reference: String,
 object PaymentRecord extends DateUtil with LoggingUtil {
 
   private[payments] object DateFormatting {
-    def formatFull(date: LocalDate)(implicit messages: Messages): String = {
+    def formatFull(date: LocalDate): String = {
       DateTimeFormatter.ofPattern("d MMMM yyyy").format(date)
     }
   }
