@@ -5,7 +5,7 @@ private object AppDependencies {
   import play.core.PlayVersion
   import play.sbt.PlayImport._
 
-  val bootstrapVersion = "8.4.0"
+  val bootstrapVersion = "8.6.0"
 
   val compile = Seq(
     ws,
