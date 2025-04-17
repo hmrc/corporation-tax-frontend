@@ -40,12 +40,12 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageHighlighting := true,
     parallelExecution in Test := false,
   )
-  .settings(scalaSettings: _*)
-  .settings(publishingSettings: _*)
-  .settings(defaultSettings(): _*)
+  .settings(scalaSettings *)
+  .settings(publishingSettings *)
+  .settings(defaultSettings() *)
   .settings(
     scalacOptions ++= Seq("-feature"),
-    scalaVersion := "2.13.12",
+    scalaVersion := "2.13.16",
     libraryDependencies ++= appDependencies,
     retrieveManaged := true,
     isPublicArtefact := true
