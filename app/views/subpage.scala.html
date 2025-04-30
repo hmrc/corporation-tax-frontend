@@ -35,10 +35,10 @@
                 <h2 class="govuk-heading-s govuk-!-margin-bottom-0">@messages("subpage.sidebar.help_with_tax")</h2>
                 <ul class="govuk-list">
                     <li>
-                        <a class="govuk-link" id="help-and-contact" href="@appConfig.getHelpAndContactUrl("home")">@messages("subpage.sidebar.help_and_contact")</a>
+                        <a class="govuk-link" id="help-and-contact" href='@appConfig.getHelpAndContactUrl("home")'>@messages("subpage.sidebar.help_and_contact")</a>
                     </li>
                     <li>
-                        <a class="govuk-link" id="more" href="@appConfig.getPortalUrl("more")(ctEnrolment)(request)" rel="external noopener">@messages("subpage.sidebar.more")</a>
+                        <a class="govuk-link" id="more" href='@appConfig.getPortalUrl("more")(ctEnrolment)(request)' rel="external noopener">@messages("subpage.sidebar.more")</a>
                     </li>
                 </ul>
             </div>
