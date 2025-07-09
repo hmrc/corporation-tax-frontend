@@ -19,6 +19,7 @@ package views
 import base.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.Assertion
 import play.twirl.api.Html
 
 trait ViewSpecBase extends SpecBase {
@@ -27,12 +28,12 @@ trait ViewSpecBase extends SpecBase {
 
   def assertEqualsMessage(doc: Document,
                           cssSelector: String,
-                          expectedMessageKey: String) =
+                          expectedMessageKey: String): Assertion =
     assertEqualsValue(doc, cssSelector, messages(expectedMessageKey))
 
   def assertEqualsValue(doc: Document,
                         cssSelector: String,
-                        expectedValue: String) = {
+                        expectedValue: String): Assertion = {
     val elements = doc.select(cssSelector)
 
     if (elements.isEmpty)
@@ -46,7 +47,7 @@ trait ViewSpecBase extends SpecBase {
 
   def assertPageTitleEqualsMessage(doc: Document,
                                    expectedMessageKey: String,
-                                   args: Any*) = {
+                                   args: Any*): Assertion = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
     headers.first.text.replaceAll("\u00a0", " ") mustBe messages(
@@ -55,45 +56,45 @@ trait ViewSpecBase extends SpecBase {
     ).replaceAll("&nbsp;", " ")
   }
 
-  def assertContainsText(doc: Document, text: String) =
+  def assertContainsText(doc: Document, text: String): Assertion =
     assert(
       doc.toString.contains(text),
       "\n\ntext " + text + " was not rendered on the page.\n"
     )
 
-  def assertContainsMessages(doc: Document, expectedMessageKeys: String*) = {
+  def assertContainsMessages(doc: Document, expectedMessageKeys: String*): Unit = {
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
   }
 
-  def assertRenderedById(doc: Document, id: String) = {
+  def assertRenderedById(doc: Document, id: String): Assertion = {
     assert(
       doc.getElementById(id) != null,
       "\n\nElement " + id + " was not rendered on the page.\n"
     )
   }
 
-  def assertRenderedByTag(doc: Document, tag: String) = {
+  def assertRenderedByTag(doc: Document, tag: String): Assertion = {
     assert(
       doc.getElementsByTag(tag).first() != null,
       "\n\nElement " + tag + " was not rendered on the page.\n"
     )
   }
 
-  def assertNotRenderedById(doc: Document, id: String) = {
+  def assertNotRenderedById(doc: Document, id: String): Assertion = {
     assert(
       doc.getElementById(id) == null,
       "\n\nElement " + id + " was rendered on the page.\n"
     )
   }
 
-  def assertRenderedByCssSelector(doc: Document, cssSelector: String) = {
+  def assertRenderedByCssSelector(doc: Document, cssSelector: String): Assertion = {
     assert(
       !doc.select(cssSelector).isEmpty,
       "Element " + cssSelector + " was not rendered on the page."
     )
   }
 
-  def assertNotRenderedByCssSelector(doc: Document, cssSelector: String) = {
+  def assertNotRenderedByCssSelector(doc: Document, cssSelector: String): Assertion = {
     assert(
       doc.select(cssSelector).isEmpty,
       "\n\nElement " + cssSelector + " was rendered on the page.\n"
@@ -103,7 +104,7 @@ trait ViewSpecBase extends SpecBase {
   def assertContainsLabel(doc: Document,
                           forElement: String,
                           expectedText: String,
-                          expectedHintText: Option[String] = None) = {
+                          expectedHintText: Option[String] = None): Any = {
     val labels = doc.getElementsByAttributeValue("for", forElement)
     assert(
       labels.size == 1,
@@ -126,11 +127,19 @@ trait ViewSpecBase extends SpecBase {
     }
   }
 
-  def assertRenderedByClass(doc: Document, classes: String) = {
+  def assertRenderedByClass(doc: Document, classes: String): Assertion = {
     assert(doc.getElementsByClass(classes) != null, "\n\nElement " + classes + " was not rendered on the page.\n")
   }
 
-  def assertLinkByClass(doc: Document, linkClass: String, expectedText: String, expectedUrl: String, expectedIsExternal: Boolean = false, expectedOpensInNewTab: Boolean = false, exactUrl: Boolean = true) {
+  def assertLinkByClass(
+        doc: Document,
+        linkClass: String,
+        expectedText: String,
+        expectedUrl: String,
+        expectedIsExternal: Boolean = false,
+        expectedOpensInNewTab: Boolean = false,
+        exactUrl: Boolean = true
+      ): Unit = {
     val link = doc.getElementsByClass(linkClass)
     assert(link.text().contains(expectedText), s"\n\n Link $linkClass does not have text $expectedText")
     assert(link.eachAttr("href").contains(expectedUrl), s"\n\n Link $linkClass does not contain expectedUrl $expectedUrl")
@@ -139,7 +148,7 @@ trait ViewSpecBase extends SpecBase {
 
   def assertElementHasClass(doc: Document,
                             id: String,
-                            expectedClass: String) = {
+                            expectedClass: String): Assertion = {
     assert(
       doc.getElementById(id).hasClass(expectedClass),
       s"\n\nElement $id does not have class $expectedClass"
@@ -150,7 +159,7 @@ trait ViewSpecBase extends SpecBase {
                                 id: String,
                                 name: String,
                                 value: String,
-                                isChecked: Boolean) = {
+                                isChecked: Boolean): Assertion = {
     assertRenderedById(doc, id)
     val radio = doc.getElementById(id)
     assert(
@@ -181,7 +190,7 @@ trait ViewSpecBase extends SpecBase {
                      expectedUrl: String,
                      expectedIsExternal: Boolean = false,
                      expectedOpensInNewTab: Boolean = false,
-                     expectedRole: String = "") {
+                     expectedRole: String = ""): Unit = {
     val link = doc.getElementById(linkId)
     assert(
       link.text() == expectedText,

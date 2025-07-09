@@ -31,7 +31,7 @@ import utils.DateUtil
 import views.html.partials.payment_history
 
 import java.time.{LocalDateTime, OffsetDateTime}
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.Random
 
 class PaymentHistorySpec extends PlaySpec with GuiceOneServerPerSuite with DateUtil with Injecting{

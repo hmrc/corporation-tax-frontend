@@ -22,7 +22,8 @@ import play.api.http.Status._
 import play.api.libs.json.JsSuccess
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
 import utils.LoggingUtil
 
 import javax.inject.{Inject, Singleton}
@@ -30,11 +31,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAppConfig) extends LoggingUtil{
+class PaymentHistoryConnector @Inject()(val http: HttpClientV2, config: FrontendAppConfig) extends LoggingUtil{
 
 
   def get(searchTag: String)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Either[String, List[CtPaymentRecord]]] =
-    http.GET[HttpResponse](buildUrl(searchTag)).map { response =>
+    http.get(buildUrl(searchTag)).execute[HttpResponse].map { response =>
       infoLog(s"[PaymentHistoryConnector][get] - Attempted to retrieve payment history")
       response.status match {
         case OK =>
@@ -60,6 +61,6 @@ class PaymentHistoryConnector @Inject()(val http: HttpClient, config: FrontendAp
         Left("exception thrown from payment api")
     }
 
-  private def buildUrl(searchTag: String) = s"${config.payApiUrl}/pay-api/v2/payment/search/$searchTag?taxType=corporation-tax&searchScope=BTA"
+  private def buildUrl(searchTag: String) = url"${config.payApiUrl}/pay-api/v2/payment/search/$searchTag?taxType=corporation-tax&searchScope=BTA"
 
 }
