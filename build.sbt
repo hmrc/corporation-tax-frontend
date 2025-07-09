@@ -1,12 +1,11 @@
 import play.sbt.routes.RoutesKeys
 import play.sbt.routes.RoutesKeys.routesGenerator
-import sbt.Keys._
-import sbt.Tests.{Group, SubProcess}
-import sbt.{CrossVersion, _}
+import sbt.Keys.*
+import sbt.*
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings._
+import uk.gov.hmrc.DefaultBuildSettings.*
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.*
 import uk.gov.hmrc.sbtsettingkeys.Keys.isPublicArtefact
 
 
@@ -17,11 +16,6 @@ lazy val plugins: Seq[Plugins] = Seq.empty
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
 
 val silencerVersion = "1.7.12"
-
-def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
-  tests map {
-    test => Group(test.name, Seq(test), SubProcess(ForkOptions().withRunJVMOptions(Vector(s"-Dtest.name=${test.name}"))))
-  }
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(Seq(play.sbt.PlayScala, SbtDistributablesPlugin) ++ plugins: _*)

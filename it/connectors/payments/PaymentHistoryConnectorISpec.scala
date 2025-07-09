@@ -15,6 +15,8 @@ import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 class PaymentHistoryConnectorISpec extends PlaySpec with IntegrationTest {
 

@@ -52,7 +52,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
   "PaymentHistoryServiceSpec" when {
     "getPayments is called and getSAPaymentHistory toggle set to true" should {
       "return payment history when valid payment history is returned" in {
-        when(mockConnector.get(any())(any(), any()))
+        when(mockConnector.get(any())(any(),any(), any()))
           .thenReturn(Future.successful(
             Right(
               List(CtPaymentRecord(
@@ -76,7 +76,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
       }
 
       "return payment history when payments fall within and outside 7 days" in {
-        when(mockConnector.get(any())(any(), any()))
+        when(mockConnector.get(any())(any(),any(), any()))
           .thenReturn(Future.successful(Right(List(
             CtPaymentRecord(
               reference = "reference number",
@@ -105,7 +105,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
       }
 
       "not return payment history when status is not Successful" in {
-        when(mockConnector.get(any())(any(), any()))
+        when(mockConnector.get(any())(any(), any(), any()))
           .thenReturn(Future.successful(
             Right(
               List(CtPaymentRecord(
@@ -122,7 +122,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
       }
 
       "not return payment history when payment falls outside of 7 days" in {
-        when(mockConnector.get(any())(any(), any()))
+        when(mockConnector.get(any())(any(), any(), any()))
           .thenReturn(Future.successful(
             Right(
               List(CtPaymentRecord(
@@ -139,7 +139,7 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
       }
 
       "return Nil when date is invalid format" in {
-        when(mockConnector.get(any())(any(), any()))
+        when(mockConnector.get(any())(any(), any(), any()))
           .thenReturn(Future.successful(
             Right(
               List(CtPaymentRecord(
@@ -156,14 +156,14 @@ class PaymentsHistoryServiceSpec extends PlaySpec with ScalaFutures with GuiceOn
       }
 
       "return Nil when payment history could not be found" in {
-        when(mockConnector.get(any())(any(), any()))
+        when(mockConnector.get(any())(any(), any(), any()))
           .thenReturn(Future.successful(Right(Nil)))
 
         testService.getPayments(CtEnrolment(CtUtr("utr"), isActivated = true), date).futureValue mustBe Right(Nil)
       }
 
       "return Left(PaymentRecordFailure) when connector fails to parse" in {
-        when(mockConnector.get(any())(any(), any()))
+        when(mockConnector.get(any())(any(), any(), any()))
           .thenReturn(Future.successful(Left("unable to parse data from payment api")))
 
         testService.getPayments(CtEnrolment(CtUtr("utr"), isActivated = true), date).futureValue mustBe Left(PaymentRecordFailure)

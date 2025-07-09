@@ -34,6 +34,7 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
 

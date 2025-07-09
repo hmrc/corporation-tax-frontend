@@ -27,14 +27,13 @@ import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, NotFo
 import utils.LoggingUtil
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentHistoryConnector @Inject()(val http: HttpClientV2, config: FrontendAppConfig) extends LoggingUtil{
 
 
-  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Either[String, List[CtPaymentRecord]]] =
+  def get(searchTag: String)(implicit headerCarrier: HeaderCarrier,  ec: ExecutionContext, request: Request[_]): Future[Either[String, List[CtPaymentRecord]]] =
     http.get(buildUrl(searchTag)).execute[HttpResponse].map { response =>
       infoLog(s"[PaymentHistoryConnector][get] - Attempted to retrieve payment history")
       response.status match {
