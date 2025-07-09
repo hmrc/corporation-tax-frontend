@@ -13,8 +13,8 @@ import support.TestConstants.testCtUtr
 import support.TestJsonObjects.testNextUrlSuccess
 import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class PaymentConnectorISpec extends PlaySpec with IntegrationTest {
 
@@ -25,6 +25,7 @@ class PaymentConnectorISpec extends PlaySpec with IntegrationTest {
     ) ++ microservices
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
   implicit val request: Request[_] = Request(
     AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
