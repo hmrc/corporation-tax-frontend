@@ -14,11 +14,13 @@ import support.TestJsonObjects.{testEmptyCtPaymentList, testIncompleteCtPayment,
 import support.stubs.StubConnector
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+
 
 class PaymentHistoryConnectorISpec extends PlaySpec with IntegrationTest {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
   implicit val request: Request[_] = Request(
     AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),

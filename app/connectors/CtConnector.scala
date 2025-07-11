@@ -20,17 +20,18 @@ import config.FrontendAppConfig
 
 import javax.inject.{Inject, Singleton}
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 import models._
 import play.api.mvc.Request
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.LoggingUtil
 
 
 @Singleton
-class CtConnector @Inject()(val http: HttpClient,
+class CtConnector @Inject()(val http: HttpClientV2,
                             val config: FrontendAppConfig) extends LoggingUtil {
 
   lazy val ctUrl: String = config.ctUrl
@@ -56,14 +57,14 @@ class CtConnector @Inject()(val http: HttpClient,
   def accountSummary(ctUtr: CtUtr)(implicit hc: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[Option[CtAccountSummaryData]] = {
     val uri = s"$ctUrl/ct/$ctUtr/account-summary"
     infoLog(s"[CtConnector][accountSummary] - Attempted to retrieve account summary")
-    http.GET[Option[CtAccountSummaryData]](uri)(handleResponse[CtAccountSummaryData](uri), hc, ec)
+    http.get(url"$uri").execute(handleResponse[CtAccountSummaryData](uri), ec)
   }
 
   def designatoryDetails(ctUtr: CtUtr)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[Option[CtDesignatoryDetailsCollection]] = {
     val uri = ctUrl + s"/ct/$ctUtr/designatory-details"
     infoLog(s"[CtConnector][designatoryDetails] - Attempted to retrieve designatory details")
-    http.GET[Option[CtDesignatoryDetailsCollection]](uri)(handleResponse[CtDesignatoryDetailsCollection](uri), hc, ec)
+    http.get(url"$uri").execute(handleResponse[CtDesignatoryDetailsCollection](uri), ec)
   }
 
 }

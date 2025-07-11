@@ -33,7 +33,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
   def createView(): Html = inject[subpage].apply(frontendAppConfig, ctEnrolment, partialContent)(HtmlFormat.empty)(fakeRequest, messages)
 
   "Subpage view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(() => createView(), messageKeyPrefix)
 
     "contain heading ID" in {
       val doc = asDocument(createView())
@@ -53,7 +53,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
     }
 
     "render the provided partial content" in {
-      val doc = asDocument(createView())
+       asDocument(createView())
         .getElementById("partial-content")
         .text mustBe "hello world"
     }

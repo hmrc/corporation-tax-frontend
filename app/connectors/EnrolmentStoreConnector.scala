@@ -22,20 +22,22 @@ import play.api.http.Status
 import play.api.libs.json.JsSuccess
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.LoggingUtil
 
+import java.net.URL
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAppConfig)
+class EnrolmentStoreConnector @Inject()(val http: HttpClientV2, config: FrontendAppConfig)
                                        (implicit val ec: ExecutionContext) extends LoggingUtil{
 
   def getEnrolments(credId: String)(implicit headerCarrier: HeaderCarrier, request: Request[_]): Future[Either[String, UserEnrolments]] = {
     infoLog(s"[EnrolmentStoreConnector][getEnrolments] - Attempted to retrieve enrolments")
-    http.GET[HttpResponse](buildURL(credId)).map { response =>
+    http.get(buildURL(credId)).execute[HttpResponse].map { response =>
       response.status match {
         case Status.OK =>
           response.json.validate[UserEnrolments] match {
@@ -66,6 +68,6 @@ class EnrolmentStoreConnector @Inject()(val http: HttpClient, config: FrontendAp
       case _ => "Enrolment API couldn't handle response code"
     }
 
-  private def buildURL(credId: String): String = s"${config.enrolmentStoreUrl}/enrolment-store/users/$credId/enrolments?service=IR-CT"
+  private def buildURL(credId: String): URL = url"${config.enrolmentStoreUrl}/enrolment-store/users/$credId/enrolments?service=IR-CT"
 
 }

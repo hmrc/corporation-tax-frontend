@@ -90,7 +90,7 @@ class PaymentRecordSpec extends PlaySpec with GuiceOneServerPerSuite with DateUt
     type TestE = Either[PaymentRecordFailure.type, List[PaymentRecord]]
 
     def testJsonString(paymentHistory: TestE): JsValue =
-      paymentHistory.right.map(Json.toJson[List[PaymentRecord]](_)).left.map(_ => JsString("Bad Gateway")).merge
+      paymentHistory.map(Json.toJson[List[PaymentRecord]](_)).left.map(_ => JsString("Bad Gateway")).merge
 
     "parse JsArray of PaymentRecord as right" in {
       val altTestReference = "anotherReference"

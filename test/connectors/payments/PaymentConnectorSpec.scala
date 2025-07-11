@@ -27,7 +27,7 @@ import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -41,7 +41,12 @@ class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures 
   private val testBackReturnUrl = "https://www.tax.service.gov.uk/business-account"
   private val testSpjRequest = SpjRequestBtaCt(testAmount, testBackReturnUrl, testBackReturnUrl, "123456789", testDate)
 
-  val mockHttp: HttpClient = mock[HttpClient]
+  val mockHttp: HttpClientV2 = mock[HttpClientV2]
+  val requestBuilder: RequestBuilder = mock[RequestBuilder]
+
+  when(mockHttp.post(any())(any())).thenReturn(requestBuilder)
+  when(requestBuilder.withBody(any())(any(), any(), any())).thenReturn(requestBuilder)
+
   val connector = new PaymentConnector(mockHttp, frontendAppConfig)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -56,7 +61,7 @@ class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures 
       "return a NextUrl if the external service is responsive" in {
         val nextUrl = NextUrl("https://www.tax.service.gov.uk/pay/12345/choose-a-way-to-pay")
 
-        when(mockHttp.POST[SpjRequestBtaCt, NextUrl](any(), any(), any())(any(), any(), any(), any()))
+        when(requestBuilder.execute[NextUrl](any, any))
           .thenReturn(Future.successful(nextUrl))
 
         val response = connector.ctPayLink(testSpjRequest)
@@ -69,7 +74,7 @@ class PaymentConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures 
       "return the service-unavailable page if there is a problem" in {
         val nextUrl = NextUrl("http://localhost:9050/pay-online/service-unavailable")
 
-        when(mockHttp.POST[SpjRequestBtaCt, NextUrl](any(), any(), any())(any(), any(), any(), any()))
+        when(requestBuilder.execute(any(), any()))
           .thenReturn(Future.failed(new RuntimeException("oops")))
 
         val response = connector.ctPayLink(testSpjRequest)

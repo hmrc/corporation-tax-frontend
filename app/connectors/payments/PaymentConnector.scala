@@ -21,14 +21,15 @@ import models.SpjRequestBtaCt
 import play.api.libs.json.{Format, Json}
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http._
 import utils.LoggingUtil
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends LoggingUtil {
+class PaymentConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) extends LoggingUtil {
   private def payApiBaseUrl: String = config.payApiUrl
 
   private def paymentsFrontendBaseUrl: String = config.getUrl("paymentsFrontendBase")
@@ -36,7 +37,7 @@ class PaymentConnector @Inject()(http: HttpClient, config: FrontendAppConfig) ex
   def ctPayLink(spjRequest: SpjRequestBtaCt)(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[NextUrl] = {
     infoLog(s"[PaymentConnector][ctPayLink] - ctPayLink attempted. Amount and dueDate provided")
 
-    http.POST[SpjRequestBtaCt, NextUrl](s"$payApiBaseUrl/pay-api/bta/ct/journey/start", spjRequest)
+    http.post(url"$payApiBaseUrl/pay-api/bta/ct/journey/start").withBody(Json.toJson(spjRequest)).execute[NextUrl]
       .recover {
         case e: Exception =>
           errorLog(s"[PaymentConnector][ctPayLink] - Error: ${e.getMessage}")

@@ -31,12 +31,18 @@ import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  val mockHttp: HttpClient = mock[HttpClient]
+  val mockHttp: HttpClientV2 = mock[HttpClientV2]
+  val requestBuilder: RequestBuilder = mock[RequestBuilder]
+
+  when(mockHttp.get(any())(any())).thenReturn(requestBuilder)
+
   val connector = new PaymentHistoryConnector(mockHttp, frontendAppConfig)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -62,7 +68,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
           """.stripMargin
         )
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, hodData, Map.empty[String, Seq[String]])))
 
         val result = connector.get("")
@@ -95,7 +101,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
             Map.empty[String, Seq[String]]
         )
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(hodResponse))
 
         val result = connector.get("")
@@ -137,7 +143,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
           Map.empty[String, Seq[String]]
         )
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(hodResponse))
 
         val result = connector.get("")
@@ -180,7 +186,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
           Map.empty[String, Seq[String]]
         )
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(hodResponse))
 
         val result = connector.get("")
@@ -202,7 +208,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
           Map.empty[String, Seq[String]]
         )
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(hodResponse))
 
         val result = connector.get("")
@@ -222,7 +228,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
         )
 
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(hodResponse))
 
         val result = connector.get("")
@@ -235,7 +241,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       "handle 400 response" in {
         val hodResponse = new BadRequestException("oops")
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.failed(hodResponse))
 
         val result = connector.get("")
@@ -248,7 +254,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       "handle 404 response" in {
         val hodResponse = new NotFoundException("oops")
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.failed(hodResponse))
 
         val result = connector.get("")
@@ -261,7 +267,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       "handle other 4xx response" in {
         val hodResponse = UpstreamErrorResponse("403", FORBIDDEN, FORBIDDEN)
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.failed(hodResponse))
 
         val result = connector.get("")
@@ -274,7 +280,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       "handle invalid response code" in {
         val hodResponse = HttpResponse(CREATED, Json.obj(), Map.empty[String, Seq[String]])
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(hodResponse))
 
         val result = connector.get("")
@@ -287,7 +293,7 @@ class PaymentHistoryConnectorSpec extends SpecBase with MockitoSugar with ScalaF
       "handle 5xx response" in {
         val hodResponse = UpstreamErrorResponse("500", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)
 
-        when(mockHttp.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(requestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.failed(hodResponse))
 
         val result = connector.get("")
