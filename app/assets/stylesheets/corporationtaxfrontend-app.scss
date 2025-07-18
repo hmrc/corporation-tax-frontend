@@ -1,6 +1,8 @@
-$govuk-assets-path: "/business-account/corporation-tax/assets/lib/govuk-frontend/govuk/assets/";
-$hmrc-assets-path: "/business-account/corporation-tax/assets/lib/hmrc-frontend/hmrc/";;
-@import "lib/govuk-frontend/dist/govuk/all";
+$govuk-assets-path: "/business-account/corporation-tax/assets/lib/govuk-frontend/dist/govuk/assets/";
+$hmrc-assets-path: "/business-account/corporation-tax/assets/lib/hmrc-frontend/hmrc/";
+$govuk-suppressed-warnings: "legacy-organisation-colours";
+
+@import "lib/govuk-frontend/dist/govuk/index";
 @import "lib/hmrc-frontend/hmrc/all";
 
 

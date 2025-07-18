@@ -1,7 +1,7 @@
 import play.sbt.routes.RoutesKeys
 import play.sbt.routes.RoutesKeys.routesGenerator
-import sbt.Keys.*
 import sbt.*
+import sbt.Keys.*
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.*
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
@@ -13,14 +13,14 @@ val appName = "corporation-tax-frontend"
 
 lazy val appDependencies: Seq[ModuleID] = AppDependencies()
 lazy val plugins: Seq[Plugins] = Seq.empty
-lazy val playSettings: Seq[Setting[_]] = Seq.empty
+lazy val playSettings: Seq[Setting[?]] = Seq.empty
 
 val silencerVersion = "1.7.12"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(Seq(play.sbt.PlayScala, SbtDistributablesPlugin) ++ plugins: _*)
+  .enablePlugins((Seq(play.sbt.PlayScala, SbtDistributablesPlugin) ++ plugins) *)
   .disablePlugins(JUnitXmlReportPlugin)
-  .settings(playSettings: _*)
+  .settings(playSettings *)
   .settings(majorVersion := 0)
   .settings(RoutesKeys.routesImport ++= Seq("models._"))
   .settings(
@@ -35,7 +35,6 @@ lazy val microservice = Project(appName, file("."))
     parallelExecution in Test := false,
   )
   .settings(scalaSettings *)
-  .settings(publishingSettings *)
   .settings(defaultSettings() *)
   .settings(
     scalacOptions ++= Seq("-feature"),
