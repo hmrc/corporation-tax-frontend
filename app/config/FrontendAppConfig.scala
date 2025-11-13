@@ -95,5 +95,5 @@ class FrontendAppConfig @Inject()(config: ServicesConfig,
       (Cy, routes.LanguageSwitchController.switchToLanguage("cymraeg").url)
     )
   }
-
+  lazy val forceServiceNavigation: Boolean = config.getBoolean("play-frontend-hmrc.forceServiceNavigation")
 }

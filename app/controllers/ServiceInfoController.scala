@@ -34,14 +34,14 @@ class ServiceInfoController @Inject()(serviceInfoPartialConnector: ServiceInfoPa
                                       mcc: MessagesControllerComponents,
                                       partialService: PartialService) extends FrontendController(mcc) {
 
-  def serviceInfoPartial[A](request: AuthenticatedRequest[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Html] = {
+  def serviceInfoPartial[A](pageInfo: Option[String] = Some("manage"), request: AuthenticatedRequest[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Html] = {
     implicit val authenticatedRequest: AuthenticatedRequest[A] = request
     val maybeNavLinks = serviceInfoPartialConnector.getNavLinks()
     implicit val messages: Messages = mcc.messagesApi.preferred(request.request)
     for {
       navLinks <- maybeNavLinks
     } yield {
-      service_info(partialService.partialList(navLinks))
+      service_info(partialService.partialList(navLinks), pageInfo)
     }
   }
 

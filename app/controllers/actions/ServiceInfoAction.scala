@@ -36,7 +36,7 @@ class ServiceInfoActionImpl @Inject()(serviceInfoController: ServiceInfoControll
     implicit val hc: HeaderCarrier = header.copy(extraHeaders = header.headers(Seq(HeaderNames.COOKIE)))
 
     for {
-      partial <-  serviceInfoController.serviceInfoPartial(request)
+      partial <-  serviceInfoController.serviceInfoPartial(Some("manage"), request)
     } yield {
       ServiceInfoRequest(request, partial)
     }
