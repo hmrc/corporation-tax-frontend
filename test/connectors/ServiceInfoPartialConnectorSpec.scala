@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package connectors
 
 import base.SpecBase
 import controllers.ServiceInfoController
-import models.requests.{AuthenticatedRequest, ListLinks, NavContent, NavLinks, ServiceInfoRequest}
+import models.requests._
 import models.{CtEnrolment, CtUtr}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +28,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
-import play.twirl.api.HtmlFormat
 import services.PartialService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.service_info
@@ -38,9 +37,10 @@ import scala.concurrent.Future
 
 class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
 
+  val mockServiceNavigationInfo: ServiceNavigationInfo = mock[ServiceNavigationInfo]
   implicit val request: ServiceInfoRequest[_] = ServiceInfoRequest(
     AuthenticatedRequest(FakeRequest(), "", CtEnrolment(CtUtr("utr"), isActivated = true)),
-    HtmlFormat.empty
+    mockServiceNavigationInfo
   )
   val mockPartialService: PartialService = mock[PartialService]
   val mockServiceInfoPartialConnector: ServiceInfoPartialConnector = mock[ServiceInfoPartialConnector]
@@ -49,12 +49,14 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val ctEnrolment: CtEnrolment = CtEnrolment(CtUtr("utr"), isActivated = true)
 
-  val testController = new ServiceInfoController(mockServiceInfoPartialConnector, testView , mockMcc, mockPartialService)
+  val testController = new ServiceInfoController(mockServiceInfoPartialConnector, mockMcc, mockPartialService)
 
 
   "ServiceInfoController" should {
-    "retrieve the correct Model and return HTML" in {
+    "retrieve the correct Model" in {
       implicit val messages: Messages = messagesApi.preferred(Seq(Lang("en")))
+
+      val serviceInfoPartialResult  = ListLinks("testEnAccount","testUrl",None,Some(true))
 
       val navContent = NavContent(
         NavLinks("testEnHome", "testCyHome", "testUrl"),
@@ -80,13 +82,14 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
       val result = testController.serviceInfoPartial(AuthenticatedRequest(FakeRequest(), "", ctEnrolment))
 
       whenReady(result) { response =>
-        response.toString must include (testView.apply(listLinks).toString())
+        response.toString must include (serviceInfoPartialResult.toString)
       }
     }
 
-    "retrieve the empty Model and empty HTML" in {
+    "retrieve the empty Model" in {
 
       implicit val messages: Messages = messagesApi.preferred(Seq(Lang("en")))
+      val serviceInfoEmptyResult  = List.empty
 
       when(mockServiceInfoPartialConnector.getNavLinks()(any(), any(), any()))
         .thenReturn(Future.successful(None))
@@ -95,9 +98,8 @@ class ServiceInfoPartialConnectorSpec extends SpecBase with MockitoSugar with Be
 
       val result = testController.serviceInfoPartial(AuthenticatedRequest(FakeRequest(), "", ctEnrolment))
 
-
       whenReady(result) { response =>
-        response.toString must include (testView.apply(Seq()).toString())
+        response.toString must include (serviceInfoEmptyResult.toString())
       }
     }
   }

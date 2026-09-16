@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,12 @@ package base
 
 
 import controllers.actions.{AuthAction, ServiceInfoAction}
-import models.CtEnrolment
-import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
-import play.api.mvc.{AnyContent, BodyParser, PlayBodyParsers, Request, Result}
-import play.twirl.api.HtmlFormat
-import models.CtUtr
+import models.requests.{AuthenticatedRequest, ListLinks, ServiceInfoRequest, ServiceNavigationInfo}
+import models.{CtEnrolment, CtUtr}
+import play.api.mvc._
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class FakeAuthAction(bodyParsers: PlayBodyParsers)(implicit val executionContext: ExecutionContext) extends AuthAction {
   val parser: BodyParser[AnyContent] = bodyParsers.default
@@ -35,8 +33,10 @@ class FakeAuthAction(bodyParsers: PlayBodyParsers)(implicit val executionContext
 
 object FakeServiceInfoAction extends ServiceInfoAction {
   val executionContext: ExecutionContext = global
+  val listLinks = Seq(ListLinks(message = "Home", url = "/home"))
+  val navigation: ServiceNavigationInfo = ServiceNavigationInfo(navLinks = listLinks)
 
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[ServiceInfoRequest[A]] = {
-    Future.successful(ServiceInfoRequest(request, HtmlFormat.empty))
+    Future.successful(ServiceInfoRequest(request, navigation))
   }
 }

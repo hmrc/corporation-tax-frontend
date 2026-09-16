@@ -38,3 +38,4 @@ bin
 .metals/
 project/metals.sbt
 sbt.json
+node_modules

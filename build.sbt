@@ -38,7 +38,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings() *)
   .settings(
     scalacOptions ++= Seq("-feature"),
-    scalaVersion := "2.13.16",
+    scalaVersion := "2.13.18",
     libraryDependencies ++= appDependencies,
     retrieveManaged := true,
     isPublicArtefact := true
