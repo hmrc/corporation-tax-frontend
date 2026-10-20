@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,16 @@ package controllers
 import base.{FakeAuthAction, FakeServiceInfoAction, SpecBase}
 import controllers.actions.ServiceInfoAction
 import models._
-import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import models.requests.{AuthenticatedRequest, ListLinks, ServiceInfoRequest, ServiceNavigationInfo}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Play.materializer
 import play.api.mvc.{MessagesControllerComponents, PlayBodyParsers}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.twirl.api.{Html, HtmlFormat}
-import models.CtUtr
-import play.api.Play.materializer
+import play.twirl.api.Html
 import views.ViewSpecBase
 import views.html.subpage
 
@@ -47,6 +46,9 @@ class SubpageControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   when(mockAccountSummaryHelper.getAccountSummaryView(any())(any(), any()))
     .thenReturn(Future.successful(accountSummary))
 
+  val listLinks = Seq(ListLinks(message = "Home", url = "/home"))
+  val serviceNavigation: ServiceNavigationInfo = ServiceNavigationInfo(navLinks = listLinks)
+
   def controller() = new SubpageController(
     frontendAppConfig,
     app.injector.instanceOf[MessagesControllerComponents],
@@ -59,12 +61,12 @@ class SubpageControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   val ctEnrolment: CtEnrolment = CtEnrolment(CtUtr("utr"), isActivated = true)
 
   def requestWithEnrolment(activated: Boolean): ServiceInfoRequest[_] = {
-    ServiceInfoRequest(AuthenticatedRequest(FakeRequest(), "", ctEnrolment), HtmlFormat.empty)
+    ServiceInfoRequest(AuthenticatedRequest(FakeRequest(), "", ctEnrolment), serviceNavigation)
   }
 
   val fakeRequestWithEnrolments: ServiceInfoRequest[_] = requestWithEnrolment(activated = true)
 
-  val expected: String = subpage(frontendAppConfig, ctEnrolment, accountSummary)(HtmlFormat.empty)(fakeRequestWithEnrolments, messages).toString
+  val expected: String = subpage(frontendAppConfig, ctEnrolment, accountSummary)(Some(serviceNavigation))(fakeRequestWithEnrolments, messages).toString
 
   "Subpage Controller" must {
     "return OK and the correct view for a GET" in {

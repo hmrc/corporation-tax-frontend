@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,31 +17,29 @@
 package controllers
 
 import connectors.ServiceInfoPartialConnector
-import models.requests.AuthenticatedRequest
+import models.requests.{AuthenticatedRequest, ServiceNavigationInfo}
 import play.api.i18n.Messages
 import play.api.mvc.MessagesControllerComponents
-import play.twirl.api.Html
 import services.PartialService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.service_info
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ServiceInfoController @Inject()(serviceInfoPartialConnector: ServiceInfoPartialConnector,
-                                      service_info: service_info,
                                       mcc: MessagesControllerComponents,
                                       partialService: PartialService) extends FrontendController(mcc) {
 
-  def serviceInfoPartial[A](request: AuthenticatedRequest[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Html] = {
+  def serviceInfoPartial[A](request: AuthenticatedRequest[A], activeTab: String = "home")
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ServiceNavigationInfo]] = {
     implicit val authenticatedRequest: AuthenticatedRequest[A] = request
     val maybeNavLinks = serviceInfoPartialConnector.getNavLinks()
     implicit val messages: Messages = mcc.messagesApi.preferred(request.request)
     for {
       navLinks <- maybeNavLinks
     } yield {
-      service_info(partialService.partialList(navLinks))
+      Some(ServiceNavigationInfo(navLinks = partialService.partialList(navLinks), activeTab))
     }
   }
 

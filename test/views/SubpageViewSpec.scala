@@ -15,12 +15,11 @@
  */
 
 package views
-import views.html.subpage
-import models.CtEnrolment
-import play.twirl.api.{Html, HtmlFormat}
-import models.CtUtr
+import models.{CtEnrolment, CtUtr}
 import play.api.test.Injecting
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
+import views.html.subpage
 
 class SubpageViewSpec extends ViewBehaviours with Injecting {
 
@@ -30,7 +29,7 @@ class SubpageViewSpec extends ViewBehaviours with Injecting {
   val ctEnrolment: CtEnrolment = CtEnrolment(utr, isActivated = true)
 
   val partialContent: Html = Html("<p id=\"partial-content\">hello world</p>")
-  def createView(): Html = inject[subpage].apply(frontendAppConfig, ctEnrolment, partialContent)(HtmlFormat.empty)(fakeRequest, messages)
+  def createView(): Html = inject[subpage].apply(frontendAppConfig, ctEnrolment, partialContent)(serviceInfoPartial)(fakeRequest, messages)
 
   "Subpage view" must {
     behave like normalPage(() => createView(), messageKeyPrefix)

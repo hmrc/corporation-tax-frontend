@@ -17,6 +17,7 @@
 package views
 
 import base.SpecBase
+import models.requests.{ListLinks, ServiceNavigationInfo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -25,6 +26,11 @@ import play.twirl.api.Html
 trait ViewSpecBase extends SpecBase {
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
+
+  val navBarLinks: Seq[ListLinks] = Seq(
+    ListLinks("Home", "test-url.com"),
+  )
+  val serviceInfoPartial: Option[ServiceNavigationInfo] = Some(ServiceNavigationInfo(navLinks = navBarLinks))
 
   def assertEqualsMessage(doc: Document,
                           cssSelector: String,
@@ -36,10 +42,11 @@ trait ViewSpecBase extends SpecBase {
                         expectedValue: String): Assertion = {
     val elements = doc.select(cssSelector)
 
-    if (elements.isEmpty)
+    if (elements.isEmpty) {
       throw new IllegalArgumentException(
         s"CSS Selector $cssSelector wasn't rendered."
       )
+    }
 
     //<p> HTML elements are rendered out with a carriage return on some pages, so discount for comparison
     assert(elements.first().html().replace("\n", "") == expectedValue)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package controllers.actions
 
 
 import controllers.ServiceInfoController
-import javax.inject.Inject
-import models.requests.{AuthenticatedRequest, ServiceInfoRequest}
+import models.requests.{AuthenticatedRequest, ServiceInfoRequest, ServiceNavigationInfo}
 import play.api.http.HeaderNames
 import play.api.mvc._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 
@@ -38,7 +38,7 @@ class ServiceInfoActionImpl @Inject()(serviceInfoController: ServiceInfoControll
     for {
       partial <-  serviceInfoController.serviceInfoPartial(request)
     } yield {
-      ServiceInfoRequest(request, partial)
+      ServiceInfoRequest(request, partial.getOrElse(ServiceNavigationInfo.apply()))
     }
   }
 
